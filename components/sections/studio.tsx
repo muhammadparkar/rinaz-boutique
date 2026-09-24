@@ -2,7 +2,6 @@ import { ArrowRightIcon, Clock, RotateCcw, ShieldCheck, Truck } from "lucide-rea
 import Image from "next/image";
 import Link from "next/link";
 import { Price } from "@/components/currency";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -103,9 +102,6 @@ export function GoldenHourFeature() {
 								<ArrowRightIcon />
 							</Link>
 						</Button>
-						<Badge variant="outline" className="h-8 rounded-full border-background/30 px-3 text-background">
-							<Truck /> Complimentary Express Delivery
-						</Badge>
 					</div>
 				</div>
 			</div>

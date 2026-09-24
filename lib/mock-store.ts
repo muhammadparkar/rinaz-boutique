@@ -317,7 +317,7 @@ const me = {
 			storeName: "RINAZ STUDIO",
 			storeDescription:
 				"Haute Abayas, Fine Jewelry & Pakistani Couture. Handcrafted luxury Abayas, certified 18K solid gold jewelry, and bespoke Pakistani bridal couture.",
-			enabledTools: { contactForm: true },
+			enabledTools: { contactForm: true, cookieConsent: true },
 		},
 	},
 };

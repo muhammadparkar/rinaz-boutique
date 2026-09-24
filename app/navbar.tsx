@@ -1,7 +1,8 @@
 "use client";
 
-import { Menu } from "lucide-react";
+import { Menu, Monitor, Moon, Sun } from "lucide-react";
 import Link from "next/link";
+import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import { CurrencySelect } from "@/components/currency";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
@@ -44,6 +45,10 @@ export function Navbar({ links }: { links: NavLink[] }) {
 					<span className="text-sm text-muted-foreground">Currency</span>
 					<CurrencySelect className="border" />
 				</div>
+				<div className="mt-4 flex items-center justify-between px-3">
+					<span className="text-sm text-muted-foreground">Theme</span>
+					<ThemeSwitch />
+				</div>
 			</SheetContent>
 		</Sheet>
 	);
@@ -52,6 +57,37 @@ export function Navbar({ links }: { links: NavLink[] }) {
 // Hidden while the page sits at the top; slides down from under the header once the shopper
 // scrolls or tabs into it. It hangs below the sticky header (absolute), so revealing it never
 // shifts the page.
+const themes = [
+	{ value: "light", label: "Light", icon: Sun },
+	{ value: "dark", label: "Dark", icon: Moon },
+	{ value: "system", label: "System", icon: Monitor },
+] as const;
+
+// Segmented light/dark/system control for the phone menu. The menu only mounts on the client,
+// after next-themes has read the stored theme, so the active state never mismatches hydration.
+function ThemeSwitch() {
+	const { theme, setTheme } = useTheme();
+	return (
+		<div className="flex rounded-full border border-border p-0.5">
+			{themes.map(({ value, label, icon: Icon }) => (
+				<button
+					key={value}
+					type="button"
+					aria-pressed={theme === value}
+					aria-label={`${label} theme`}
+					onClick={() => setTheme(value)}
+					className={cn(
+						"grid size-8 place-items-center rounded-full text-muted-foreground transition-colors hover:text-foreground",
+						theme === value && "bg-secondary text-foreground",
+					)}
+				>
+					<Icon className="size-4" />
+				</button>
+			))}
+		</div>
+	);
+}
+
 export function DesktopNav({ links }: { links: NavLink[] }) {
 	const [revealed, setRevealed] = useState(false);
 

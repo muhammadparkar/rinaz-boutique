@@ -4,6 +4,8 @@ import { ArrowRightIcon, CheckIcon } from "lucide-react";
 import { useActionState, useEffect, useState } from "react";
 import { subscribeToNewsletter } from "@/app/newsletter/action";
 import { NewsletterConsent } from "@/components/newsletter-consent";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { trackIdentify } from "@/lib/track";
 
 export function Newsletter() {
@@ -37,21 +39,28 @@ export function Newsletter() {
 							</p>
 							<form action={action} className="mx-auto mt-10 flex max-w-md flex-col gap-4">
 								<div className="flex flex-col gap-3 sm:flex-row">
-									<input
+									<label htmlFor="newsletter-email" className="sr-only">
+										Email address
+									</label>
+									{/* flex-1 only in the row layout: in the stacked phone column it would collapse the height. */}
+									<Input
+										id="newsletter-email"
 										type="email"
 										name="email"
 										placeholder="your@email.com"
+										autoComplete="email"
 										required
-										className="h-12 w-full flex-1 rounded-full border border-background/20 bg-background/10 px-5 text-background outline-none transition-all placeholder:text-background/30 focus:border-background/40 focus:ring-2 focus:ring-background/10"
+										className="h-12 rounded-full border-background/25 bg-background/10 px-5 text-base text-background shadow-none placeholder:text-background/55 focus-visible:border-background/50 focus-visible:ring-background/20 sm:flex-1 dark:bg-background/10"
 									/>
-									<button
+									<Button
 										type="submit"
+										size="lg"
 										disabled={isPending || !marketingConsent}
-										className="inline-flex h-12 shrink-0 items-center justify-center gap-2 rounded-full bg-background px-8 font-medium text-foreground transition-all hover:bg-background/90 disabled:opacity-50"
+										className="h-12 shrink-0 rounded-full bg-background px-8 text-foreground hover:bg-background/90 disabled:opacity-60"
 									>
 										{isPending ? "Subscribing\u2026" : "Subscribe"}
-										{!isPending && <ArrowRightIcon className="h-4 w-4" />}
-									</button>
+										{!isPending && <ArrowRightIcon />}
+									</Button>
 								</div>
 								<NewsletterConsent
 									checked={marketingConsent}
