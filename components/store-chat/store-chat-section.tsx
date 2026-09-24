@@ -1,13 +1,10 @@
-import { ReferralBadge } from "@/components/referral-badge";
 import { meGetCached } from "@/lib/commerce";
 import { StoreChatLauncher } from "./chat-launcher";
 
 /**
  * Store Chat mount point — dormant unless the platform says the module is on
  * (`enabledTools.storeChat` plus an active subscription; the platform nulls
- * `settings.storeChat` when the subscription lapses). This also owns the
- * "Made with YNS" badge: with chat off the badge pins itself bottom-right as
- * before; with chat on both share one dock so they never overlap.
+ * `settings.storeChat` when the subscription lapses).
  *
  * Must live inside CartProvider: add-to-cart from chat uses the cart context.
  */
@@ -16,7 +13,7 @@ export async function StoreChatSection() {
 	const settings = me?.store.settings;
 	const chat = settings?.enabledTools?.storeChat ? settings.storeChat : null;
 	if (!me || !chat) {
-		return <ReferralBadge />;
+		return null;
 	}
 
 	return (
@@ -27,7 +24,6 @@ export async function StoreChatSection() {
 			storeName={me.store.name}
 			currency={me.store.currency}
 			locale={me.store.locale}
-			badge={<ReferralBadge docked />}
 		/>
 	);
 }

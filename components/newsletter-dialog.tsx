@@ -149,7 +149,7 @@ export function NewsletterDialog({ settings }: NewsletterDialogProps) {
 						<div className={panelClass}>
 							{step === "cta" && (
 								<div className="space-y-4 text-center">
-									<h2 className="text-2xl font-bold tracking-tight sm:text-3xl">{heading}</h2>
+									<h2 className="text-2xl font-medium tracking-tight sm:text-3xl">{heading}</h2>
 									<p className="text-muted-foreground">{subheading}</p>
 									<div className="space-y-3 pt-2">
 										<Button type="button" size="lg" className="w-full" onClick={() => setStep("form")}>
@@ -163,7 +163,7 @@ export function NewsletterDialog({ settings }: NewsletterDialogProps) {
 							{step === "form" && (
 								<div className="space-y-4">
 									<div className="text-center">
-										<h2 className="text-xl font-semibold">Enter your email</h2>
+										<h2 className="font-sans text-xl font-semibold">Enter your email</h2>
 									</div>
 									<form onSubmit={handleSubmit} className="space-y-3">
 										<Input
@@ -195,7 +195,7 @@ export function NewsletterDialog({ settings }: NewsletterDialogProps) {
 
 							{step === "success" && (
 								<div className="space-y-4 text-center">
-									<h2 className="text-2xl font-bold">You&apos;re in!</h2>
+									<h2 className="text-2xl font-medium">You&apos;re in!</h2>
 									<p className="text-muted-foreground">
 										Thanks for subscribing. Check your inbox for your offer.
 									</p>

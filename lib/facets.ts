@@ -19,3 +19,14 @@ export async function getFilterFacets() {
 		return EMPTY_FACETS;
 	}
 }
+
+// Shared by every product listing (/products, /category, /collection) so sort behaves the same.
+export const LISTING_SORT_OPTIONS = [
+	{ value: "newest", label: "Newest", orderBy: "createdAt", orderDirection: "desc" },
+	{ value: "price-asc", label: "Price: Low to High", orderBy: "price", orderDirection: "asc" },
+	{ value: "price-desc", label: "Price: High to Low", orderBy: "price", orderDirection: "desc" },
+	{ value: "name", label: "Name: A–Z", orderBy: "name", orderDirection: "asc" },
+] as const;
+
+export const getListingSort = (value: string | undefined) =>
+	LISTING_SORT_OPTIONS.find((s) => s.value === value) ?? LISTING_SORT_OPTIONS[0];

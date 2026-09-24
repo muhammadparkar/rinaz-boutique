@@ -7,10 +7,10 @@ import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { addBundleToCart } from "@/app/cart/actions";
 import { useCart } from "@/app/cart/cart-context";
+import { useFormatPrice } from "@/components/currency";
 import { useStoreConfig } from "@/components/store-config-provider";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { formatMoney } from "@/lib/money";
 import { displayAmount, displayPrice, type TaxBehavior } from "@/lib/pricing";
 import { cn } from "@/lib/utils";
 
@@ -85,7 +85,8 @@ export function BundleBuilder({
 	pricing: Pricing;
 }) {
 	const { groups, discountPercentage } = bundle;
-	const { currency, locale, taxBehavior } = useStoreConfig();
+	const { taxBehavior } = useStoreConfig();
+	const formatPrice = useFormatPrice();
 	const { openCart } = useCart();
 
 	const [selections, setSelections] = useState<GroupSelections>(() => initialSelections(groups));
@@ -259,11 +260,7 @@ export function BundleBuilder({
 												<span className="line-clamp-2">{label}</span>
 											</span>
 											<span className="text-muted-foreground text-sm">
-												{formatMoney({
-													amount: BigInt(displayPrice(item.variant, taxBehavior)),
-													currency,
-													locale,
-												})}
+												{formatPrice(BigInt(displayPrice(item.variant, taxBehavior)))}
 											</span>
 											{outOfStock && <span className="text-destructive text-xs">Out of stock</span>}
 											{item.forced && (
@@ -308,11 +305,9 @@ export function BundleBuilder({
 			<div className="sticky bottom-0 flex flex-col gap-3 border-t bg-background/95 py-4 backdrop-blur sm:flex-row sm:items-center sm:justify-between">
 				<div className="flex items-baseline gap-2">
 					{hasSavings && (
-						<span className="text-muted-foreground text-lg line-through">
-							{formatMoney({ amount: originalTotal, currency, locale })}
-						</span>
+						<span className="text-muted-foreground text-lg line-through">{formatPrice(originalTotal)}</span>
 					)}
-					<span className="font-bold text-2xl">{formatMoney({ amount: total, currency, locale })}</span>
+					<span className="font-bold text-2xl">{formatPrice(total)}</span>
 				</div>
 				<Button
 					type="button"

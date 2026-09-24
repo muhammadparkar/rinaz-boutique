@@ -5,6 +5,7 @@ import { useCart } from "@/app/cart/cart-context";
 import { CartItem } from "@/app/cart/cart-item";
 import { cartDiscountOf } from "@/app/cart/discount-code";
 import { DiscountCodeField } from "@/app/cart/discount-code-field";
+import { useDisplayCurrency, useFormatPrice } from "@/components/currency";
 import { useStoreConfig } from "@/components/store-config-provider";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -16,11 +17,12 @@ import {
 	SheetHeader,
 	SheetTitle,
 } from "@/components/ui/sheet";
-import { formatMoney } from "@/lib/money";
 import { cn } from "@/lib/utils";
 
 export function CartSidebar() {
-	const { currency, locale, taxBehavior } = useStoreConfig();
+	const { taxBehavior } = useStoreConfig();
+	const formatPrice = useFormatPrice();
+	const { base: baseCurrency, current: displayCurrency } = useDisplayCurrency();
 	const { cart, isOpen, closeCart, items, itemCount, subtotal, isMutating } = useCart();
 	const discount = cartDiscountOf(cart, taxBehavior);
 
@@ -71,21 +73,17 @@ export function CartSidebar() {
 									<div className="space-y-1">
 										<div className="flex items-center justify-between text-sm text-muted-foreground">
 											<span>Subtotal</span>
-											<span>{formatMoney({ amount: subtotal, currency, locale })}</span>
+											<span>{formatPrice(subtotal)}</span>
 										</div>
 										<div className="flex items-center justify-between gap-3 text-sm font-medium text-green-700">
 											<span>Discount</span>
-											<span className="tabular-nums">
-												−{formatMoney({ amount: discount, currency, locale })}
-											</span>
+											<span className="tabular-nums">−{formatPrice(discount)}</span>
 										</div>
 									</div>
 								) : null}
 								<div className="flex items-center justify-between text-base">
 									<span className="font-medium">{discount ? "Total" : "Subtotal"}</span>
-									<span className="font-semibold">
-										{formatMoney({ amount: subtotal - (discount ?? 0n), currency, locale })}
-									</span>
+									<span className="font-semibold">{formatPrice(subtotal - (discount ?? 0n))}</span>
 								</div>
 								{/* Tax is already inside the shown subtotal on an inclusive store — promising to
 								    "calculate taxes at checkout" there would read as an extra charge to come. */}
@@ -94,6 +92,11 @@ export function CartSidebar() {
 										? "Shipping calculated at checkout"
 										: "Shipping and taxes calculated at checkout"}
 								</p>
+								{displayCurrency !== baseCurrency && (
+									<p className="text-xs text-muted-foreground">
+										Prices shown in {displayCurrency} are estimates. You&apos;ll be charged in {baseCurrency}.
+									</p>
+								)}
 								{/* Keep this a plain <a>, never <Link>/router.push: /checkout is proxied to a
 								    different Next.js zone (yns.store). A soft RSC nav 500s the cross-zone request.
 								    While a cart write is in flight, block the link: a full navigation now would

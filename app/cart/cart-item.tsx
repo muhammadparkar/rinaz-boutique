@@ -5,8 +5,8 @@ import Link from "next/link";
 import { useRef, useTransition } from "react";
 import { setCartQuantity } from "@/app/cart/actions";
 import { type Cart, type CartLineItem, getLineItemUnitPrice, useCart } from "@/app/cart/cart-context";
+import { useFormatPrice } from "@/components/currency";
 import { useStoreConfig } from "@/components/store-config-provider";
-import { formatMoney } from "@/lib/money";
 import { cn, getProductThumbnail } from "@/lib/utils";
 import { YNSMedia } from "@/lib/yns-media";
 
@@ -15,7 +15,8 @@ type CartItemProps = {
 };
 
 export function CartItem({ item }: CartItemProps) {
-	const { currency, locale, taxBehavior } = useStoreConfig();
+	const { taxBehavior } = useStoreConfig();
+	const formatPrice = useFormatPrice();
 	const { dispatch, closeCart, startMutation, syncCart, reconcile } = useCart();
 	const [isPending, startTransition] = useTransition();
 
@@ -158,9 +159,7 @@ export function CartItem({ item }: CartItemProps) {
 					</div>
 
 					{/* Price */}
-					<span className="text-sm font-semibold">
-						{formatMoney({ amount: lineTotal, currency, locale })}
-					</span>
+					<span className="text-sm font-semibold">{formatPrice(lineTotal)}</span>
 				</div>
 			</div>
 		</div>

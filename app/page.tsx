@@ -5,6 +5,13 @@ import { About } from "@/components/sections/about";
 import { Hero } from "@/components/sections/hero";
 import { Newsletter } from "@/components/sections/newsletter";
 import { ProductGrid } from "@/components/sections/product-grid";
+import {
+	BridalSanctuary,
+	CategoryTiles,
+	CompleteTheLook,
+	GoldenHourFeature,
+	TrustPillars,
+} from "@/components/sections/studio";
 
 function FeaturedProductsSkeleton() {
 	return (
@@ -28,10 +35,19 @@ export default function Home() {
 	return (
 		<>
 			<Hero />
+			<CategoryTiles />
 			<Suspense fallback={<FeaturedProductsSkeleton />}>
-				<ProductGrid title="Featured Products" limit={6} />
+				<ProductGrid
+					title="Best Sellers"
+					description="Our most coveted luxury silhouettes, certified 18K solid gold pendants, and heirloom Pakistani bridal couture."
+					limit={6}
+				/>
 			</Suspense>
+			<GoldenHourFeature />
+			<TrustPillars />
+			<CompleteTheLook />
 			<About />
+			<BridalSanctuary />
 			<Newsletter />
 		</>
 	);

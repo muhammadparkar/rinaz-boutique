@@ -3,7 +3,7 @@ import "@/app/globals.css";
 import { UserRound } from "lucide-react";
 import type { Metadata } from "next";
 import { cacheLife } from "next/cache";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Bodoni_Moda, Geist, Geist_Mono } from "next/font/google";
 import { getImageProps } from "next/image";
 import Link from "next/link";
 import { ThemeProvider } from "next-themes";
@@ -12,8 +12,9 @@ import { CartBootstrap, CartProvider } from "@/app/cart/cart-context";
 import { CartSidebar } from "@/app/cart/cart-sidebar";
 import { CartButton } from "@/app/cart-button";
 import { Footer } from "@/app/footer";
-import { Navbar, type NavLink } from "@/app/navbar";
+import { DesktopNav, Navbar, type NavLink } from "@/app/navbar";
 import { CookieConsent } from "@/components/cookie-consent";
+import { CurrencySelect } from "@/components/currency";
 import { ErrorOverlayRemover, NavigationReporter } from "@/components/devtools";
 import { NewsletterDialog } from "@/components/newsletter-dialog";
 import { SearchInput } from "@/components/search/search-input";
@@ -29,6 +30,13 @@ import { getStoreConfig } from "@/lib/store-config";
 const geistSans = Geist({
 	variable: "--font-geist-sans",
 	subsets: ["latin"],
+});
+
+// Display serif for editorial headlines; the hero headline paints above the fold, so it preloads.
+const bodoni = Bodoni_Moda({
+	variable: "--font-bodoni",
+	subsets: ["latin"],
+	style: ["normal", "italic"],
 });
 
 const geistMono = Geist_Mono({
@@ -121,24 +129,14 @@ async function getInitialCart() {
 	}
 }
 
-async function getNavLinks(): Promise<NavLink[]> {
-	"use cache";
-	cacheLife("hours");
-	const [collections, me] = await Promise.all([
-		commerce.collectionBrowse({ limit: 5 }),
-		meGetCached().catch(() => null),
-	]);
-	const blogEnabled = me?.store.settings?.enabledTools?.blog ?? false;
-	return [
-		{ href: "/", label: "Home" },
-		{ href: "/products", label: "Products" },
-		...collections.data.map((collection) => ({
-			href: `/collection/${collection.slug}`,
-			label: collection.name,
-		})),
-		...(blogEnabled ? [{ href: "/blog", label: "Blog" }] : []),
-	];
-}
+const navLinks: NavLink[] = [
+	{ href: "/collection/new-in", label: "NEW IN" },
+	{ href: "/category/haute-abayas", label: "HAUTE ABAYAS" },
+	{ href: "/category/fine-jewelry", label: "18K FINE JEWELRY" },
+	{ href: "/category/pakistani-couture", label: "PAKISTANI COUTURE" },
+	{ href: "/collection/bridal-pret", label: "BRIDAL PRET" },
+	{ href: "/#sanctuary", label: "STUDIO SANCTUARY" },
+];
 
 // The customer's cart is a cookie read, so it can never be part of the prerendered
 // shell. Kept in its own component (and its own Suspense boundary below) so the await
@@ -155,7 +153,7 @@ async function CartProviderWrapper({ children }: { children: React.ReactNode }) 
 	// leave the page blank until the server responds. The other half of the rule: no
 	// <Suspense> around this component either — the boundary itself is what streams the
 	// chrome out of the shell, whether or not anything inside it is request-time.
-	const [links, storeConfig] = await Promise.all([getNavLinks(), getStoreConfig()]);
+	const storeConfig = await getStoreConfig();
 
 	return (
 		<StoreConfigProvider value={storeConfig}>
@@ -165,16 +163,23 @@ async function CartProviderWrapper({ children }: { children: React.ReactNode }) 
 						<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 							<div className="relative flex items-center justify-between h-16">
 								<div className="flex items-center gap-2">
-									<Link href="/" className="text-xl font-bold">
-										Your Next Store
+									<Link
+										href="/"
+										className="font-display text-base tracking-[0.18em] whitespace-nowrap sm:text-xl sm:tracking-[0.28em]"
+									>
+										RINAZ STUDIO
 									</Link>
-									<Navbar links={links} />
+									<Navbar links={navLinks} />
 								</div>
-								<div className="flex items-center gap-2">
+								<div className="flex items-center sm:gap-2">
+									<CurrencySelect className="hidden sm:flex" />
 									<Suspense>
 										<SearchInput />
 									</Suspense>
-									<ThemeToggle />
+									{/* Phones follow the system theme; the toggle frees header room from sm up. */}
+									<div className="hidden sm:contents">
+										<ThemeToggle />
+									</div>
 									{/* Plain <a>: /account is a proxied zone — soft navigation 500s (see AGENTS.md).
 									    Static on purpose: reading the session here would pull the header out of the
 									    prerendered shell. Guests get the sign-in flow, shoppers land on the dashboard. */}
@@ -189,6 +194,7 @@ async function CartProviderWrapper({ children }: { children: React.ReactNode }) 
 								</div>
 							</div>
 						</div>
+						<DesktopNav links={navLinks} />
 					</header>
 					<main className="flex-1">{children}</main>
 					<Footer />
@@ -197,8 +203,7 @@ async function CartProviderWrapper({ children }: { children: React.ReactNode }) 
 				<Suspense>
 					<CartBootstrapper />
 				</Suspense>
-				{/* Inside CartProvider on purpose: add-to-cart from chat uses the cart context.
-			    Also renders the "Made with YNS" badge so badge and launcher share one dock. */}
+				{/* Inside CartProvider on purpose: add-to-cart from chat uses the cart context. */}
 				<Suspense>
 					<StoreChatSection />
 				</Suspense>
@@ -235,7 +240,7 @@ export default async function RootLayout({
 	return (
 		// suppressHydrationWarning: next-themes sets the theme class on <html> before hydration.
 		<html lang={lang} suppressHydrationWarning>
-			<body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+			<body className={`${geistSans.variable} ${geistMono.variable} ${bodoni.variable} antialiased`}>
 				{/* DO NOT REMOVE / REORDER: required for GDPR + GTM Consent Mode v2. Must stay at top of <body>. */}
 				<Suspense>
 					<CookieConsent />

@@ -47,7 +47,7 @@ export const CookieConsentBanner = () => {
 	};
 
 	return (
-		// z-[60]: above the "Made with YNS" badge, the chat launcher and the newsletter
+		// z-[60]: above the chat launcher and the newsletter
 		// launcher (all z-50 at bottom-4), which otherwise overlap the buttons and
 		// shrink their clickable area.
 		<div className="fixed bottom-0 left-0 right-0 z-[60] border-t border-border bg-background/95 p-4 shadow-lg backdrop-blur-md">

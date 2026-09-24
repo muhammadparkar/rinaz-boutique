@@ -38,8 +38,8 @@ export async function ProductGrid({
 	const displayProducts = products ?? (await commerce.productBrowse({ active: true, limit })).data;
 
 	return (
-		<section id="products" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
-			<div className="flex items-end justify-between mb-12">
+		<section id="products" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-24">
+			<div className="flex items-end justify-between mb-8 sm:mb-12">
 				<div>
 					<h2 className="text-2xl sm:text-3xl font-medium text-foreground">{title}</h2>
 					<p className="mt-2 text-muted-foreground">{description}</p>
@@ -55,7 +55,7 @@ export async function ProductGrid({
 				)}
 			</div>
 
-			<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+			<div className="grid grid-cols-2 gap-x-4 gap-y-8 sm:gap-x-6 sm:gap-y-10 lg:grid-cols-3">
 				{displayProducts.map((product, index) => (
 					<ProductCard key={product.id} product={product} priority={index === 0} />
 				))}

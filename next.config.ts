@@ -37,6 +37,7 @@ const nextConfig: NextConfig = {
 		// A "**" wildcard would make the image optimizer an open proxy for any https URL.
 		remotePatterns: [
 			{ protocol: "https", hostname: "*.public.blob.vercel-storage.com" },
+			{ protocol: "https", hostname: "images.unsplash.com" },
 			{ protocol: "https", hostname: "yns.store" },
 			{ protocol: "https", hostname: "**.yns.store" },
 			{ protocol: "https", hostname: "yns.cx" },

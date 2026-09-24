@@ -1,23 +1,15 @@
 import type { APICollectionGetByIdResult } from "commerce-kit";
 import type { Metadata } from "next";
 import { cacheLife } from "next/cache";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
+import { ListingShell } from "@/components/listing-shell";
+import { ProductCard } from "@/components/product-card";
 import { ProductGridSkeleton } from "@/components/product-grid-skeleton";
-import { ProductGrid } from "@/components/sections/product-grid";
-import {
-	Breadcrumb,
-	BreadcrumbItem,
-	BreadcrumbLink,
-	BreadcrumbList,
-	BreadcrumbPage,
-	BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
 import { commerce, getStoreSeo } from "@/lib/commerce";
+import { getFilterFacets, getListingSort } from "@/lib/facets";
 import { buildCollectionBreadcrumbJsonLd, buildCollectionJsonLd, JsonLdScript } from "@/lib/json-ld";
 import { encodeVts } from "@/lib/vts";
-import { YNSMedia } from "@/lib/yns-media";
 
 // The page has no pagination, so a smart collection renders one browse page. 100 is the API's max.
 const SMART_COLLECTION_LIMIT = 100;
@@ -58,50 +50,6 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 			images: collection.image ? [collection.image] : undefined,
 		},
 	};
-}
-
-function CollectionHeader({ collection }: { collection: APICollectionGetByIdResult }) {
-	return (
-		<section className="relative overflow-hidden bg-secondary/30">
-			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-				<div className="py-12 sm:py-16 lg:py-20">
-					<div className="max-w-2xl">
-						<h1 className="text-3xl sm:text-4xl lg:text-5xl font-medium tracking-tight text-foreground">
-							{collection.name}
-						</h1>
-						{collection.description && (
-							<p className="mt-4 text-lg text-muted-foreground leading-relaxed">
-								{typeof collection.description === "string"
-									? collection.description
-									: "Explore our curated collection"}
-							</p>
-						)}
-					</div>
-				</div>
-			</div>
-			{collection.image && (
-				<div className="absolute top-0 right-0 w-1/2 h-full hidden lg:block">
-					<YNSMedia
-						src={collection.image}
-						alt={collection.name}
-						fill
-						sizes="50vw"
-						className="object-cover opacity-30"
-						priority
-					/>
-					<div className="absolute inset-0 bg-linear-to-r from-secondary/30 to-transparent" />
-				</div>
-			)}
-		</section>
-	);
-}
-
-function CollectionProductsSkeleton() {
-	return (
-		<section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
-			<ProductGridSkeleton className="lg:grid-cols-3" />
-		</section>
-	);
 }
 
 // Only a `manual` collection keeps its members in the join table that `collectionGet` returns —
@@ -152,34 +100,45 @@ async function getCollectionProducts(collection: APICollectionGetByIdResult) {
 	return data.filter((product) => new Date(product.createdAt).getTime() >= cutoff);
 }
 
-async function CollectionProducts({ collection }: { collection: APICollectionGetByIdResult }) {
-	const products = await getCollectionProducts(collection);
+type CollectionFilterParams = { sort?: string; category?: string; priceMin?: string; priceMax?: string };
 
-	return (
-		<ProductGrid
-			title={`${collection.name} Collection`}
-			description={`${products.length} products`}
-			products={products}
-			showViewAll={false}
-		/>
-	);
-}
+// Collections render in one page, so the sidebar filters and sort apply to the member list here.
+// ponytail: in-memory filter over at most SMART_COLLECTION_LIMIT products; move to the API if collections grow past that.
+async function CollectionProducts({
+	collection,
+	searchParams,
+}: {
+	collection: APICollectionGetByIdResult;
+	searchParams: Promise<CollectionFilterParams>;
+}) {
+	const [filters, products] = await Promise.all([searchParams, getCollectionProducts(collection)]);
+	const { orderBy, orderDirection } = getListingSort(filters.sort);
+	const priceOf = (p: (typeof products)[number]) => Number(p.variants[0]?.price ?? 0);
+	const min = filters.priceMin ? Number(filters.priceMin) : Number.NEGATIVE_INFINITY;
+	const max = filters.priceMax ? Number(filters.priceMax) : Number.POSITIVE_INFINITY;
+	const key = (p: (typeof products)[number]) =>
+		orderBy === "price" ? priceOf(p) : orderBy === "name" ? p.name : p.createdAt;
+	const dir = orderDirection === "asc" ? 1 : -1;
 
-function CollectionPageSkeleton() {
-	return (
-		<>
-			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
-				<div className="h-5 w-48 bg-secondary rounded animate-pulse" />
+	const shown = products
+		.filter((p) => !filters.category || p.category?.slug === filters.category)
+		.filter((p) => priceOf(p) >= min && priceOf(p) <= max)
+		.sort((a, b) => (key(a) > key(b) ? dir : key(a) < key(b) ? -dir : 0));
+
+	if (shown.length === 0) {
+		return (
+			<div className="py-24 text-center">
+				<p className="text-lg text-muted-foreground">No products match these filters.</p>
 			</div>
-			<section className="bg-secondary/30">
-				<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-					<div className="py-12 sm:py-16 lg:py-20">
-						<div className="h-12 w-72 bg-secondary rounded animate-pulse" />
-					</div>
-				</div>
-			</section>
-			<CollectionProductsSkeleton />
-		</>
+		);
+	}
+
+	return (
+		<div className="grid grid-cols-2 gap-x-4 gap-y-8 sm:gap-x-6 sm:gap-y-10 xl:grid-cols-3">
+			{shown.map((product, index) => (
+				<ProductCard key={product.id} product={product} priority={index === 0} />
+			))}
+		</div>
 	);
 }
 
@@ -187,8 +146,8 @@ function CollectionPageSkeleton() {
 // stays a sync shell and the params-dependent content streams inside Suspense.
 export default function CollectionPage(props: PageProps<"/collection/[slug]">) {
 	return (
-		<Suspense fallback={<CollectionPageSkeleton />}>
-			<CollectionContent params={props.params} />
+		<Suspense fallback={<ProductGridSkeleton />}>
+			<CollectionContent params={props.params} searchParams={props.searchParams} />
 		</Suspense>
 	);
 }
@@ -199,9 +158,15 @@ const getCollectionData = async (slug: string) => {
 	return commerce.collectionGet({ idOrSlug: slug });
 };
 
-const CollectionContent = async ({ params }: { params: PageProps<"/collection/[slug]">["params"] }) => {
+const CollectionContent = async ({
+	params,
+	searchParams,
+}: {
+	params: PageProps<"/collection/[slug]">["params"];
+	searchParams: Promise<CollectionFilterParams>;
+}) => {
 	const { slug } = await params;
-	const collection = await getCollectionData(slug);
+	const [collection, facets] = await Promise.all([getCollectionData(slug), getFilterFacets()]);
 
 	if (!collection) {
 		notFound();
@@ -211,25 +176,17 @@ const CollectionContent = async ({ params }: { params: PageProps<"/collection/[s
 		<>
 			<JsonLdScript data={buildCollectionJsonLd(collection)} />
 			<JsonLdScript data={buildCollectionBreadcrumbJsonLd(collection)} />
-			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
-				<Breadcrumb>
-					<BreadcrumbList>
-						<BreadcrumbItem>
-							<BreadcrumbLink asChild>
-								<Link href="/">Home</Link>
-							</BreadcrumbLink>
-						</BreadcrumbItem>
-						<BreadcrumbSeparator />
-						<BreadcrumbItem>
-							<BreadcrumbPage>{collection.name}</BreadcrumbPage>
-						</BreadcrumbItem>
-					</BreadcrumbList>
-				</Breadcrumb>
-			</div>
-			<CollectionHeader collection={collection} />
-			<Suspense fallback={<CollectionProductsSkeleton />}>
-				<CollectionProducts collection={collection} />
-			</Suspense>
+			<ListingShell
+				crumbs={[{ name: collection.name }]}
+				title={collection.name}
+				description={typeof collection.description === "string" ? collection.description : null}
+				facets={{ ...facets, variantTypes: [], brands: [] }}
+				showCollections={false}
+			>
+				<Suspense fallback={<ProductGridSkeleton />}>
+					<CollectionProducts collection={collection} searchParams={searchParams} />
+				</Suspense>
+			</ListingShell>
 		</>
 	);
 };

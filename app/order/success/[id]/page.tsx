@@ -93,7 +93,7 @@ const OrderDetails = async ({ params }: { params: Promise<{ id: string }> }) => 
 						<CheckCircle className="h-8 w-8 text-green-600" />
 					</div>
 				</div>
-				<h1 className="text-3xl font-semibold tracking-tight">Thank you for your order!</h1>
+				<h1 className="text-3xl font-medium tracking-tight">Thank you for your order!</h1>
 				<p className="text-muted-foreground mt-2">Order #{order.lookup} has been confirmed</p>
 				{customer?.email && (
 					<p className="text-sm text-muted-foreground mt-1">
@@ -105,7 +105,7 @@ const OrderDetails = async ({ params }: { params: Promise<{ id: string }> }) => 
 			{/* Order Items */}
 			<div className="border border-border rounded-lg overflow-hidden">
 				<div className="bg-secondary/50 px-6 py-4 border-b border-border">
-					<h2 className="font-medium">Order Items</h2>
+					<h2 className="font-sans font-medium">Order Items</h2>
 				</div>
 				<div className="divide-y divide-border">
 					{lineItems.map((item) => (
@@ -142,7 +142,7 @@ const OrderDetails = async ({ params }: { params: Promise<{ id: string }> }) => 
 			{shippingAddress && (
 				<div className="border border-border rounded-lg overflow-hidden mt-6">
 					<div className="bg-secondary/50 px-6 py-4 border-b border-border">
-						<h2 className="font-medium">Shipping Address</h2>
+						<h2 className="font-sans font-medium">Shipping Address</h2>
 					</div>
 					<div className="px-6 py-4 text-sm text-muted-foreground">
 						{shippingAddress.name && <p className="text-foreground font-medium">{shippingAddress.name}</p>}

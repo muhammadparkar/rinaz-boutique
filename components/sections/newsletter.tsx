@@ -29,10 +29,11 @@ export function Newsletter() {
 					) : (
 						<>
 							<h2 className="text-3xl sm:text-4xl lg:text-5xl font-medium tracking-tight">
-								Stay in the loop
+								Receive First Access to Runway Drops
 							</h2>
 							<p className="mt-4 text-lg leading-relaxed text-background/60 max-w-md mx-auto">
-								Be the first to know about new arrivals, exclusive offers, and stories from behind the scenes.
+								Join our private client register to receive seasonal preview lookbooks, limited bridal pret
+								releases, and private studio invitations.
 							</p>
 							<form action={action} className="mx-auto mt-10 flex max-w-md flex-col gap-4">
 								<div className="flex flex-col gap-3 sm:flex-row">

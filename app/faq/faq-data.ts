@@ -6,137 +6,90 @@ export type FAQCategory = {
 
 export const faqCategories: FAQCategory[] = [
 	{
-		id: "orders",
-		title: "Orders",
+		id: "sizing",
+		title: "Sizing & Bespoke Fittings",
 		questions: [
 			{
-				question: "How do I place an order?",
+				question: "How do Abaya sizes work?",
 				answer:
-					"Browse our products, add items to your cart, and proceed to checkout. You'll be guided through the payment process step by step.",
+					"Our standard Abaya sizes (52 to 58) correspond to heights from 5'0\" to 5'10\": Size 52 fits 5'0\"–5'2\", Size 54 fits 5'3\"–5'5\", Size 56 fits 5'6\"–5'7\", and Size 58 fits 5'8\" and above. We also provide custom sleeve length and bust tailoring at no extra charge.",
 			},
 			{
-				question: "Can I modify or cancel my order after placing it?",
+				question: "Can my bridal Anarkali be made to measure?",
 				answer:
-					"Once an order has been submitted, modifications are generally not possible. If your order hasn't been processed yet, contact us as soon as possible and we'll do our best to accommodate your request.",
+					"Yes. Our Pakistani bridal ensembles are hand-worked in raw silk and organza. We schedule private measurement sessions to ensure a flawless bespoke fit.",
 			},
 			{
-				question: "How long does order processing take?",
+				question: "How do I book a private fitting?",
 				answer:
-					"Most orders are processed within 1–3 business days. Processing times may vary depending on product availability and order volume. You'll receive a confirmation email once your order has shipped.",
-			},
-			{
-				question: "Can I request an invoice for my order?",
-				answer:
-					"Yes. If you need an invoice, please make sure to provide your billing details during checkout. The invoice will be sent to your email along with the order confirmation.",
-			},
-			{
-				question: "Can I add special instructions to my order?",
-				answer:
-					"If available, you can add notes or special instructions during the checkout process. Look for the order notes field before completing your purchase.",
+					"We would be delighted to arrange your private sanctuary fitting in London Knightsbridge, Dubai Fashion Avenue, Doha, or Lahore Gulberg. Get in touch through our contact page to book.",
 			},
 		],
 	},
 	{
-		id: "payments",
-		title: "Payments",
+		id: "jewelry",
+		title: "Fine Jewelry",
 		questions: [
 			{
-				question: "What payment methods do you accept?",
+				question: "Is RINAZ jewelry certified?",
 				answer:
-					"We accept all major credit and debit cards, as well as other payment methods available through our secure payment provider. Available options are displayed at checkout.",
-			},
-			{
-				question: "Is my payment information secure?",
-				answer:
-					"Absolutely. All payments are processed through a PCI-compliant payment provider. We never store your full card details on our servers.",
-			},
-			{
-				question: "My payment failed. What should I do?",
-				answer:
-					"First, verify that your card details are correct and that you have sufficient funds. If the issue persists, try a different payment method or contact your bank. You can also reach out to us for assistance.",
-			},
-			{
-				question: "When will I be charged?",
-				answer:
-					"Your payment is processed at the time of purchase. For pre-order items, you may be charged at the time of ordering or when the item ships, depending on the product.",
+					"All RINAZ Fine Jewelry is forged in hallmarked 18K solid gold with VVS1 clarity diamonds and accompanied by a signed Certificate of Valuation.",
 			},
 		],
 	},
 	{
 		id: "shipping",
-		title: "Shipping & Delivery",
+		title: "Shipping & Duties",
 		questions: [
 			{
-				question: "What are your shipping options?",
+				question: "How much does shipping cost?",
 				answer:
-					"We offer standard and express shipping options. Available methods and estimated delivery times are displayed at checkout based on your location.",
+					"Orders of $400 or more qualify for complimentary worldwide DHL Express delivery. Orders under $400 are shipped insured at a $25 flat rate.",
 			},
 			{
-				question: "Do you ship internationally?",
-				answer:
-					"Yes, we ship to many countries worldwide. International shipping options and costs are calculated at checkout based on your delivery address.",
+				question: "How long does delivery take?",
+				answer: "Orders arrive within 2–3 business days via insured courier.",
 			},
 			{
-				question: "How can I track my order?",
-				answer:
-					"Once your order has shipped, you'll receive a confirmation email with a tracking number and a link to track your package in real time.",
-			},
-			{
-				question: "What should I do if my package arrives damaged?",
-				answer:
-					"If your order arrives damaged, please document the damage with photos and contact us immediately. We'll work with you to resolve the issue as quickly as possible.",
-			},
-			{
-				question: "Can I combine multiple orders to save on shipping?",
-				answer:
-					"Unfortunately, we're unable to combine separate orders into a single shipment. To take advantage of any free shipping thresholds, make sure to add all items to a single order before checking out.",
+				question: "Will I pay customs duties or taxes?",
+				answer: "Customs, duties and taxes are fully prepaid for GCC, UK, Europe, and India shipments.",
 			},
 		],
 	},
 	{
 		id: "returns",
-		title: "Returns & Exchanges",
+		title: "Returns",
 		questions: [
 			{
 				question: "What is your return policy?",
-				answer:
-					"We accept returns within 14 days of delivery. Items must be unused, in their original packaging, and in the same condition as received. Please refer to our returns policy page for full details.",
-			},
-			{
-				question: "How do I initiate a return?",
-				answer:
-					"To start a return, contact our support team with your order number and the reason for the return. We'll provide you with return instructions and, if applicable, a return shipping label.",
-			},
-			{
-				question: "How do exchanges work?",
-				answer:
-					"Exchanges are handled as a return followed by a new order. Simply return the original item and place a new order for the item you'd like instead.",
-			},
-			{
-				question: "How long does it take to receive a refund?",
-				answer:
-					"Once we receive and inspect your returned item, refunds are typically processed within 5–10 business days. The refund will be credited to your original payment method.",
+				answer: "We offer 14-day global returns with complimentary doorstep pickup and transit insurance.",
 			},
 		],
 	},
 	{
-		id: "discounts",
-		title: "Discounts & Promotions",
+		id: "packaging",
+		title: "Packaging & Gifting",
 		questions: [
 			{
-				question: "Do you offer discounts for new customers?",
+				question: "How is my order packaged?",
 				answer:
-					"Yes! New customers can subscribe to our newsletter to receive a welcome discount. Look for the signup form on our homepage.",
+					"Every piece arrives in our signature light cream velvet keepsake box with a gold monogram plaque, a velvet dust bag, and a hand-signed master cutter certificate.",
 			},
 			{
-				question: "How do I apply a discount code?",
+				question: "Can I add a gift message?",
 				answer:
-					"During checkout, you'll find a field to enter your discount code. Enter the code and the discount will be automatically applied to your order total.",
+					"Yes. Add a personal message and we will calligraph it by hand in gold ink on archival parchment, complimentary.",
 			},
+		],
+	},
+	{
+		id: "offers",
+		title: "Privilege Codes",
+		questions: [
 			{
-				question: "Can I use multiple discount codes on one order?",
+				question: "Do you offer any discount codes?",
 				answer:
-					"Only one discount code can be applied per order. The system will automatically use the code that provides the best value if multiple are entered.",
+					"Use RINAZ10 or STUDIO at checkout for a 10% privilege discount on your order. Enter the code in your cart.",
 			},
 		],
 	},

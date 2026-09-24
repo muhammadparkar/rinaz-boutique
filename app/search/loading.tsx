@@ -5,7 +5,7 @@ export default function SearchLoading() {
 				<div className="h-8 w-48 bg-secondary rounded animate-pulse" />
 				<div className="mt-2 h-5 w-32 bg-secondary rounded animate-pulse" />
 			</div>
-			<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+			<div className="grid grid-cols-2 gap-x-4 gap-y-8 sm:gap-x-6 sm:gap-y-10 lg:grid-cols-3">
 				{Array.from({ length: 6 }, (_, i) => (
 					<div key={i}>
 						<div className="aspect-square bg-secondary rounded-2xl animate-pulse mb-4" />

@@ -4,7 +4,7 @@ import type {
 	APIProductsBrowseResult,
 } from "commerce-kit";
 import Link from "next/link";
-import { formatMoney } from "@/lib/money";
+import { Price } from "@/components/currency";
 import { priceRange } from "@/lib/pricing";
 import { getStoreConfig } from "@/lib/store-config";
 import { isVideoUrl } from "@/lib/utils";
@@ -22,17 +22,19 @@ export async function ProductCard({
 	product: BrowseProduct | CollectionProduct | FullProduct;
 	priority?: boolean;
 }) {
-	const { currency, locale, taxBehavior } = await getStoreConfig();
+	const { taxBehavior } = await getStoreConfig();
 	const variants = "variants" in product ? product.variants : null;
 	const { min: minPrice, max: maxPrice } =
 		variants && variants.length > 0 ? priceRange(variants, taxBehavior) : { min: null, max: null };
 
 	const priceDisplay =
-		variants && variants.length > 1 && minPrice && maxPrice && minPrice !== maxPrice
-			? `${formatMoney({ amount: minPrice, currency, locale })} - ${formatMoney({ amount: maxPrice, currency, locale })}`
-			: minPrice
-				? formatMoney({ amount: minPrice, currency, locale })
-				: null;
+		variants && variants.length > 1 && minPrice && maxPrice && minPrice !== maxPrice ? (
+			<>
+				<Price amount={String(minPrice)} /> - <Price amount={String(maxPrice)} />
+			</>
+		) : minPrice ? (
+			<Price amount={String(minPrice)} />
+		) : null;
 
 	const allImages = [
 		...(product.images ?? []),
@@ -59,7 +61,7 @@ export async function ProductCard({
 
 	return (
 		<Link href={`/product/${product.slug}${variantSearch}`} className="group">
-			<div className="relative aspect-square bg-secondary rounded-2xl overflow-hidden mb-4">
+			<div className="relative aspect-3/4 bg-secondary rounded-md overflow-hidden mb-3">
 				{singleVariant && (
 					<QuickAddButton
 						variantId={singleVariant.id}
@@ -90,7 +92,7 @@ export async function ProductCard({
 							src={primaryImage}
 							alt={product.name}
 							fill
-							sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+							sizes="(max-width: 1024px) 50vw, 33vw"
 							className={`object-cover transition-opacity duration-500 ${secondaryImage ? "group-hover:opacity-0" : ""}`}
 							priority={priority}
 						/>
@@ -110,14 +112,14 @@ export async function ProductCard({
 							src={secondaryImage}
 							alt={`${product.name} - alternate view`}
 							fill
-							sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+							sizes="(max-width: 1024px) 50vw, 33vw"
 							className="object-cover opacity-0 transition-opacity duration-500 group-hover:opacity-100"
 						/>
 					))}
 			</div>
 			<div className="space-y-1">
-				<h3 className="text-base font-medium text-foreground">{product.name}</h3>
-				<p className="text-base font-semibold text-foreground">{priceDisplay}</p>
+				<h3 className="line-clamp-2 text-sm font-medium text-foreground sm:text-base">{product.name}</h3>
+				<p className="text-sm font-semibold text-foreground sm:text-base">{priceDisplay}</p>
 			</div>
 		</Link>
 	);

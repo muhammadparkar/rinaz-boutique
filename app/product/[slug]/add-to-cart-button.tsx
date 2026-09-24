@@ -10,8 +10,8 @@ import { TrustBadges } from "@/app/product/[slug]/trust-badges";
 import { useSelectedVariant } from "@/app/product/[slug]/use-selected-variant";
 import { VariantSelector } from "@/app/product/[slug]/variant-selector";
 import { useVolumePricing, VolumePricingDisplay, type VolumeTier } from "@/app/product/[slug]/volume-pricing";
+import { useFormatPrice } from "@/components/currency";
 import { useStoreConfig } from "@/components/store-config-provider";
-import { formatMoney } from "@/lib/money";
 import { displayPrice, priceRange } from "@/lib/pricing";
 import { trackAddToCart } from "@/lib/track";
 import { cn } from "@/lib/utils";
@@ -68,7 +68,8 @@ export function AddToCartButton({
 	volumePricingTiers = [],
 	restockNotificationsEnabled = false,
 }: AddToCartButtonProps) {
-	const { currency, locale, taxBehavior } = useStoreConfig();
+	const { taxBehavior } = useStoreConfig();
+	const formatPrice = useFormatPrice();
 	const [quantity, setQuantity] = useState(1);
 	const { items, openCart, dispatch, syncCart, reconcile, startMutation } = useCart();
 
@@ -93,15 +94,15 @@ export function AddToCartButton({
 		if (!selectedVariant) return "Select options";
 		if (isOutOfStock) return "Out of stock";
 		if (totalPrice) {
-			return `Add to Cart — ${formatMoney({ amount: totalPrice, currency, locale })}`;
+			return `Add to Cart — ${formatPrice(totalPrice)}`;
 		}
 		return "Add to Cart";
-	}, [selectedVariant, isOutOfStock, totalPrice, locale, currency]);
+	}, [selectedVariant, isOutOfStock, totalPrice, formatPrice]);
 
 	// Headline price. For the selected variant we show its own price (and the struck-through
 	// list price when it's on sale). Before a variant is picked we fall back to a range.
 	const priceInfo = useMemo(() => {
-		const fmt = (amount: bigint) => formatMoney({ amount, currency, locale });
+		const fmt = (amount: bigint) => formatPrice(amount);
 
 		if (selectedVariant) {
 			const price = BigInt(displayPrice(selectedVariant, taxBehavior));
@@ -123,15 +124,15 @@ export function AddToCartButton({
 			compareAt: null,
 			discountPercent: null,
 		};
-	}, [selectedVariant, variants, locale, currency, taxBehavior]);
+	}, [selectedVariant, variants, formatPrice, taxBehavior]);
 
 	// EU Omnibus: when the variant is discounted, show the lowest price recorded in the last 30 days.
 	const omnibusPrice = useMemo(() => {
 		if (!selectedVariant || !priceInfo.compareAt) return null;
 		const lowest = displayPrice(selectedVariant, taxBehavior, "omnibusPrice");
 		if (!lowest) return null;
-		return formatMoney({ amount: BigInt(lowest), currency, locale });
-	}, [selectedVariant, priceInfo.compareAt, locale, currency, taxBehavior]);
+		return formatPrice(BigInt(lowest));
+	}, [selectedVariant, priceInfo.compareAt, formatPrice, taxBehavior]);
 
 	// Stock availability. null stock means it isn't tracked (treated as in stock).
 	const stockStatus = useMemo(() => {
@@ -255,7 +256,11 @@ export function AddToCartButton({
 			{isOutOfStock && restockNotificationsEnabled && selectedVariant ? (
 				<RestockNotify productVariantId={selectedVariant.id} productName={product.name} />
 			) : (
-				<form onSubmit={handleSubmit}>
+				// Below lg the buy button docks to the bottom edge while the purchase panel is on screen.
+				<form
+					onSubmit={handleSubmit}
+					className="sticky bottom-0 z-30 -mx-4 border-t border-border bg-background/95 px-4 py-3 backdrop-blur-md sm:-mx-6 sm:px-6 lg:static lg:mx-0 lg:border-0 lg:bg-transparent lg:p-0 lg:backdrop-blur-none"
+				>
 					<button
 						type="submit"
 						disabled={!selectedVariant || isOutOfStock}

@@ -1,30 +1,16 @@
-import { Commerce } from "commerce-kit";
 import { cacheLife } from "next/cache";
 import { try_ } from "safe-try";
-import { invariant } from "@/lib/invariant";
+import { mockCommerce } from "@/lib/mock-store";
 
-// Override the API host (defaults to yns.store / yns.cx by key prefix). Useful for
-// pointing at a dev deployment, e.g. YNS_API_URL=https://dev.axelgrubba.com
-const endpoint = process.env.YNS_API_URL || undefined;
-
-// Fail loudly at boot — without the key every SDK call surfaces as an opaque API error.
-invariant(
-	process.env.YNS_API_KEY,
-	"Missing YNS_API_KEY environment variable. Add it to .env.local (see .env.example).",
-);
-
-export const commerce = Commerce({
-	token: process.env.YNS_API_KEY,
-	endpoint,
-});
+// No backend: every call is served by the local catalog in lib/mock-store.ts.
+export const commerce = mockCommerce;
 
 // Plain "use cache" (not "remote") so store settings can be part of the static
 // shell — remote-cached entries defer to request time and block prerendering
 // for everything that depends on them (metadata, <html lang>, nav links).
-export const meGetCached = async (token?: string) => {
+export const meGetCached = async (_token?: string) => {
 	"use cache";
 
-	const commerce = Commerce({ token, endpoint });
 	return commerce.meGet();
 };
 

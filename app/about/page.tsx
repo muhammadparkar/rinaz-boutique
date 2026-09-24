@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { cacheLife } from "next/cache";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { getStoreSeo, meGetCached } from "@/lib/commerce";
 import { JsonLdScript } from "@/lib/json-ld";
 
@@ -68,41 +70,22 @@ export default async function AboutPage() {
 			{/* Story */}
 			<div className="space-y-12">
 				<section>
-					<h2 className="text-2xl font-medium tracking-tight mb-4">Our Story</h2>
-					<div className="space-y-4 text-muted-foreground leading-relaxed">
-						<p>
-							We believe in the power of thoughtful design. Every product in our collection is carefully
-							selected to bring quality, beauty, and functionality into your everyday life.
-						</p>
-						<p>
-							Our commitment to craftsmanship means we partner with makers who share our values — those who
-							prioritize sustainable materials, ethical production, and timeless design over fleeting trends.
-						</p>
-					</div>
+					<h2 className="text-2xl font-medium tracking-tight mb-4">Simple. Memorable. Meaningful.</h2>
+					<p className="text-muted-foreground leading-relaxed">
+						Every curve of the RINAZ mark is rooted in modesty, craftsmanship, and cultural pride.
+					</p>
 				</section>
 
+				<AboutList title="The Story Behind the Icon" items={monogram} />
+				<AboutList title="The 4 Pillars of RINAZ" items={pillars} />
+
 				<section>
-					<h2 className="text-2xl font-medium tracking-tight mb-4">What We Stand For</h2>
-					<div className="grid gap-6 sm:grid-cols-3">
-						<div>
-							<h3 className="text-base font-medium text-foreground">Quality first</h3>
-							<p className="mt-2 text-sm text-muted-foreground leading-relaxed">
-								Durable, well-made products we are proud to stand behind.
-							</p>
-						</div>
-						<div>
-							<h3 className="text-base font-medium text-foreground">Thoughtful design</h3>
-							<p className="mt-2 text-sm text-muted-foreground leading-relaxed">
-								Considered details that make everyday moments better.
-							</p>
-						</div>
-						<div>
-							<h3 className="text-base font-medium text-foreground">Honest service</h3>
-							<p className="mt-2 text-sm text-muted-foreground leading-relaxed">
-								Real people, ready to help before and after your order.
-							</p>
-						</div>
-					</div>
+					<h2 className="text-2xl font-medium tracking-tight mb-4">Atelier Savoir-Faire</h2>
+					<p className="mb-6 text-muted-foreground leading-relaxed">
+						480 GSM Japanese double-weave pure silk developed in the Bishu district of Japan, bonded with
+						Italian cupro silk and secured with laser-etched palladium titanium clasps.
+					</p>
+					<AboutGrid items={savoirFaire} />
 				</section>
 			</div>
 
@@ -110,25 +93,94 @@ export default async function AboutPage() {
 			<div className="mt-16 rounded-lg border border-border bg-secondary/30 p-8 text-center">
 				<h2 className="text-2xl font-medium tracking-tight">Want to learn more?</h2>
 				<p className="mt-2 text-muted-foreground">
-					Explore our products or get in touch — we would love to hear from you.
+					Explore the collections or book a private consultation with our styling concierge.
 				</p>
 				<div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center">
-					<Link
-						href="/products"
-						className="inline-flex h-11 items-center justify-center rounded-full bg-foreground px-8 font-medium text-background transition-all hover:bg-foreground/90"
-					>
-						Shop products
-					</Link>
+					<Button asChild size="lg" className="h-11 rounded-full px-8">
+						<Link href="/products">Shop collections</Link>
+					</Button>
 					{contactFormEnabled && (
-						<Link
-							href="/contact"
-							className="inline-flex h-11 items-center justify-center rounded-full border border-border px-8 font-medium text-foreground transition-colors hover:bg-secondary"
-						>
-							Contact us
-						</Link>
+						<Button asChild size="lg" variant="outline" className="h-11 rounded-full px-8">
+							<Link href="/contact">Book a consultation</Link>
+						</Button>
 					)}
 				</div>
 			</div>
 		</div>
+	);
+}
+
+const monogram = [
+	{
+		title: "Cultural Form",
+		body: 'The letter "R" sculpted with the flowing curve of a modest silk drape and hijab, representing dignity and heritage.',
+	},
+	{
+		title: "Modern Sparkle",
+		body: "A 4-point diamond star denoting modern ambition, brilliance, certified 18K gold purity, and luminous beauty.",
+	},
+	{
+		title: "Elegance & Grace",
+		body: "The crown: a harmonious unity of cultural identity and contemporary haute couture fashion that feels elevated across London and the Gulf.",
+	},
+];
+
+const pillars = [
+	{
+		title: "Cultural Respect",
+		body: "Honoring Islamic modest heritage and South Asian craft traditions with graceful contemporary refinement.",
+	},
+	{
+		title: "Premium Craftsmanship",
+		body: "100+ hours of artisan needlework, certified 18K solid gold, VVS1 diamonds, and pure Korean silks.",
+	},
+	{
+		title: "Timeless Beauty",
+		body: "Silhouettes designed to transcend fleeting seasons and become treasured generational heirlooms.",
+	},
+	{
+		title: "Empowered Style",
+		body: "Celebrating confidence and modesty through structured drapes, fluid silk falls, and majestic fits.",
+	},
+];
+
+const savoirFaire = [
+	{
+		title: "Zero-Waste Patterning",
+		body: "Mathematical pattern layouts achieving 94% textile utilization, converting selvedge edges into kinetic architectural drapes.",
+	},
+	{
+		title: "Numbered Editions",
+		body: "Never mass-produced. Each piece carries an embossed gold plaque indicating its unique edition number and hand-signed master cutter certificate.",
+	},
+	{
+		title: "White-Glove Delivery",
+		body: "Custom archival presentation boxes with velvet dust bags delivered via insured DHL Express worldwide courier.",
+	},
+];
+
+type AboutItem = { title: string; body: string };
+
+function AboutGrid({ items }: { items: AboutItem[] }) {
+	return (
+		<div className="grid gap-6 sm:grid-cols-2">
+			{items.map((item) => (
+				<Card key={item.title}>
+					<CardHeader>
+						<CardTitle className="text-base font-medium">{item.title}</CardTitle>
+						<CardDescription className="leading-relaxed">{item.body}</CardDescription>
+					</CardHeader>
+				</Card>
+			))}
+		</div>
+	);
+}
+
+function AboutList({ title, items }: { title: string; items: AboutItem[] }) {
+	return (
+		<section>
+			<h2 className="text-2xl font-medium tracking-tight mb-6">{title}</h2>
+			<AboutGrid items={items} />
+		</section>
 	);
 }
