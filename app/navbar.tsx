@@ -1,6 +1,7 @@
 "use client";
 
 import { Menu, Monitor, Moon, Sun } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
@@ -29,7 +30,23 @@ export function Navbar({ links }: { links: NavLink[] }) {
 			</SheetTrigger>
 			<SheetContent side="left" className="gap-0 overflow-y-auto p-6">
 				<SheetTitle className="sr-only">Menu</SheetTitle>
-				<nav className="mt-10 flex flex-col gap-1">
+				<div className="pb-6 border-b border-border">
+					<Link
+						href="/"
+						onClick={() => setOpen(false)}
+						className="inline-flex items-center"
+						aria-label="RINAZ STUDIO Home"
+					>
+						<Image
+							src="/brand/side-side-logo-v2.png"
+							alt="RINAZ STUDIO"
+							width={785}
+							height={167}
+							className="h-9 w-auto object-contain"
+						/>
+					</Link>
+				</div>
+				<nav className="mt-6 flex flex-col gap-1">
 					{links.map((link) => (
 						<Link
 							key={link.href}

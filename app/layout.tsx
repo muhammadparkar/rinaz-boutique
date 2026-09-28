@@ -3,8 +3,8 @@ import "@/app/globals.css";
 import { UserRound } from "lucide-react";
 import type { Metadata } from "next";
 import { cacheLife } from "next/cache";
-import { Bodoni_Moda, Geist, Geist_Mono } from "next/font/google";
-import { getImageProps } from "next/image";
+import { Cinzel, Geist_Mono, Montserrat } from "next/font/google";
+import Image, { getImageProps } from "next/image";
 import Link from "next/link";
 import { ThemeProvider } from "next-themes";
 import { Suspense } from "react";
@@ -27,16 +27,15 @@ import { getCartCookieJson } from "@/lib/cookies";
 import { StoreJsonLd } from "@/lib/json-ld";
 import { getStoreConfig } from "@/lib/store-config";
 
-const geistSans = Geist({
-	variable: "--font-geist-sans",
+const montserrat = Montserrat({
+	variable: "--font-montserrat",
 	subsets: ["latin"],
 });
 
-// Display serif for editorial headlines; the hero headline paints above the fold, so it preloads.
-const bodoni = Bodoni_Moda({
-	variable: "--font-bodoni",
+// Display serif for editorial headlines (Cinzel); paints above the fold, so it preloads.
+const cinzel = Cinzel({
+	variable: "--font-cinzel",
 	subsets: ["latin"],
-	style: ["normal", "italic"],
 });
 
 const geistMono = Geist_Mono({
@@ -162,12 +161,21 @@ async function CartProviderWrapper({ children }: { children: React.ReactNode }) 
 					<header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-md">
 						<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 							<div className="relative flex items-center justify-between h-16">
-								<div className="flex items-center gap-2">
+								<div className="flex items-center gap-3">
 									<Link
 										href="/"
-										className="font-display text-base tracking-[0.18em] whitespace-nowrap sm:text-xl sm:tracking-[0.28em]"
+										className="group flex items-center transition-opacity hover:opacity-90"
+										aria-label="RINAZ STUDIO Home"
 									>
-										RINAZ STUDIO
+										<Image
+											src="/brand/text-logo.png"
+											alt="RINAZ STUDIO"
+											width={457}
+											height={103}
+											sizes="(min-width: 640px) 140px, 120px"
+											priority
+											className="h-6 w-auto object-contain sm:h-7"
+										/>
 									</Link>
 									<Navbar links={navLinks} />
 								</div>
@@ -240,7 +248,7 @@ export default async function RootLayout({
 	return (
 		// suppressHydrationWarning: next-themes sets the theme class on <html> before hydration.
 		<html lang={lang} suppressHydrationWarning>
-			<body className={`${geistSans.variable} ${geistMono.variable} ${bodoni.variable} antialiased`}>
+			<body className={`${montserrat.variable} ${cinzel.variable} ${geistMono.variable} antialiased`}>
 				{/* DO NOT REMOVE / REORDER: required for GDPR + GTM Consent Mode v2. Must stay at top of <body>. */}
 				<Suspense>
 					<CookieConsent />

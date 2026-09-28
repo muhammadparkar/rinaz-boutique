@@ -1,10 +1,30 @@
-<svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 370 370">
-  <linearGradient id="a" gradientUnits="userSpaceOnUse" x1="185" x2="185" y1="0" y2="370">
-    <stop offset=".35"/>
-    <stop offset="1" stop-color="#555"/>
-  </linearGradient>
-  <rect fill="url(#a)" height="370" rx="76" width="370"/>
-  <g stroke="#fff" stroke-width="32">
-    <path d="M119 60v110M251 60v110M239 154H130"/>
+<svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="rinazGoldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F3E5AB"/>
+      <stop offset="25%" stop-color="#D4AF37"/>
+      <stop offset="60%" stop-color="#AA7C11"/>
+      <stop offset="85%" stop-color="#D4AF37"/>
+      <stop offset="100%" stop-color="#ECD599"/>
+    </linearGradient>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#141414"/>
+      <stop offset="100%" stop-color="#000000"/>
+    </linearGradient>
+    <filter id="goldGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="6" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+  <!-- Background -->
+  <rect width="512" height="512" rx="104" fill="url(#bgGrad)"/>
+  <rect width="504" height="504" x="4" y="4" rx="100" stroke="#D4AF37" stroke-width="2" stroke-opacity="0.35"/>
+  
+  <!-- Monogram R in Cinzel / Royal Serif Aesthetic -->
+  <g transform="translate(136, 106)" fill="url(#rinazGoldGrad)">
+    <!-- Main Stem -->
+    <path d="M20 20 H74 V280 H20 V296 H118 V280 H74 V170 H130 C195 170 236 142 236 86 C236 30 195 2 130 2 H20 V20 Z M74 38 H126 C168 38 188 56 188 86 C188 116 168 134 126 134 H74 V38 Z"/>
+    <!-- Flowing Leg & Tail -->
+    <path d="M120 156 L180 270 C194 294 208 300 236 300 H244 V282 C228 282 216 276 204 254 L150 152 C138 155 128 156 120 156 Z"/>
   </g>
 </svg>
