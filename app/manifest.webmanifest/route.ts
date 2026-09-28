@@ -4,7 +4,7 @@ import { getStoreFaviconUrl, meGetCached } from "@/lib/commerce";
 export async function GET() {
 	const me = await meGetCached();
 	const storeName = me.store.name || "Your Next Store";
-	const faviconUrl = getStoreFaviconUrl(me.store.settings) ?? "/logo.svg";
+	const faviconUrl = getStoreFaviconUrl(me.store.settings) ?? "/brand/rinaz-R-v3.png";
 
 	const manifest = {
 		name: storeName,

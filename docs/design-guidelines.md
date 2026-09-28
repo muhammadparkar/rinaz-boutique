@@ -32,15 +32,15 @@
 
 ### Design System Token Mappings (`app/globals.css`)
 
-#### Light Theme (Warm White & Black)
-- `--background`: `#FFF8E7` (Warm White)
+#### Light Theme (Clean White & Black)
+- `--background`: `#FFFFFF` (Pure White)
 - `--foreground`: `#000000` (Black)
 - `--card`: `#FFFFFF`
 - `--card-foreground`: `#000000`
 - `--popover`: `#FFFFFF`
 - `--popover-foreground`: `#000000`
 - `--primary`: `#000000` (Black)
-- `--primary-foreground`: `#FFF8E7` (Warm White)
+- `--primary-foreground`: `#FFFFFF` (White)
 - `--secondary`: `#F4ECD8` (Tinted warm surface)
 - `--secondary-foreground`: `#000000`
 - `--muted`: `#F4ECD8`
@@ -94,7 +94,7 @@
 
 1. **Monogram Icon (`R`):**
    - Classical Roman serif letterform with flowing calligraphic leg.
-   - Used for app icon, favicon (`public/logo.svg`), seals, jewelry clasps, clothing tags, and avatars.
+   - Used for app icon, favicon (`public/brand/rinaz-R-v3.png`), seals, jewelry clasps, clothing tags, and avatars.
 2. **Horizontal Wordmark Lockup:**
    - Circular Monogram `[ R ]` + `RINAZ` (Cinzel) stacked with `STUDIO` (Montserrat).
    - Displayed in the sticky navigation bar and footer.

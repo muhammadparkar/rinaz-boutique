@@ -38,10 +38,10 @@ export function Navbar({ links }: { links: NavLink[] }) {
 						aria-label="RINAZ STUDIO Home"
 					>
 						<Image
-							src="/brand/side-side-logo-v2.png"
+							src="/brand/rinaz-side-side-v3.png"
 							alt="RINAZ STUDIO"
-							width={785}
-							height={167}
+							width={2172}
+							height={724}
 							className="h-9 w-auto object-contain"
 						/>
 					</Link>

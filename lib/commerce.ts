@@ -36,7 +36,7 @@ export function getStoreFaviconUrl(
 	const faviconUrl =
 		settings?.favicon?.imageUrl ??
 		(typeof settings?.logo === "string" ? settings.logo : settings?.logo?.imageUrl) ??
-		null;
+		"/brand/rinaz-R-v3.png";
 
 	return faviconUrl;
 }

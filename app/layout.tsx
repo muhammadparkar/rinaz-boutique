@@ -51,7 +51,7 @@ async function getStoreMetadata(): Promise<Metadata> {
 	const me = await meGetCached();
 	const storeName = me.store.name || "Your Next Store";
 	const storeDescription = me.store.settings?.storeDescription || "Your next e-commerce store";
-	const faviconUrl = getStoreFaviconUrl(me.store.settings) ?? "/logo.svg";
+	const faviconUrl = getStoreFaviconUrl(me.store.settings) ?? "/brand/rinaz-R-v3.png";
 	// The platform favicon is whatever was uploaded (here a 500x500 PNG). Route it through
 	// the image optimizer so browsers fetch a few KB from this origin, not the blob host.
 	const iconUrl = (size: number) =>
@@ -168,13 +168,13 @@ async function CartProviderWrapper({ children }: { children: React.ReactNode }) 
 										aria-label="RINAZ STUDIO Home"
 									>
 										<Image
-											src="/brand/text-logo.png"
+											src="/brand/rinaz-v3.png"
 											alt="RINAZ STUDIO"
-											width={457}
-											height={103}
-											sizes="(min-width: 640px) 140px, 120px"
+											width={1220}
+											height={361}
+											sizes="(min-width: 640px) 120px, 100px"
 											priority
-											className="h-6 w-auto object-contain sm:h-7"
+											className="h-7 w-auto object-contain sm:h-8"
 										/>
 									</Link>
 									<Navbar links={navLinks} />

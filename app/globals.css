@@ -50,11 +50,11 @@
 	--popover: #ffffff;
 	--popover-foreground: #000000;
 	--primary: #000000;
-	--primary-foreground: #fff8e7;
+	--primary-foreground: #ffffff;
 	--secondary: #f4ecd8;
 	--secondary-foreground: #000000;
 	--muted: #f4ecd8;
-	/* The tint is the design; this lightness clears AA on --muted/--secondary (#f4ecd8) and --background (#fff8e7). */
+	/* The tint is the design; this lightness clears AA on --muted/--secondary (#f4ecd8) and --background (#ffffff). */
 	--muted-foreground: #5c5544;
 	--accent: #f4ecd8;
 	--accent-foreground: #000000;
@@ -62,7 +62,7 @@
 	--border: #e8deca;
 	--input: #e8deca;
 	--ring: #b8860b;
-	--background: #fff8e7;
+	--background: #ffffff;
 	--foreground: #000000;
 	--gold: #b8860b;
 	--gold-bright: #ffd700;

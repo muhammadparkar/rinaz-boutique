@@ -4,7 +4,7 @@ import { getStoreFaviconUrl, meGetCached } from "@/lib/commerce";
 
 export async function GET() {
 	const me = await meGetCached();
-	const faviconUrl = getStoreFaviconUrl(me.store.settings) ?? "/logo.svg";
+	const faviconUrl = getStoreFaviconUrl(me.store.settings) ?? "/brand/rinaz-R-v3.png";
 
 	// Same 64px optimizer URL as the <link rel="icon"> in app/layout.tsx: a few KB from
 	// this origin instead of a redirect out to the blob host.
