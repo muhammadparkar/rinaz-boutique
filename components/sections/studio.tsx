@@ -5,9 +5,17 @@ import { Price } from "@/components/currency";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
+type SectionProps = {
+	title?: string;
+	text?: string;
+	image?: React.ReactNode;
+	ctaLabel?: string;
+	ctaHref?: string;
+};
+
 const photo = (id: string) => `https://images.unsplash.com/photo-${id}?w=1200&q=80&auto=format&fit=crop`;
 
-const categoryTiles = [
+export const categoryTiles = [
 	{
 		name: "Haute Abayas",
 		subtitle: "Pure Silk & Champagne Gold Needlework",
@@ -34,24 +42,38 @@ const categoryTiles = [
 	},
 ];
 
-export function CategoryTiles() {
+export function CategoryTiles({
+	title = "Explore Our World of Style",
+	text = "Handcrafted for Unforgettable Entrances",
+	tiles = categoryTiles,
+	renderImage,
+}: {
+	title?: string;
+	text?: string;
+	tiles?: typeof categoryTiles;
+	renderImage?: (src: string, alt: string) => React.ReactNode;
+} = {}) {
 	return (
 		<section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-24">
 			<div className="mb-8 text-center sm:mb-12">
-				<h2 className="text-3xl sm:text-4xl font-medium tracking-tight">Explore Our World of Style</h2>
-				<p className="mt-3 italic text-muted-foreground">Handcrafted for Unforgettable Entrances</p>
+				<h2 className="text-3xl sm:text-4xl font-medium tracking-tight">{title}</h2>
+				<p className="mt-3 italic text-muted-foreground">{text}</p>
 			</div>
 			<div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
-				{categoryTiles.map((tile) => (
+				{tiles.map((tile) => (
 					<Card key={tile.href} className="group relative gap-0 overflow-hidden rounded-2xl border-0 py-0">
 						<Link href={tile.href} className="relative block aspect-3/4 bg-secondary">
-							<Image
-								src={tile.image}
-								alt=""
-								fill
-								sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
-								className="object-cover transition-transform duration-500 group-hover:scale-105"
-							/>
+							{renderImage ? (
+								renderImage(tile.image, tile.name)
+							) : (
+								<Image
+									src={tile.image}
+									alt=""
+									fill
+									sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
+									className="object-cover transition-transform duration-500 group-hover:scale-105"
+								/>
+							)}
 							<span className="absolute inset-0 bg-linear-to-t from-black/75 via-black/10 to-transparent" />
 							<CardHeader className="absolute inset-x-0 bottom-0 gap-1 p-3 text-white sm:p-5">
 								<CardTitle className="text-xs font-medium tracking-wide uppercase sm:text-lg">
@@ -70,26 +92,38 @@ export function CategoryTiles() {
 	);
 }
 
-export function GoldenHourFeature() {
+export function GoldenHourFeature({
+	title,
+	text,
+	image,
+	ctaLabel = "SHOP THE CAPSULE",
+	ctaHref = "/collection/golden-hour",
+}: SectionProps = {}) {
 	return (
 		<section className="bg-foreground text-background">
 			<div className="max-w-7xl mx-auto grid items-center gap-8 px-4 py-12 sm:gap-10 sm:px-6 sm:py-24 lg:grid-cols-2 lg:px-8">
 				<div className="relative aspect-square overflow-hidden rounded-2xl sm:aspect-4/5 lg:order-2">
-					<Image
-						src={photo("1733470324488-d0e10d014d80")}
-						alt="Bridal couture from The Golden Hour Collection"
-						fill
-						sizes="(min-width: 1024px) 50vw, 100vw"
-						className="object-cover"
-					/>
+					{image ?? (
+						<Image
+							src={photo("1733470324488-d0e10d014d80")}
+							alt="Bridal couture from The Golden Hour Collection"
+							fill
+							sizes="(min-width: 1024px) 50vw, 100vw"
+							className="object-cover"
+						/>
+					)}
 				</div>
 				<div>
 					<h2 className="text-3xl sm:text-4xl lg:text-5xl font-medium tracking-tight">
-						<span className="italic font-normal">The Golden Hour</span> Collection.
+						{title ?? (
+							<>
+								<span className="italic font-normal">The Golden Hour</span> Collection.
+							</>
+						)}
 					</h2>
 					<p className="mt-6 max-w-md text-lg leading-relaxed text-background/70">
-						Sculpted in pure double-faced georgette silk and metallic gold zardozi for intimate ceremonies and
-						receptions.
+						{text ??
+							"Sculpted in pure double-faced georgette silk and metallic gold zardozi for intimate ceremonies and receptions."}
 					</p>
 					<div className="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center">
 						<Button
@@ -97,8 +131,8 @@ export function GoldenHourFeature() {
 							size="lg"
 							className="h-12 rounded-full bg-background px-8 tracking-widest text-foreground hover:bg-background/90"
 						>
-							<Link href="/collection/golden-hour">
-								SHOP THE CAPSULE
+							<Link href={ctaHref}>
+								{ctaLabel}
 								<ArrowRightIcon />
 							</Link>
 						</Button>
@@ -133,19 +167,19 @@ const pillars = [
 	},
 ];
 
-export function TrustPillars() {
+export function TrustPillars({ text }: { text?: string } = {}) {
 	return (
 		<section className="border-y border-border">
 			<div className="max-w-7xl mx-auto grid grid-cols-2 gap-x-4 gap-y-8 px-4 py-10 sm:gap-10 sm:px-6 sm:py-14 lg:grid-cols-4 lg:px-8">
-				{pillars.map((pillar) => (
+				{pillars.map((pillar, index) => (
 					<Card
-						key={pillar.title}
+						key={text?.split("\n")[index] ?? pillar.title}
 						className="items-center border-0 bg-transparent py-0 text-center shadow-none"
 					>
 						<CardHeader className="w-full justify-items-center gap-3 px-0">
 							<pillar.icon className="h-6 w-6 text-muted-foreground" />
 							<CardTitle className="text-xs font-medium tracking-wide uppercase sm:text-sm">
-								{pillar.title}
+								{text?.split("\n")[index] ?? pillar.title}
 							</CardTitle>
 							<CardDescription className="text-xs leading-relaxed sm:text-sm">
 								{pillar.description}
@@ -176,28 +210,35 @@ const lookPieces = [
 	},
 ];
 
-export function CompleteTheLook() {
+export function CompleteTheLook({
+	title = "Curated Adornments & Pairings",
+	text,
+	image,
+	pieces = lookPieces,
+}: SectionProps & { pieces?: typeof lookPieces } = {}) {
 	return (
 		<section className="max-w-7xl mx-auto grid items-center gap-8 px-4 py-12 sm:gap-10 sm:px-6 sm:py-24 lg:grid-cols-2 lg:px-8">
 			<div className="relative aspect-square overflow-hidden rounded-2xl bg-secondary sm:aspect-4/5">
-				<Image
-					src={photo("1736342182642-e2042084f47c")}
-					alt="The signature Blush Silk Open Abaya styled with fine jewelry"
-					fill
-					sizes="(min-width: 1024px) 50vw, 100vw"
-					className="object-cover"
-				/>
+				{image ?? (
+					<Image
+						src={photo("1736342182642-e2042084f47c")}
+						alt="The signature Blush Silk Open Abaya styled with fine jewelry"
+						fill
+						sizes="(min-width: 1024px) 50vw, 100vw"
+						className="object-cover"
+					/>
+				)}
 			</div>
 			<div>
-				<h2 className="text-3xl sm:text-4xl font-medium tracking-tight">Curated Adornments & Pairings</h2>
+				<h2 className="text-3xl sm:text-4xl font-medium tracking-tight">{title}</h2>
 				<p className="mt-4 text-lg leading-relaxed text-muted-foreground">
-					Style the signature Blush Silk Open Abaya with hallmarked 18K solid gold and South Sea pearls for an
-					effortless, elevated entrance.
+					{text ??
+						"Style the signature Blush Silk Open Abaya with hallmarked 18K solid gold and South Sea pearls for an effortless, elevated entrance."}
 				</p>
 				<Card className="mt-8 gap-0 py-2">
 					<CardContent className="px-4">
 						<ol className="divide-y divide-border">
-							{lookPieces.map((piece, index) => (
+							{pieces.map((piece, index) => (
 								<li key={piece.href}>
 									<Link
 										href={piece.href}
@@ -221,7 +262,7 @@ export function CompleteTheLook() {
 				<p className="mt-4 text-sm text-muted-foreground">
 					Complete look:{" "}
 					<span className="font-medium text-foreground">
-						<Price amount={lookPieces.reduce((sum, p) => sum + p.price, 0)} />
+						<Price amount={pieces.reduce((sum, p) => sum + p.price, 0)} />
 					</span>
 				</p>
 			</div>
@@ -242,18 +283,23 @@ const services = [
 	"Custom Bridal Sizing & Hem Tailoring",
 ];
 
-export function BridalSanctuary() {
+export function BridalSanctuary({
+	title = "An intimate private bridal consultation.",
+	text,
+	ctaLabel = "BOOK BRIDAL APPOINTMENT",
+	ctaHref = "/contact",
+}: SectionProps = {}) {
 	return (
 		<section id="sanctuary" className="scroll-mt-20 bg-secondary/40">
 			<div className="max-w-7xl mx-auto grid gap-10 px-4 py-12 sm:gap-12 sm:px-6 sm:py-24 lg:grid-cols-2 lg:px-8">
 				<div>
-					<h2 className="text-3xl sm:text-4xl font-medium tracking-tight">
-						An intimate private bridal consultation.
-					</h2>
-					<p className="mt-3 italic text-muted-foreground">Custom fittings tailored for your sacred day</p>
+					<h2 className="text-3xl sm:text-4xl font-medium tracking-tight">{title}</h2>
+					<p className="mt-3 italic text-muted-foreground">
+						{text?.split("\n")[0] ?? "Custom fittings tailored for your sacred day"}
+					</p>
 					<p className="mt-6 text-lg leading-relaxed text-muted-foreground">
-						Step inside the RINAZ Studio bridal sanctuary. From bespoke made-to-measure Anarkalis to private
-						18K fine jewelry styling, our appointments ensure an unforgettable wedding experience.
+						{text?.split("\n").slice(1).join("\n") ??
+							"Step inside the RINAZ Studio bridal sanctuary. From bespoke made-to-measure Anarkalis to private 18K fine jewelry styling, our appointments ensure an unforgettable wedding experience."}
 					</p>
 					<ul className="mt-6 space-y-2">
 						{services.map((service) => (
@@ -266,8 +312,8 @@ export function BridalSanctuary() {
 						))}
 					</ul>
 					<Button asChild size="lg" className="mt-10 h-12 rounded-full px-8 tracking-widest">
-						<Link href="/contact">
-							BOOK BRIDAL APPOINTMENT
+						<Link href={ctaHref}>
+							{ctaLabel}
 							<ArrowRightIcon />
 						</Link>
 					</Button>

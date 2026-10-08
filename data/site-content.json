@@ -1,0 +1,343 @@
+{
+	"version": 9,
+	"updatedAt": "2026-09-28T12:58:05.893Z",
+	"globals": {
+		"announcementBar": {
+			"enabled": false,
+			"text": "✦ Complimentary Worldwide Insured Delivery On Orders Over $400 ✦",
+			"linkUrl": "/collection/new-in"
+		},
+		"contactInfo": {
+			"phone": "+44 20 7946 0912",
+			"email": "concierge@rinazboutique.com",
+			"address": "Knightsbridge & Bond Street, London"
+		},
+		"socialLinks": {
+			"instagram": "https://instagram.com",
+			"facebook": "https://facebook.com",
+			"pinterest": "https://pinterest.com"
+		}
+	},
+	"pages": {
+		"home": {
+			"id": "home",
+			"title": "Home",
+			"slug": "/",
+			"sections": [
+				{
+					"id": "hero-1",
+					"type": "hero",
+					"title": "Campaign Carousel",
+					"enabled": true,
+					"slides": [
+						{
+							"id": "slide-new-in",
+							"title": "Timeless Style.",
+							"accent": "Modern Luxury",
+							"copy": "Handcrafted luxury Abayas, certified 18K solid gold jewelry, and bespoke Pakistani bridal couture created for modern poise.",
+							"cta": {
+								"label": "SHOP NEW IN",
+								"href": "/collection/new-in"
+							},
+							"secondary": {
+								"label": "BOOK PRIVATE SALON",
+								"href": "/#sanctuary"
+							},
+							"images": [
+								{
+									"src": "https://images.unsplash.com/photo-1724412665971-114bd351a42d?w=1400&q=80&auto=format&fit=crop",
+									"alt": "Black abaya with champagne gold embroidery"
+								},
+								{
+									"src": "https://images.unsplash.com/photo-1760083545495-b297b1690672?w=1400&q=80&auto=format&fit=crop",
+									"alt": "Beige open abaya with tonal needlework"
+								}
+							]
+						},
+						{
+							"id": "slide-golden-hour",
+							"title": "The Golden Hour",
+							"accent": "Collection",
+							"copy": "Sculpted in pure double-faced georgette silk and metallic gold zardozi for intimate ceremonies and receptions.",
+							"cta": {
+								"label": "SHOP THE CAPSULE",
+								"href": "/collection/golden-hour"
+							},
+							"secondary": {
+								"label": "BRIDAL PRET",
+								"href": "/collection/bridal-pret"
+							},
+							"images": [
+								{
+									"src": "https://images.unsplash.com/photo-1747847471517-952a3eb93a89?w=1400&q=80&auto=format&fit=crop",
+									"alt": "Bride in hand-embroidered Pakistani couture"
+								},
+								{
+									"src": "https://images.unsplash.com/photo-1733470324488-d0e10d014d80?w=1400&q=80&auto=format&fit=crop",
+									"alt": "Pastel formal ensemble beneath a floral arch"
+								}
+							]
+						},
+						{
+							"id": "slide-fine-jewelry",
+							"title": "18K Fine",
+							"accent": "Jewelry",
+							"copy": "Bridal diamonds and hallmarked solid gold, each piece delivered with a signed Certificate of Valuation.",
+							"cta": {
+								"label": "SHOP JEWELRY",
+								"href": "/category/fine-jewelry"
+							},
+							"secondary": {
+								"label": "THE TEARDROP PENDANT",
+								"href": "/product/the-gilded-teardrop-diamond-pendant"
+							},
+							"images": [
+								{
+									"src": "https://images.unsplash.com/photo-1773832190768-b4c4667ceeb4?w=1400&q=80&auto=format&fit=crop",
+									"alt": "Gold pendant set with diamonds"
+								},
+								{
+									"src": "https://images.unsplash.com/photo-1654699991520-aaaf4dd2608b?w=1400&q=80&auto=format&fit=crop",
+									"alt": "Strand of South Sea pearls"
+								}
+							]
+						}
+					]
+				},
+				{
+					"id": "category-tiles-1",
+					"type": "category-tiles",
+					"title": "Explore Our World of Style",
+					"subtitle": "Handcrafted for Unforgettable Entrances",
+					"enabled": true,
+					"cards": [
+						{
+							"id": "cat-1",
+							"title": "Haute Abayas",
+							"subtitle": "Pure Silk & Champagne Gold Needlework",
+							"linkUrl": "/category/haute-abayas",
+							"linkLabel": "VIEW COLLECTION",
+							"image": "https://images.unsplash.com/photo-1760083545495-b297b1690672?w=1400&q=80&auto=format&fit=crop"
+						},
+						{
+							"id": "cat-2",
+							"title": "18K Fine Jewelry",
+							"subtitle": "Bridal Diamonds & Hallmarked Gold",
+							"linkUrl": "/category/fine-jewelry",
+							"linkLabel": "VIEW COLLECTION",
+							"image": "https://images.unsplash.com/photo-1773832190768-b4c4667ceeb4?w=1400&q=80&auto=format&fit=crop"
+						},
+						{
+							"id": "cat-3",
+							"title": "Pakistani Couture",
+							"subtitle": "Heirloom Bridal Anarkalis & Pret",
+							"linkUrl": "/category/pakistani-couture",
+							"linkLabel": "VIEW COLLECTION",
+							"image": "https://images.unsplash.com/photo-1747847471517-952a3eb93a89?w=1400&q=80&auto=format&fit=crop"
+						},
+						{
+							"id": "cat-4",
+							"title": "Evening Noir",
+							"subtitle": "Monochrome Reception Silhouettes",
+							"linkUrl": "/collection/evening-noir",
+							"linkLabel": "VIEW COLLECTION",
+							"image": "https://images.unsplash.com/photo-1772474528936-4f1187eb1611?w=1400&q=80&auto=format&fit=crop"
+						}
+					]
+				},
+				{
+					"id": "product-grid-1",
+					"type": "product-grid",
+					"title": "Best Sellers",
+					"subtitle": "Hand-curated silhouettes",
+					"content": "Our most coveted luxury silhouettes, certified 18K solid gold pendants, and heirloom Pakistani bridal couture.",
+					"enabled": true,
+					"settings": {
+						"limit": 6
+					}
+				},
+				{
+					"id": "golden-hour-feature-1",
+					"type": "featured-banner",
+					"badge": "",
+					"title": "The Golden Hour Collection.",
+					"subtitle": "Ceremonial Silk & Metallic Zardozi",
+					"content": "Sculpted in pure double-faced georgette silk and metallic gold zardozi for intimate ceremonies and receptions.",
+					"image": "https://images.unsplash.com/photo-1733470324488-d0e10d014d80?w=1400&q=80&auto=format&fit=crop",
+					"buttonText": "SHOP THE CAPSULE",
+					"buttonLink": "/collection/golden-hour",
+					"enabled": true,
+					"settings": {
+						"theme": "dark",
+						"layout": "split"
+					}
+				},
+				{
+					"id": "trust-pillars-1",
+					"type": "trust-pillars",
+					"title": "The RINAZ Promise",
+					"subtitle": "Standards of Haute Couture & Fine Jewelry",
+					"enabled": true,
+					"cards": [
+						{
+							"id": "pillar-1",
+							"title": "100% Certified Authentic",
+							"description": "Hallmarked 18K solid gold, VVS1 diamonds & pure Japanese silks with gemological valuation certificates.",
+							"badge": "ShieldCheck"
+						},
+						{
+							"id": "pillar-2",
+							"title": "DHL Express Worldwide",
+							"description": "Complimentary insured courier on orders over $400. Delivered within 2–3 business days.",
+							"badge": "Truck"
+						},
+						{
+							"id": "pillar-3",
+							"title": "14-Day Global Returns",
+							"description": "Complimentary return pickup from your doorstep with complete insurance protection.",
+							"badge": "RotateCcw"
+						},
+						{
+							"id": "pillar-4",
+							"title": "24/7 Styling Concierge",
+							"description": "Private styling advice, custom bridal measurements & bespoke order tracking anytime.",
+							"badge": "Clock"
+						}
+					]
+				},
+				{
+					"id": "complete-the-look-1",
+					"type": "complete-the-look",
+					"title": "Curated Adornments & Pairings",
+					"subtitle": "Effortless Elevated Styling",
+					"content": "Style the signature Blush Silk Open Abaya with hallmarked 18K solid gold and South Sea pearls for an effortless, elevated entrance.",
+					"image": "https://images.unsplash.com/photo-1736342182642-e2042084f47c?w=1400&q=80&auto=format&fit=crop",
+					"enabled": true,
+					"cards": [
+						{
+							"id": "look-1",
+							"title": "Blush Silk Embroidered Open Abaya",
+							"description": "$680.00",
+							"linkUrl": "/product/blush-silk-embroidered-open-abaya"
+						},
+						{
+							"id": "look-2",
+							"title": "The Gilded Teardrop Diamond Pendant",
+							"description": "$1,450.00",
+							"linkUrl": "/product/the-gilded-teardrop-diamond-pendant"
+						},
+						{
+							"id": "look-3",
+							"title": "Graceful Adornment Pearl & Gold Choker",
+							"description": "$980.00",
+							"linkUrl": "/product/graceful-adornment-pearl-gold-choker"
+						}
+					]
+				},
+				{
+					"id": "about-1",
+					"type": "about",
+					"title": "Simple. Memorable. Meaningful.",
+					"subtitle": "Modesty, Craftsmanship & Cultural Pride",
+					"content": "Every curve of the RINAZ mark is rooted in modesty, craftsmanship, and cultural pride. We honor Islamic modest heritage and South Asian craft traditions with graceful contemporary refinement.\n\nSilhouettes designed to transcend fleeting seasons and become treasured generational heirlooms.",
+					"enabled": true,
+					"settings": {
+						"theme": "light",
+						"layout": "center"
+					}
+				},
+				{
+					"id": "bridal-sanctuary-1",
+					"type": "bridal-sanctuary",
+					"title": "An intimate private bridal consultation.",
+					"subtitle": "Custom fittings tailored for your sacred day",
+					"content": "Step inside the RINAZ Studio bridal sanctuary. From bespoke made-to-measure Anarkalis to private 18K fine jewelry styling, our appointments ensure an unforgettable wedding experience.",
+					"buttonText": "BOOK BRIDAL APPOINTMENT",
+					"buttonLink": "/contact",
+					"enabled": true,
+					"cards": [
+						{
+							"id": "sanctuary-1",
+							"title": "London",
+							"description": "Knightsbridge & Bond Street (Mayfair)"
+						},
+						{
+							"id": "sanctuary-2",
+							"title": "Dubai",
+							"description": "Fashion Avenue & D3 Design District"
+						},
+						{
+							"id": "sanctuary-3",
+							"title": "Doha",
+							"description": "Private Suite"
+						},
+						{
+							"id": "sanctuary-4",
+							"title": "Lahore",
+							"description": "Gulberg Atelier"
+						}
+					]
+				},
+				{
+					"id": "newsletter-1",
+					"type": "newsletter",
+					"title": "Receive First Access to Runway Drops",
+					"subtitle": "The RINAZ Private Register",
+					"content": "Join our private client register to receive seasonal preview lookbooks, limited bridal pret releases, and private studio invitations.",
+					"buttonText": "REQUEST INVITATION",
+					"enabled": true,
+					"settings": {
+						"theme": "dark"
+					}
+				}
+			]
+		},
+		"about": {
+			"id": "about",
+			"title": "About Us",
+			"slug": "/about",
+			"sections": [
+				{
+					"id": "about-hero",
+					"type": "featured-banner",
+					"badge": "OUR ATELIER",
+					"title": "The Story of RINAZ Studio",
+					"subtitle": "Craftsmanship & Modest Elegance",
+					"content": "Born from an uncompromising dedication to couture needlework, precious metals, and modest grace.",
+					"image": "https://images.unsplash.com/photo-1747847471517-952a3eb93a89?w=1400&q=80&auto=format&fit=crop",
+					"buttonText": "EXPLORE COUTURE",
+					"buttonLink": "/category/pakistani-couture",
+					"enabled": true,
+					"settings": {
+						"theme": "light",
+						"layout": "split"
+					}
+				},
+				{
+					"id": "about-values",
+					"type": "cards-grid",
+					"title": "Our Guiding Values",
+					"subtitle": "Rooted in Culture & Distinction",
+					"enabled": true,
+					"cards": [
+						{
+							"id": "v-1",
+							"title": "Heritage Craft",
+							"description": "Honoring centuries-old zardozi, gota, and hand-embroidery traditions passed down through generations of master artisans."
+						},
+						{
+							"id": "v-2",
+							"title": "Purity of Materials",
+							"description": "Every gram of gold is certified 18K solid gold, and every textile is double-faced mulberry silk or Japanese crepe."
+						},
+						{
+							"id": "v-3",
+							"title": "Generational Heirlooms",
+							"description": "Silhouettes designed with timeless proportions that transcend fleeting trends, destined to be cherished for decades."
+						}
+					]
+				}
+			]
+		}
+	}
+}

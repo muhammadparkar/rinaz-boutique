@@ -1,7 +1,7 @@
 import type { APIProductFiltersResult } from "commerce-kit";
 import Link from "next/link";
 import { Fragment, type ReactNode, Suspense } from "react";
-import { SortLinks, SortSelect } from "@/app/products/products-sort-select";
+import { SortLinks, SortSelect } from "@/app/(storefront)/products/products-sort-select";
 import { ProductGridSkeleton } from "@/components/product-grid-skeleton";
 import { ProductFilters, ProductFiltersMobile } from "@/components/sections/product-filters";
 import {

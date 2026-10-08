@@ -3,58 +3,33 @@
 import { ArrowRightIcon, ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { type ReactNode, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { type HeroSlide, heroSlides } from "@/lib/storefront-content";
 import { cn } from "@/lib/utils";
 
-const photo = (id: string) => `https://images.unsplash.com/photo-${id}?w=1400&q=80&auto=format&fit=crop`;
-
 const SLIDE_MS = 6500;
-
-const slides = [
-	{
-		id: "new-in",
-		title: "Timeless Style.",
-		accent: "Modern Luxury",
-		copy: "Handcrafted luxury Abayas, certified 18K solid gold jewelry, and bespoke Pakistani bridal couture created for modern poise.",
-		cta: { label: "SHOP NEW IN", href: "/collection/new-in" },
-		secondary: { label: "BOOK PRIVATE SALON", href: "/#sanctuary" },
-		images: [
-			{ src: photo("1724412665971-114bd351a42d"), alt: "Black abaya with champagne gold embroidery" },
-			{ src: photo("1760083545495-b297b1690672"), alt: "Beige open abaya with tonal needlework" },
-		],
-	},
-	{
-		id: "golden-hour",
-		title: "The Golden Hour",
-		accent: "Collection",
-		copy: "Sculpted in pure double-faced georgette silk and metallic gold zardozi for intimate ceremonies and receptions.",
-		cta: { label: "SHOP THE CAPSULE", href: "/collection/golden-hour" },
-		secondary: { label: "BRIDAL PRET", href: "/collection/bridal-pret" },
-		images: [
-			{ src: photo("1747847471517-952a3eb93a89"), alt: "Bride in hand-embroidered Pakistani couture" },
-			{ src: photo("1733470324488-d0e10d014d80"), alt: "Pastel formal ensemble beneath a floral arch" },
-		],
-	},
-	{
-		id: "fine-jewelry",
-		title: "18K Fine",
-		accent: "Jewelry",
-		copy: "Bridal diamonds and hallmarked solid gold, each piece delivered with a signed Certificate of Valuation.",
-		cta: { label: "SHOP JEWELRY", href: "/category/fine-jewelry" },
-		secondary: { label: "THE TEARDROP PENDANT", href: "/product/the-gilded-teardrop-diamond-pendant" },
-		images: [
-			{ src: photo("1773832190768-b4c4667ceeb4"), alt: "Gold pendant set with diamonds" },
-			{ src: photo("1654699991520-aaaf4dd2608b"), alt: "Strand of South Sea pearls" },
-		],
-	},
-];
-
 const controlButton = "grid size-9 place-items-center rounded-full transition-colors hover:bg-[#faf7f2]/15";
 
 // Campaign carousel: two full-bleed portrait frames per slide on desktop, one on phones. The progress
 // bar's CSS animation is the timer: when it ends the next slide shows, and pausing it pauses autoplay.
-export function Hero() {
+export function Hero({
+	slides = heroSlides,
+	renderImage,
+	selectedSlideId,
+	onSlideChange,
+}: {
+	slides?: HeroSlide[];
+	selectedSlideId?: string;
+	onSlideChange?: (id: string) => void;
+	renderImage?: (props: {
+		src: string;
+		alt: string;
+		priority: boolean;
+		sizes: string;
+		className: string;
+	}) => ReactNode;
+}) {
 	const [active, setActive] = useState(0);
 	const [paused, setPaused] = useState(false);
 	const [hovered, setHovered] = useState(false);
@@ -64,7 +39,21 @@ export function Hero() {
 		if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) setPaused(true);
 	}, []);
 
-	const go = (index: number) => setActive((index + slides.length) % slides.length);
+	useEffect(() => {
+		if (!selectedSlideId) return;
+		const index = slides.findIndex((slide) => slide.id === selectedSlideId);
+		if (index >= 0) {
+			setActive(index);
+			setPaused(true);
+		}
+	}, [selectedSlideId, slides]);
+
+	const go = (index: number) => {
+		const next = (index + slides.length) % slides.length;
+		setActive(next);
+		const id = slides[next]?.id;
+		if (id) onSlideChange?.(id);
+	};
 	const slide = slides[active];
 	const running = !paused && !hovered;
 	if (!slide) return null;
@@ -102,17 +91,27 @@ export function Hero() {
 					>
 						{s.images.map((img, i) => (
 							<div key={img.src} className={cn("relative overflow-hidden", i > 0 && "hidden md:block")}>
-								<Image
-									src={img.src}
-									alt={img.alt}
-									fill
-									priority={index === 0}
-									sizes="(min-width: 768px) 50vw, 100vw"
-									className={cn(
-										"object-cover object-[center_25%] transition-transform duration-[7000ms] ease-out motion-reduce:transition-none",
-										isActive ? "scale-100" : "scale-[1.06]",
-									)}
-								/>
+								{renderImage ? (
+									renderImage({
+										src: img.src,
+										alt: img.alt,
+										priority: index === 0 && i === 0,
+										sizes: "(min-width: 768px) 50vw, 100vw",
+										className: "absolute inset-0 h-full w-full object-cover object-[center_25%]",
+									})
+								) : (
+									<Image
+										src={img.src}
+										alt={img.alt}
+										fill
+										priority={index === 0 && i === 0}
+										sizes="(min-width: 768px) 50vw, 100vw"
+										className={cn(
+											"object-cover object-[center_25%] transition-transform duration-[7000ms] ease-out motion-reduce:transition-none",
+											isActive ? "scale-100" : "scale-[1.06]",
+										)}
+									/>
+								)}
 							</div>
 						))}
 					</div>

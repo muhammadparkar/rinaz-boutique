@@ -53,15 +53,17 @@ export function SearchInput() {
 	return (
 		<Sheet open={open} onOpenChange={setOpen}>
 			<SheetTrigger
-				aria-label="Search"
+				aria-label="Search the atelier"
 				aria-keyshortcuts="/ Meta+K"
 				className="group inline-flex h-10 items-center gap-3 rounded-full p-2 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground xl:border xl:border-border xl:pr-2 xl:pl-4"
 			>
 				<Search className="h-5 w-5 xl:h-4 xl:w-4" strokeWidth={1.75} />
 				<span className="hidden text-sm xl:inline">Search the atelier</span>
-				<kbd className="hidden h-6 min-w-6 items-center justify-center rounded-full border border-border px-2 font-sans text-[11px] xl:inline-flex">
-					/
-				</kbd>
+				<span aria-hidden="true">
+					<kbd className="hidden h-6 min-w-6 items-center justify-center rounded-full border border-border px-2 font-sans text-[11px] xl:inline-flex">
+						/
+					</kbd>
+				</span>
 			</SheetTrigger>
 
 			<SheetContent

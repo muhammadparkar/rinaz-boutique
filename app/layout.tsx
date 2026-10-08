@@ -1,31 +1,15 @@
 import "@/app/globals.css";
 
-import { UserRound } from "lucide-react";
 import type { Metadata } from "next";
 import { cacheLife } from "next/cache";
 import { Cinzel, Geist_Mono, Montserrat } from "next/font/google";
-import Image, { getImageProps } from "next/image";
-import Link from "next/link";
+import { getImageProps } from "next/image";
 import { ThemeProvider } from "next-themes";
 import { Suspense } from "react";
-import { CartBootstrap, CartProvider } from "@/app/cart/cart-context";
-import { CartSidebar } from "@/app/cart/cart-sidebar";
-import { CartButton } from "@/app/cart-button";
-import { Footer } from "@/app/footer";
-import { DesktopNav, Navbar, type NavLink } from "@/app/navbar";
 import { CookieConsent } from "@/components/cookie-consent";
-import { CurrencySelect } from "@/components/currency";
 import { ErrorOverlayRemover, NavigationReporter } from "@/components/devtools";
-import { NewsletterDialog } from "@/components/newsletter-dialog";
-import { SearchInput } from "@/components/search/search-input";
-import { StoreChatSection } from "@/components/store-chat/store-chat-section";
-import { StoreConfigProvider } from "@/components/store-config-provider";
-import { ThemeToggle } from "@/components/theme-toggle";
 import { Toaster } from "@/components/ui/sonner";
-import { commerce, getCanonicalUrl, getStoreFaviconUrl, meGetCached } from "@/lib/commerce";
-import { getCartCookieJson } from "@/lib/cookies";
-import { StoreJsonLd } from "@/lib/json-ld";
-import { getStoreConfig } from "@/lib/store-config";
+import { getCanonicalUrl, getStoreFaviconUrl, meGetCached } from "@/lib/commerce";
 
 const montserrat = Montserrat({
 	variable: "--font-montserrat",
@@ -113,113 +97,6 @@ export async function generateMetadata(): Promise<Metadata> {
 	return { ...metadata, metadataBase: new URL(getCanonicalUrl()) };
 }
 
-async function getInitialCart() {
-	const cartCookie = await getCartCookieJson();
-
-	if (!cartCookie?.id) {
-		return { cart: null, cartId: null };
-	}
-
-	try {
-		const cart = await commerce.cartGet({ cartId: cartCookie.id });
-		return { cart: cart ?? null, cartId: cartCookie.id };
-	} catch {
-		return { cart: null, cartId: cartCookie.id };
-	}
-}
-
-const navLinks: NavLink[] = [
-	{ href: "/collection/new-in", label: "NEW IN" },
-	{ href: "/category/haute-abayas", label: "HAUTE ABAYAS" },
-	{ href: "/category/fine-jewelry", label: "18K FINE JEWELRY" },
-	{ href: "/category/pakistani-couture", label: "PAKISTANI COUTURE" },
-	{ href: "/collection/bridal-pret", label: "BRIDAL PRET" },
-	{ href: "/#sanctuary", label: "STUDIO SANCTUARY" },
-];
-
-// The customer's cart is a cookie read, so it can never be part of the prerendered
-// shell. Kept in its own component (and its own Suspense boundary below) so the await
-// lands BELOW the chrome instead of above it.
-async function CartBootstrapper() {
-	const { cart, cartId } = await getInitialCart();
-
-	return <CartBootstrap cart={cart} cartId={cartId} />;
-}
-
-async function CartProviderWrapper({ children }: { children: React.ReactNode }) {
-	// Only cached reads here. Awaiting anything request-time (cookies, headers, the
-	// cart) would take the header, nav and footer out of the prerendered shell and
-	// leave the page blank until the server responds. The other half of the rule: no
-	// <Suspense> around this component either — the boundary itself is what streams the
-	// chrome out of the shell, whether or not anything inside it is request-time.
-	const storeConfig = await getStoreConfig();
-
-	return (
-		<StoreConfigProvider value={storeConfig}>
-			<CartProvider>
-				<div className="flex min-h-screen flex-col">
-					<header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-md">
-						<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-							<div className="relative flex items-center justify-between h-16">
-								<div className="flex items-center gap-3">
-									<Link
-										href="/"
-										className="group flex items-center transition-opacity hover:opacity-90"
-										aria-label="RINAZ STUDIO Home"
-									>
-										<Image
-											src="/brand/rinaz-v3.png"
-											alt="RINAZ STUDIO"
-											width={1220}
-											height={361}
-											sizes="(min-width: 640px) 120px, 100px"
-											priority
-											className="h-7 w-auto object-contain sm:h-8"
-										/>
-									</Link>
-									<Navbar links={navLinks} />
-								</div>
-								<div className="flex items-center sm:gap-2">
-									<CurrencySelect className="hidden sm:flex" />
-									<Suspense>
-										<SearchInput />
-									</Suspense>
-									{/* Phones follow the system theme; the toggle frees header room from sm up. */}
-									<div className="hidden sm:contents">
-										<ThemeToggle />
-									</div>
-									{/* Plain <a>: /account is a proxied zone — soft navigation 500s (see AGENTS.md).
-									    Static on purpose: reading the session here would pull the header out of the
-									    prerendered shell. Guests get the sign-in flow, shoppers land on the dashboard. */}
-									<a
-										href="/account"
-										className="p-2 hover:bg-secondary transition-colors"
-										aria-label="Account"
-									>
-										<UserRound className="w-5 h-5" />
-									</a>
-									<CartButton />
-								</div>
-							</div>
-						</div>
-						<DesktopNav links={navLinks} />
-					</header>
-					<main className="flex-1">{children}</main>
-					<Footer />
-				</div>
-				<CartSidebar />
-				<Suspense>
-					<CartBootstrapper />
-				</Suspense>
-				{/* Inside CartProvider on purpose: add-to-cart from chat uses the cart context. */}
-				<Suspense>
-					<StoreChatSection />
-				</Suspense>
-			</CartProvider>
-		</StoreConfigProvider>
-	);
-}
-
 async function getHtmlLang(): Promise<string> {
 	try {
 		const me = await meGetCached();
@@ -227,14 +104,6 @@ async function getHtmlLang(): Promise<string> {
 	} catch {
 		return "en";
 	}
-}
-
-async function NewsletterPopupSection() {
-	const me = await meGetCached();
-	if (!me.store.settings?.enabledTools?.newsletterPopup) {
-		return null;
-	}
-	return <NewsletterDialog settings={me.store.settings?.newsletterPopup} />;
 }
 
 export default async function RootLayout({
@@ -249,18 +118,12 @@ export default async function RootLayout({
 		// suppressHydrationWarning: next-themes sets the theme class on <html> before hydration.
 		<html lang={lang} suppressHydrationWarning>
 			<body className={`${montserrat.variable} ${cinzel.variable} ${geistMono.variable} antialiased`}>
-				{/* DO NOT REMOVE / REORDER: required for GDPR + GTM Consent Mode v2. Must stay at top of <body>. */}
+				{/* Required platform consent handling stays at the top of body. */}
 				<Suspense>
 					<CookieConsent />
 				</Suspense>
-				<Suspense>
-					<StoreJsonLd />
-				</Suspense>
 				<ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-					<CartProviderWrapper>{children}</CartProviderWrapper>
-					<Suspense>
-						<NewsletterPopupSection />
-					</Suspense>
+					{children}
 					<Toaster richColors position="top-center" />
 				</ThemeProvider>
 				{env === "development" && (

@@ -8,7 +8,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { trackIdentify } from "@/lib/track";
 
-export function Newsletter() {
+export function Newsletter({
+	title = "Receive First Access to Runway Drops",
+	text,
+	preview = false,
+}: {
+	title?: string;
+	text?: string;
+	preview?: boolean;
+} = {}) {
 	const [state, action, isPending] = useActionState(subscribeToNewsletter, null);
 	const [marketingConsent, setMarketingConsent] = useState(false);
 
@@ -30,14 +38,16 @@ export function Newsletter() {
 						</div>
 					) : (
 						<>
-							<h2 className="text-3xl sm:text-4xl lg:text-5xl font-medium tracking-tight">
-								Receive First Access to Runway Drops
-							</h2>
+							<h2 className="text-3xl sm:text-4xl lg:text-5xl font-medium tracking-tight">{title}</h2>
 							<p className="mt-4 text-lg leading-relaxed text-background/60 max-w-md mx-auto">
-								Join our private client register to receive seasonal preview lookbooks, limited bridal pret
-								releases, and private studio invitations.
+								{text ??
+									"Join our private client register to receive seasonal preview lookbooks, limited bridal pret releases, and private studio invitations."}
 							</p>
-							<form action={action} className="mx-auto mt-10 flex max-w-md flex-col gap-4">
+							<form
+								onSubmit={preview ? (event) => event.preventDefault() : undefined}
+								action={action}
+								className="mx-auto mt-10 flex max-w-md flex-col gap-4"
+							>
 								<div className="flex flex-col gap-3 sm:flex-row">
 									<label htmlFor="newsletter-email" className="sr-only">
 										Email address

@@ -1,0 +1,49 @@
+import { ArrowRight } from "lucide-react";
+import Link from "next/link";
+export function ProductGridLayout({
+	title,
+	description,
+	showViewAll = true,
+	viewAllHref = "/products",
+	children,
+}: {
+	title: string;
+	description: string;
+	showViewAll?: boolean;
+	viewAllHref?: string;
+	children: React.ReactNode;
+}) {
+	return (
+		<section id="products" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-24">
+			<div className="flex items-end justify-between mb-8 sm:mb-12">
+				<div>
+					<h2 className="text-2xl sm:text-3xl font-medium text-foreground">{title}</h2>
+					<p className="mt-2 text-muted-foreground">{description}</p>
+				</div>
+				{showViewAll && (
+					<Link
+						href={viewAllHref}
+						className="hidden sm:inline-flex items-center gap-1 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+					>
+						View all
+						<ArrowRight className="h-4 w-4" />
+					</Link>
+				)}
+			</div>
+
+			<div className="grid grid-cols-2 gap-x-4 gap-y-8 sm:gap-x-6 sm:gap-y-10 lg:grid-cols-3">{children}</div>
+
+			{showViewAll && (
+				<div className="mt-12 text-center sm:hidden">
+					<Link
+						href={viewAllHref}
+						className="inline-flex items-center gap-1 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+					>
+						View all products
+						<ArrowRight className="h-4 w-4" />
+					</Link>
+				</div>
+			)}
+		</section>
+	);
+}
