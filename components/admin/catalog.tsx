@@ -1,12 +1,13 @@
 "use client";
-import { ArrowLeft, Plus, Search } from "lucide-react";
-import { useState } from "react";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import { ArrowLeft, Plus, Search } from "@/components/admin/preset-icons";
+import { Button } from "@/components/admin/ui/button";
+import { Input } from "@/components/admin/ui/input";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/admin/ui/table";
 import type { Category, Product, Variant } from "@/lib/admin/model";
 import { formatMoney } from "@/lib/money";
+import { StatusBadge } from "./operations/components/ui";
 import { useAdmin } from "./provider";
 import { AdminImage, Confirm, EmptyState, Field, MediaPicker, PageHeading, SelectField } from "./shared";
 
@@ -214,7 +215,10 @@ function ProductEditor({ original, onClose }: { original: Product; onClose: () =
 export function Products() {
 	const { state, commit, setDirty } = useAdmin();
 	const [editing, setEditing] = useState<Product | null>(null);
-	const [query, setQuery] = useState("");
+	const searchParams = useSearchParams();
+	const search = searchParams.get("search") ?? "";
+	const [query, setQuery] = useState(search);
+	useEffect(() => setQuery(search), [search]);
 	const [status, setStatus] = useState("all");
 	if (editing) return <ProductEditor key={editing.id} original={editing} onClose={() => setEditing(null)} />;
 	const filtered = state.draft.products.filter(
@@ -224,10 +228,7 @@ export function Products() {
 	);
 	return (
 		<>
-			<PageHeading
-				title="The collection"
-				description="Manage your pieces, pricing, and the details that make them distinct."
-			>
+			<PageHeading title="Products" description="Manage products, pricing, and availability.">
 				<Button
 					onClick={() => {
 						setDirty(false);
@@ -249,13 +250,13 @@ export function Products() {
 			</PageHeading>
 			<div className="mb-5 flex flex-wrap items-end gap-4">
 				<div className="relative max-w-sm flex-1">
-					<Search className="absolute left-3 top-3 text-muted-foreground" size={15} />
+					<Search className="pointer-events-none absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground" />
 					<Input
 						aria-label="Search products"
 						placeholder="Search name or SKU…"
 						value={query}
 						onChange={(e) => setQuery(e.target.value)}
-						className="pl-9"
+						className="pl-8"
 					/>
 				</div>
 				<SelectField
@@ -305,7 +306,7 @@ export function Products() {
 									<TableCell>{money(String(Math.min(...p.variants.map((v) => Number(v.price)))))}</TableCell>
 									<TableCell>{p.variants.reduce((sum, v) => sum + v.stock, 0)}</TableCell>
 									<TableCell>
-										<Badge variant="outline">{p.status}</Badge>
+										<StatusBadge status={p.status} />
 									</TableCell>
 									<TableCell>
 										<div className="flex gap-2">
@@ -367,7 +368,7 @@ export function Products() {
 				</div>
 			) : (
 				<EmptyState
-					title="No pieces found"
+					title="No products found"
 					description="Adjust your filters or add the first product to your collection."
 				/>
 			)}
@@ -465,10 +466,7 @@ export function Categories() {
 	if (editing) return <CategoryEditor key={editing.id} original={editing} onClose={() => setEditing(null)} />;
 	return (
 		<>
-			<PageHeading
-				title="Worlds within the studio"
-				description="Create a considered hierarchy for your collections."
-			>
+			<PageHeading title="Categories" description="Organize products into categories.">
 				<Button
 					onClick={() =>
 						setEditing({
@@ -495,7 +493,7 @@ export function Categories() {
 							<div className="space-y-4 p-5">
 								<div className="flex justify-between gap-3">
 									<h2 className="text-xl">{c.name}</h2>
-									<Badge variant="outline">{c.active ? "Visible" : "Hidden"}</Badge>
+									<StatusBadge status={c.active ? "active" : "draft"} />
 								</div>
 								<p className="text-xs text-muted-foreground">
 									{c.parentId

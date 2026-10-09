@@ -1,6 +1,6 @@
-import type { JSONContent, YNSProvider } from "commerce-kit";
+import type { CommerceAdapter, JSONContent } from "@/lib/commerce-types";
 
-// Local stand-in for the YNS backend: a static catalog plus an in-memory cart, exposing the
+// Local demo catalog: a static catalog plus an in-memory cart, exposing the
 // same methods the storefront calls on `commerce`. Edit the arrays below to change the store.
 // ponytail: carts live in process memory (lost on restart, not shared across instances); swap
 // for a real DB/API when this needs to take orders.
@@ -468,12 +468,20 @@ const mock = {
 	legalPageBrowse: async () => empty,
 	legalPageGet: async () => null,
 	productReviewsBrowse: async () => ({ data: [], meta: { count: 0 } }),
-	productReviewCreate: async () => ({ ok: true }),
-	subscriberCreate: async () => ({ ok: true }),
-	contactMessageCreate: async () => ({ ok: true }),
-	request: async () => ({ status: "ok" }),
+	productReviewCreate: async () => {
+		throw new Error("Backend services are not connected yet.");
+	},
+	subscriberCreate: async () => {
+		throw new Error("Backend services are not connected yet.");
+	},
+	contactMessageCreate: async () => {
+		throw new Error("Backend services are not connected yet.");
+	},
+	request: async () => {
+		throw new Error("Backend services are not connected yet.");
+	},
 };
 
 // ponytail: cast — the mock covers only the methods this storefront calls, with the fields its
-// pages read, not the full 16k-line API type surface.
-export const mockCommerce = mock as unknown as YNSProvider;
+// pages read, not the complete production API.
+export const mockCommerce = mock as unknown as CommerceAdapter;

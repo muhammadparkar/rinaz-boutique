@@ -1,4 +1,3 @@
-import type { APICollectionGetByIdResult } from "commerce-kit";
 import type { Metadata } from "next";
 import { cacheLife } from "next/cache";
 import { notFound } from "next/navigation";
@@ -7,6 +6,7 @@ import { ListingShell } from "@/components/listing-shell";
 import { ProductCard } from "@/components/product-card";
 import { ProductGridSkeleton } from "@/components/product-grid-skeleton";
 import { commerce, getStoreSeo } from "@/lib/commerce";
+import type { APICollectionGetByIdResult } from "@/lib/commerce-types";
 import { getFilterFacets, getListingSort } from "@/lib/facets";
 import { buildCollectionBreadcrumbJsonLd, buildCollectionJsonLd, JsonLdScript } from "@/lib/json-ld";
 import { encodeVts } from "@/lib/vts";

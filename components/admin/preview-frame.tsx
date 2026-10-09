@@ -1,7 +1,13 @@
 "use client";
-import type { APIProductsBrowseResult } from "commerce-kit";
 import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
+import {
+	Accordion,
+	AccordionContent,
+	AccordionItem,
+	AccordionTrigger,
+} from "@/components/admin/ui/accordion";
+import { Button } from "@/components/admin/ui/button";
 import { ProductCardDetails } from "@/components/product-card-details";
 import { ProductCardView } from "@/components/product-card-view";
 import { About } from "@/components/sections/about";
@@ -9,7 +15,6 @@ import { Hero } from "@/components/sections/hero";
 import { Newsletter } from "@/components/sections/newsletter";
 import { ProductGridLayout } from "@/components/sections/product-grid-layout";
 import {
-	BridalSanctuary,
 	CategoryTiles,
 	CompleteTheLook,
 	categoryTiles,
@@ -19,9 +24,8 @@ import {
 import { useStoreConfig } from "@/components/store-config-provider";
 import { FooterContent } from "@/components/storefront-footer";
 import { StorefrontHeader } from "@/components/storefront-header";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Button } from "@/components/ui/button";
 import { isSnapshot, type Product, type Section, type Snapshot } from "@/lib/admin/model";
+import type { APIProductsBrowseResult } from "@/lib/commerce-types";
 import { formatMoney } from "@/lib/money";
 import { PreviewSectionEditor } from "./preview-section-editor";
 import { useAdmin } from "./provider";
@@ -249,7 +253,6 @@ export function PreviewFrame({
 		if (section.type === "feature") return <GoldenHourFeature {...props} />;
 		if (section.type === "trust") return <TrustPillars text={props.text} />;
 		if (section.type === "about") return <About title={section.title} text={props.text} />;
-		if (section.type === "sanctuary") return <BridalSanctuary {...props} />;
 		return <Newsletter title={section.title} text={section.text} preview />;
 	};
 	const originalPage =
@@ -309,11 +312,14 @@ export function PreviewFrame({
 					<>
 						{page?.text && <p className="p-6 text-center">{page.text}</p>}
 						{content.sections
-							.filter((s) => s.enabled)
-							.map((s) => (
+							.filter((s) => s.type !== "sanctuary" && (s.enabled || editing))
+							.map((s, index, sections) => (
 								<PreviewSectionEditor
 									key={s.id}
 									section={s}
+									products={products}
+									previousId={sections[index - 1]?.id}
+									nextId={sections[index + 1]?.id}
 									slide={
 										s.type === "hero"
 											? content.slides.find((slide) => slide.id === slideId) || content.slides[0]
@@ -332,7 +338,7 @@ export function PreviewFrame({
 						<AdminImage
 							src={detail.images[0] || ""}
 							alt={detail.name}
-							className="aspect-3/4 w-full rounded-lg object-cover"
+							className="aspect-3/4 w-full rounded-md object-cover"
 						/>
 						<div>
 							<h1 className="text-3xl">{detail.name}</h1>

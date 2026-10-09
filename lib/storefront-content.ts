@@ -7,7 +7,7 @@ export const heroSlides = [
 		accent: "Modern Luxury",
 		copy: "Handcrafted luxury Abayas, certified 18K solid gold jewelry, and bespoke Pakistani bridal couture created for modern poise.",
 		cta: { label: "SHOP NEW IN", href: "/collection/new-in" },
-		secondary: { label: "BOOK PRIVATE SALON", href: "/#sanctuary" },
+		secondary: { label: "EXPLORE COLLECTION", href: "/collection/all" },
 		images: [
 			{ src: photo("1724412665971-114bd351a42d"), alt: "Black abaya with champagne gold embroidery" },
 			{ src: photo("1760083545495-b297b1690672"), alt: "Beige open abaya with tonal needlework" },

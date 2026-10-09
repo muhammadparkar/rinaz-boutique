@@ -23,7 +23,7 @@ export function Navbar({ links }: { links: NavLink[] }) {
 				<button
 					type="button"
 					aria-label="Open menu"
-					className="-order-1 rounded-full p-2 transition-colors hover:bg-secondary xl:hidden"
+					className="-order-1 grid min-h-11 min-w-11 place-items-center rounded-full p-2 transition-colors hover:bg-secondary xl:hidden"
 				>
 					<Menu className="h-6 w-6" />
 				</button>

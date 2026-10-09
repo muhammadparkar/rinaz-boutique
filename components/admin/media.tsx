@@ -1,10 +1,10 @@
 "use client";
-import { Search, Upload } from "lucide-react";
 import { useState } from "react";
 import { try_ } from "safe-try";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Search, Upload } from "@/components/admin/preset-icons";
+import { Button } from "@/components/admin/ui/button";
+import { Input } from "@/components/admin/ui/input";
 import { mediaUsage } from "@/lib/admin/model";
 import { browserRepository } from "@/lib/admin/repository";
 import { useAdmin } from "./provider";
@@ -75,10 +75,10 @@ export function MediaLibrary() {
 				</label>
 			</PageHeading>
 			<div className="relative mb-6 max-w-sm">
-				<Search size={15} className="absolute left-3 top-3 text-muted-foreground" />
+				<Search className="pointer-events-none absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground" />
 				<Input
 					aria-label="Search media"
-					className="pl-9"
+					className="pl-8"
 					placeholder="Search the archive…"
 					value={query}
 					onChange={(e) => setQuery(e.target.value)}

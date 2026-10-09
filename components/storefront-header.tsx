@@ -14,7 +14,7 @@ export const navLinks: NavLink[] = [
 	{ href: "/category/fine-jewelry", label: "18K FINE JEWELRY" },
 	{ href: "/category/pakistani-couture", label: "PAKISTANI COUTURE" },
 	{ href: "/collection/bridal-pret", label: "BRIDAL PRET" },
-	{ href: "/#sanctuary", label: "STUDIO SANCTUARY" },
+	{ href: "/contact", label: "STUDIO SANCTUARY" },
 ];
 
 export function StorefrontHeader({ links = navLinks }: { links?: NavLink[] }) {
@@ -37,7 +37,6 @@ export function StorefrontHeader({ links = navLinks }: { links?: NavLink[] }) {
 								width={1220}
 								height={361}
 								sizes="(min-width: 640px) 120px, 100px"
-								priority
 								className="h-7 w-auto object-contain sm:h-8"
 							/>
 						</Link>
@@ -55,7 +54,11 @@ export function StorefrontHeader({ links = navLinks }: { links?: NavLink[] }) {
 						{/* Plain <a>: /account is a proxied zone — soft navigation 500s (see AGENTS.md).
 									    Static on purpose: reading the session here would pull the header out of the
 									    prerendered shell. Guests get the sign-in flow, shoppers land on the dashboard. */}
-						<a href="/account" className="p-2 hover:bg-secondary transition-colors" aria-label="Account">
+						<a
+							href="/account"
+							className="grid min-h-11 min-w-11 place-items-center p-2 hover:bg-secondary transition-colors"
+							aria-label="Account"
+						>
 							<UserRound className="w-5 h-5" />
 						</a>
 						<CartButton />

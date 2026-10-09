@@ -1,5 +1,5 @@
 "use client";
-import { Badge } from "@/components/ui/badge";
+import { Badge } from "@/components/admin/ui/badge";
 import { LiveDraftPreview } from "./live-draft-preview";
 import { useAdmin } from "./provider";
 import { PageHeading } from "./shared";

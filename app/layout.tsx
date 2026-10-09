@@ -7,7 +7,6 @@ import { getImageProps } from "next/image";
 import { ThemeProvider } from "next-themes";
 import { Suspense } from "react";
 import { CookieConsent } from "@/components/cookie-consent";
-import { ErrorOverlayRemover, NavigationReporter } from "@/components/devtools";
 import { Toaster } from "@/components/ui/sonner";
 import { getCanonicalUrl, getStoreFaviconUrl, meGetCached } from "@/lib/commerce";
 
@@ -111,7 +110,6 @@ export default async function RootLayout({
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
-	const env = process.env.VERCEL_ENV || "development";
 	const lang = await getHtmlLang();
 
 	return (
@@ -126,12 +124,6 @@ export default async function RootLayout({
 					{children}
 					<Toaster richColors position="top-center" />
 				</ThemeProvider>
-				{env === "development" && (
-					<>
-						<NavigationReporter />
-						<ErrorOverlayRemover />
-					</>
-				)}
 			</body>
 		</html>
 	);

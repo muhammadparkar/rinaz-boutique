@@ -1,11 +1,11 @@
+import { cacheLife } from "next/cache";
+import { ProductCard } from "@/components/product-card";
+import { commerce } from "@/lib/commerce";
 import type {
 	APICollectionGetByIdResult,
 	APIProductGetByIdResult,
 	APIProductsBrowseResult,
-} from "commerce-kit";
-import { cacheLife } from "next/cache";
-import { ProductCard } from "@/components/product-card";
-import { commerce } from "@/lib/commerce";
+} from "@/lib/commerce-types";
 import { ProductGridLayout } from "./product-grid-layout";
 
 export type Product = APIProductsBrowseResult["data"][number];
@@ -43,8 +43,8 @@ export async function ProductGrid({
 			showViewAll={showViewAll}
 			viewAllHref={viewAllHref}
 		>
-			{displayProducts.map((product, index) => (
-				<ProductCard key={product.id} product={product} priority={index === 0} />
+			{displayProducts.map((product) => (
+				<ProductCard key={product.id} product={product} />
 			))}
 		</ProductGridLayout>
 	);

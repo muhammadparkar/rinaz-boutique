@@ -34,7 +34,7 @@ export async function subscribeToNewsletter(
 	const [error, subscriber] = await try_(commerce.subscriberCreate({ email, marketingConsent: true }));
 	if (error) {
 		console.error("newsletter: subscriberCreate failed", { error });
-		return { success: false, message: "", error: "Something went wrong. Please try again." };
+		return { success: false, message: "", error: "Newsletter sign-up is not available yet." };
 	}
 
 	// Double opt-in: the address is not on the list until the shopper clicks the emailed link.

@@ -1,6 +1,5 @@
 "use client";
 
-import type { APIProductFiltersResult } from "commerce-kit";
 import { SlidersHorizontalIcon } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { type ReactNode, startTransition, useOptimistic, useState } from "react";
@@ -17,6 +16,7 @@ import {
 	SheetTrigger,
 } from "@/components/ui/sheet";
 import { Slider } from "@/components/ui/slider";
+import type { APIProductFiltersResult } from "@/lib/commerce-types";
 import { cn } from "@/lib/utils";
 import { encodeVts, parseVts } from "@/lib/vts";
 

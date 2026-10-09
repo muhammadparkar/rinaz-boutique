@@ -1,9 +1,9 @@
+import { getCanonicalUrl, meGetCached } from "@/lib/commerce";
 import type {
 	APICollectionGetByIdResult,
 	APIProductGetByIdResult,
 	APIProductReviewsBrowseResult,
-} from "commerce-kit";
-import { getCanonicalUrl, meGetCached } from "@/lib/commerce";
+} from "@/lib/commerce-types";
 import { priceRange } from "@/lib/pricing";
 import { getStoreConfig } from "@/lib/store-config";
 

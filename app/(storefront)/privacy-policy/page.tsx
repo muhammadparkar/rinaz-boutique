@@ -58,8 +58,7 @@ export default async function PrivacyPolicyPage() {
 					<h2 className="text-lg font-medium text-foreground mb-3">3. How Your Information Is Used</h2>
 					<p>
 						Your data is utilized strictly for processing and delivering your orders via insured worldwide
-						couriers, scheduling private styling salon appointments, communicating bespoke tailoring
-						milestones, and providing tailored customer care.
+						couriers, communicating bespoke tailoring milestones, and providing tailored customer care.
 					</p>
 				</section>
 

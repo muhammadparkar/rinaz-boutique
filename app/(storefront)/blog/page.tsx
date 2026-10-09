@@ -13,8 +13,8 @@ import {
 import { commerce, getCanonicalUrl, getStoreSeo } from "@/lib/commerce";
 import { formatDate } from "@/lib/dates";
 import { JsonLdScript } from "@/lib/json-ld";
+import { StoreMedia } from "@/lib/store-media";
 import { isStoreToolEnabled } from "@/lib/store-tools";
-import { YNSMedia } from "@/lib/yns-media";
 
 const POSTS_LIMIT = 24;
 
@@ -95,7 +95,7 @@ export default async function BlogPage() {
 						<Link key={post.id} href={`/blog/${post.slug}`} className="group">
 							<div className="relative aspect-[3/2] bg-secondary rounded-2xl overflow-hidden mb-4">
 								{post.image && (
-									<YNSMedia
+									<StoreMedia
 										src={post.image}
 										alt={post.title}
 										fill

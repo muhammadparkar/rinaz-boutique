@@ -1,4 +1,3 @@
-import type { APIOrderGetByIdResult } from "commerce-kit";
 import { CheckCircle } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
@@ -7,11 +6,12 @@ import { Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { commerce } from "@/lib/commerce";
+import type { APIOrderGetByIdResult } from "@/lib/commerce-types";
 import { formatMoney } from "@/lib/money";
 import { cartDisplaySubtotal, displayAmount, displayPrice } from "@/lib/pricing";
 import { getStoreConfig } from "@/lib/store-config";
+import { StoreMedia } from "@/lib/store-media";
 import { getProductThumbnail } from "@/lib/utils";
-import { YNSMedia } from "@/lib/yns-media";
 
 export const metadata: Metadata = {
 	title: "Order Confirmed",
@@ -188,7 +188,7 @@ async function OrderItem({ item }: { item: OrderLineItem }) {
 				href={`/product/${product.slug}`}
 				className="relative h-20 w-20 shrink-0 overflow-hidden rounded-lg bg-secondary"
 			>
-				{image && <YNSMedia src={image} alt={product.name} fill className="object-cover" sizes="80px" />}
+				{image && <StoreMedia src={image} alt={product.name} fill className="object-cover" sizes="80px" />}
 			</Link>
 
 			{/* Product Details */}

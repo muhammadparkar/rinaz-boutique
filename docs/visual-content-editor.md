@@ -21,7 +21,7 @@ Keep each section's responsive layout fixed. The editor can reorder sections and
 
 `Cms` remains the source of truth for unsaved content. Extend the existing iframe message bridge with typed section-selection and field-edit events. Accept messages only from the expected same-origin frame; verify section IDs, permitted fields, value types, and the current role before changing the draft. Never accept executable markup or whole DOM fragments.
 
-Selection overlays belong only to the preview, so public components retain their production layout and accessibility. Dragging first belongs in the outer section list, avoiding pointer-coordinate errors caused by the scaled iframe. Canvas drop targets can follow once that interaction is reliable.
+Selection overlays belong only to the preview, so public components retain their production layout and accessibility. Section toolbars live inside the preview. Drag handles drop onto another section; move buttons provide keyboard and touch alternatives. Hidden sections remain as editor-only placeholders with a Show control. Browse mode omits them.
 
 Use the existing ShadCN controls and media picker. No dependency is required for section selection or field editing; choose drag tooling only when keyboard/touch behavior calls for it.
 
@@ -29,6 +29,12 @@ Use the existing ShadCN controls and media picker. No dependency is required for
 
 An Editor can click a hero, change its title and image, reorder two sections, undo that move, save a draft, reload, and publish to the local demo. The result must stay correct in portrait and landscape. Operations cannot edit. Keyboard users can select and reorder sections, focus returns after media dialogs, unsaved navigation warns, and invalid URLs or unknown message IDs are rejected. Public storefront content and real commerce actions remain unaffected.
 
-The visual editor is implemented in `/admin/cms`. Direct edits use ShadCN popovers anchored to the preview; text, campaign images, section imagery, and primary CTAs update the unsaved draft immediately. Clicking a section also selects its existing settings form. Dragging uses the composition list; the move buttons remain the keyboard and phone alternative. Undo/redo is available in the CMS toolbar and with Cmd/Ctrl+Z outside text inputs, including inside the preview. History lasts for the editing session and keeps the latest 50 edits; typing in one canvas field is grouped.
+The visual editor is implemented in `/admin/cms`. Direct edits use ShadCN popovers anchored to the preview; text, campaign images, section imagery, and primary CTAs update the unsaved draft immediately. Clicking a section also selects its existing settings form. Dragging and move buttons now operate directly on the canvas. The separate Page Composition list is removed. Undo/redo is available in the CMS toolbar and with Cmd/Ctrl+Z outside text inputs, including inside the preview. History lasts for the editing session and keeps the latest 50 edits; typing in one canvas field is grouped.
 
-The full website remains a browser-local demo. This iteration edits homepage sections; page, navigation, FAQ, category, and product forms remain available in their existing modules. Arbitrary element positioning and canvas drop targets are not implemented.
+The full website remains a browser-local demo. This iteration edits homepage sections; page, navigation, FAQ, category, and product forms remain available in their existing modules. Arbitrary pixel positioning is not implemented. Featured product selections are edited in the section popover. Remaining page, navigation, FAQ and SEO settings are grouped in a disclosure below the preview.
+
+## Saved website versions
+
+Each successful Save draft appends V1, V2, and subsequent numbered snapshots. Versions are persisted and exported with browser-local demo data; old version-1 files migrate with an empty history. Restoring loads website content into the unsaved editor, leaving the published snapshot unchanged. Save again creates a new version rather than overwriting history. Featured references to products that have since been deleted are omitted during restoration.
+
+Historical snapshots keep media references protected against deletion. Image blobs remain in IndexedDB and cannot be recovered by JSON alone on another browser. Storage quota failures preserve the last successful save and do not append a version. History is not automatically pruned; reset clears it together with other demo data.

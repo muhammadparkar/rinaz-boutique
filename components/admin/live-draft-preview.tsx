@@ -1,8 +1,8 @@
 "use client";
-import { Monitor, RefreshCw, RotateCw, Smartphone } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Monitor, RefreshCw, RotateCw, Smartphone } from "@/components/admin/preset-icons";
+import { Badge } from "@/components/admin/ui/badge";
+import { Button } from "@/components/admin/ui/button";
 import type { Snapshot } from "@/lib/admin/model";
 import { previewScale, previewViewport } from "@/lib/admin/preview-viewport";
 import { type EditorMessage, isEditorMessage } from "@/lib/admin/visual-editor";

@@ -51,6 +51,7 @@ export const browserRepository: DemoRepository = {
 };
 export const newDemo = (snapshot: DemoState["draft"], media: DemoState["media"]): DemoState => ({
 	version: 1,
+	websiteVersions: [],
 	draft: structuredClone(snapshot),
 	published: structuredClone(snapshot),
 	media: structuredClone(media),
@@ -59,3 +60,18 @@ export const newDemo = (snapshot: DemoState["draft"], media: DemoState["media"])
 	activity: [],
 	publishedAt: null,
 });
+
+export function saveWebsiteVersion(state: DemoState, content: DemoState["draft"]["content"]) {
+	return {
+		...state,
+		draft: { ...state.draft, content },
+		websiteVersions: [
+			...state.websiteVersions,
+			{
+				number: (state.websiteVersions.at(-1)?.number ?? 0) + 1,
+				at: new Date().toISOString(),
+				snapshot: structuredClone({ ...state.draft, content }),
+			},
+		],
+	};
+}

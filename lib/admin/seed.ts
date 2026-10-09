@@ -113,17 +113,6 @@ export async function getAdminSeed() {
 			productIds: [],
 		},
 		{
-			id: "sanctuary",
-			type: "sanctuary",
-			title: "An intimate private bridal consultation.",
-			text: "Custom fittings tailored for your sacred day\nStep inside the RINAZ Studio bridal sanctuary. From bespoke made-to-measure Anarkalis to private 18K fine jewelry styling, our appointments ensure an unforgettable wedding experience.",
-			image: "",
-			ctaLabel: "BOOK BRIDAL APPOINTMENT",
-			ctaHref: "/contact",
-			enabled: true,
-			productIds: [],
-		},
-		{
 			id: "newsletter",
 			type: "newsletter",
 			title: "Receive First Access to Runway Drops",
@@ -159,7 +148,7 @@ export async function getAdminSeed() {
 				{ id: "jewelry", label: "18K FINE JEWELRY", href: "/category/fine-jewelry" },
 				{ id: "couture", label: "PAKISTANI COUTURE", href: "/category/pakistani-couture" },
 				{ id: "bridal", label: "BRIDAL PRET", href: "/collection/bridal-pret" },
-				{ id: "studio", label: "STUDIO SANCTUARY", href: "/#sanctuary" },
+				{ id: "studio", label: "STUDIO SANCTUARY", href: "/contact" },
 			],
 			footer: {
 				text: "Handcrafted couture Abayas, certified 18K solid gold fine jewelry, and bespoke Pakistani bridal couture crafted for the modern you.",

@@ -1,6 +1,9 @@
-import { type Content, canEdit, type Media, type Role, safeHref, safeImage } from "./model";
+import { type Content, canEdit, type Media, type Product, type Role, safeHref, safeImage } from "./model";
 
 export type EditorMessage =
+	| { type: "rinaz-editor"; kind: "products"; id: string; ids: string[] }
+	| { type: "rinaz-editor"; kind: "move"; id: string; target: string }
+	| { type: "rinaz-editor"; kind: "visibility"; id: string; enabled: boolean }
 	| { type: "rinaz-editor"; kind: "select"; id: string; slideId?: string }
 	| { type: "rinaz-editor"; kind: "undo" | "redo"; id: "history" }
 	| { type: "rinaz-editor"; kind: "section" | "slide"; id: string; field: string; value: string };
@@ -17,6 +20,13 @@ export function isEditorMessage(value: unknown): value is EditorMessage {
 	)
 		return false;
 	return (
+		(value.kind === "products" &&
+			"ids" in value &&
+			Array.isArray(value.ids) &&
+			value.ids.length <= 100 &&
+			value.ids.every((id) => typeof id === "string")) ||
+		(value.kind === "move" && "target" in value && typeof value.target === "string") ||
+		(value.kind === "visibility" && "enabled" in value && typeof value.enabled === "boolean") ||
 		(value.kind === "select" && (!("slideId" in value) || typeof value.slideId === "string")) ||
 		((value.kind === "undo" || value.kind === "redo") && value.id === "history") ||
 		((value.kind === "section" || value.kind === "slide") &&
@@ -28,8 +38,34 @@ export function isEditorMessage(value: unknown): value is EditorMessage {
 	);
 }
 
-export function applyEditorMessage(content: Content, media: Media[], role: Role, message: EditorMessage) {
-	if (!canEdit(role, "cms") || (message.kind !== "section" && message.kind !== "slide")) return content;
+export function applyEditorMessage(
+	content: Content,
+	media: Media[],
+	role: Role,
+	message: EditorMessage,
+	products: Product[] = [],
+) {
+	if (!canEdit(role, "cms")) return content;
+	if (message.kind === "products") {
+		if (
+			new Set(message.ids).size !== message.ids.length ||
+			message.ids.some((id) => !products.some((p) => p.id === id))
+		)
+			return content;
+		return {
+			...content,
+			sections: content.sections.map((s) =>
+				s.id === message.id && s.type === "products" ? { ...s, productIds: message.ids } : s,
+			),
+		};
+	}
+	if (message.kind === "move") return moveSection(content, message.id, message.target);
+	if (message.kind === "visibility")
+		return {
+			...content,
+			sections: content.sections.map((s) => (s.id === message.id ? { ...s, enabled: message.enabled } : s)),
+		};
+	if (message.kind !== "section" && message.kind !== "slide") return content;
 	const { field, value, id } = message;
 	const imageAllowed = safeImage(value) && (value === "" || media.some((asset) => asset.src === value));
 	if (message.kind === "section") {

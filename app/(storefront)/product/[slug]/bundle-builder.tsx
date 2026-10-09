@@ -1,6 +1,5 @@
 "use client";
 
-import type { APIProductGetByIdResult } from "commerce-kit";
 import { CheckIcon, MinusIcon, PlusIcon } from "lucide-react";
 import Image from "next/image";
 import { useMemo, useState } from "react";
@@ -11,6 +10,7 @@ import { useFormatPrice } from "@/components/currency";
 import { useStoreConfig } from "@/components/store-config-provider";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import type { APIProductGetByIdResult } from "@/lib/commerce-types";
 import { displayAmount, displayPrice, type TaxBehavior } from "@/lib/pricing";
 import { cn } from "@/lib/utils";
 

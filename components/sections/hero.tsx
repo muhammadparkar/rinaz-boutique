@@ -9,7 +9,7 @@ import { type HeroSlide, heroSlides } from "@/lib/storefront-content";
 import { cn } from "@/lib/utils";
 
 const SLIDE_MS = 6500;
-const controlButton = "grid size-9 place-items-center rounded-full transition-colors hover:bg-[#faf7f2]/15";
+const controlButton = "grid size-11 place-items-center rounded-full transition-colors hover:bg-[#faf7f2]/15";
 
 // Campaign carousel: two full-bleed portrait frames per slide on desktop, one on phones. The progress
 // bar's CSS animation is the timer: when it ends the next slide shows, and pausing it pauses autoplay.
@@ -85,7 +85,7 @@ export function Hero({
 						aria-hidden={!isActive}
 						inert={!isActive}
 						className={cn(
-							"absolute inset-0 grid transition-opacity duration-1000 ease-out-expo md:grid-cols-2",
+							"absolute inset-0 grid transition-opacity duration-1000 ease-out-expo motion-reduce:transition-none md:grid-cols-2",
 							isActive ? "opacity-100" : "opacity-0",
 						)}
 					>
@@ -105,6 +105,7 @@ export function Hero({
 										alt={img.alt}
 										fill
 										priority={index === 0 && i === 0}
+										fetchPriority={index === 0 && i === 0 ? "high" : "auto"}
 										sizes="(min-width: 768px) 50vw, 100vw"
 										className={cn(
 											"object-cover object-[center_25%] transition-transform duration-[7000ms] ease-out motion-reduce:transition-none",
@@ -166,7 +167,7 @@ export function Hero({
 						</div>
 					</div>
 
-					<div className="absolute right-4 bottom-6 left-4 flex items-center gap-4 sm:right-6 sm:left-6 md:static md:w-80 md:flex-none">
+					<div className="absolute right-4 bottom-6 left-4 flex items-center gap-2 sm:gap-4 sm:right-6 sm:left-6 md:static md:w-80 md:flex-none">
 						<div className="flex flex-1 gap-2">
 							{slides.map((s, index) => (
 								<button
@@ -175,7 +176,7 @@ export function Hero({
 									onClick={() => go(index)}
 									aria-label={`Show slide ${index + 1}: ${s.title} ${s.accent}`}
 									aria-current={index === active}
-									className="relative h-6 flex-1"
+									className="relative h-11 flex-1"
 								>
 									<span className="absolute inset-x-0 top-1/2 h-0.5 -translate-y-1/2 overflow-hidden bg-[#faf7f2]/30">
 										<span
@@ -200,7 +201,7 @@ export function Hero({
 								</button>
 							))}
 						</div>
-						<span className="text-[11px] tabular-nums tracking-widest text-[#faf7f2]/85">
+						<span className="hidden text-[11px] tabular-nums tracking-widest text-[#faf7f2]/85 sm:block">
 							{String(active + 1).padStart(2, "0")} / {String(slides.length).padStart(2, "0")}
 						</span>
 						<div className="flex items-center">

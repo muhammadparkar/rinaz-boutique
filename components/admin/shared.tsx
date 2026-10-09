@@ -2,7 +2,7 @@
 import Image from "next/image";
 import { useEffect, useId, useState } from "react";
 import { try_ } from "safe-try";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/admin/ui/button";
 import {
 	Dialog,
 	DialogContent,
@@ -10,17 +10,17 @@ import {
 	DialogFooter,
 	DialogHeader,
 	DialogTitle,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
+} from "@/components/admin/ui/dialog";
+import { Input } from "@/components/admin/ui/input";
+import { Label } from "@/components/admin/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/admin/ui/select";
+import { Textarea } from "@/components/admin/ui/textarea";
 import { browserRepository } from "@/lib/admin/repository";
 import { cn } from "@/lib/utils";
 import { useAdmin } from "./provider";
 
 export function PageHeading({
-	eyebrow = "RINAZ / BACK OFFICE",
+	eyebrow,
 	title,
 	description,
 	children,
@@ -31,10 +31,10 @@ export function PageHeading({
 	children?: React.ReactNode;
 }) {
 	return (
-		<div className="mb-8 flex flex-wrap items-end justify-between gap-5">
+		<div className="mb-6 flex flex-wrap items-center justify-between gap-4">
 			<div>
-				<p className="mb-3 text-[10px] font-semibold tracking-[0.22em] text-muted-foreground">{eyebrow}</p>
-				<h1 className="text-3xl sm:text-4xl tracking-tight">{title}</h1>
+				{eyebrow && <p className="mb-2 text-xs text-muted-foreground">{eyebrow}</p>}
+				<h1 className="font-display text-2xl font-medium tracking-wide">{title}</h1>
 				<p className="mt-2 max-w-xl text-sm text-muted-foreground leading-relaxed">{description}</p>
 			</div>
 			<div className="flex flex-wrap gap-2">{children}</div>
@@ -99,12 +99,12 @@ export function AdminSelect({
 			}}
 			disabled={disabled}
 		>
-			<SelectTrigger id={id} aria-label={label} className={cn("w-full min-w-0 bg-background", className)}>
+			<SelectTrigger id={id} aria-label={label} className={cn("w-full min-w-0", className)}>
 				<SelectValue placeholder="Select an option" />
 			</SelectTrigger>
-			<SelectContent align="start" className="max-h-80 max-w-[calc(100vw-2rem)]">
+			<SelectContent align="start" className="admin-content-theme max-h-80 max-w-[calc(100vw-2rem)]">
 				{options.map((option, index) => (
-					<SelectItem key={option.value} value={String(index)} className="min-h-9 cursor-pointer">
+					<SelectItem key={option.value} value={String(index)} className="cursor-pointer">
 						<span className="truncate">{option.label}</span>
 					</SelectItem>
 				))}
@@ -149,7 +149,7 @@ export function Confirm({
 				{label}
 			</Button>
 			<Dialog open={open} onOpenChange={setOpen}>
-				<DialogContent className="[&>button]:size-8 [&>button]:grid [&>button]:place-items-center">
+				<DialogContent className="admin-workspace admin-content-theme [&>button]:size-8 [&>button]:grid [&>button]:place-items-center">
 					<DialogHeader>
 						<DialogTitle>{title}</DialogTitle>
 						<DialogDescription>{description}</DialogDescription>

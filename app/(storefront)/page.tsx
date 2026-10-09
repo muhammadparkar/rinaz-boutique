@@ -6,7 +6,6 @@ import { Hero } from "@/components/sections/hero";
 import { Newsletter } from "@/components/sections/newsletter";
 import { ProductGrid } from "@/components/sections/product-grid";
 import {
-	BridalSanctuary,
 	CategoryTiles,
 	CompleteTheLook,
 	GoldenHourFeature,
@@ -47,7 +46,6 @@ export default function Home() {
 			<TrustPillars />
 			<CompleteTheLook />
 			<About />
-			<BridalSanctuary />
 			<Newsletter />
 		</>
 	);

@@ -1,4 +1,9 @@
+import { Suspense } from "react";
 import { AdminModule } from "@/components/admin/module";
 export default function Page() {
-	return <AdminModule name="cms" />;
+	return (
+		<Suspense fallback={<p>Loading workspace…</p>}>
+			<AdminModule name="cms" />
+		</Suspense>
+	);
 }

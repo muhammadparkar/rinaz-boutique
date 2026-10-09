@@ -12,6 +12,7 @@ import {
 	type Snapshot,
 } from "@/lib/admin/model";
 import { browserRepository, newDemo } from "@/lib/admin/repository";
+import { resetOperations } from "./operations/persistence";
 
 type AdminContext = {
 	state: DemoState;
@@ -109,6 +110,7 @@ export function AdminProvider({
 	);
 	const reset = async () => {
 		if (commit(newDemo(snapshot, media), "Demo reset to original storefront", "administration")) {
+			resetOperations();
 			const results = await Promise.all(
 				state.media.filter((m) => m.uploaded).map((m) => try_(browserRepository.deleteImage(m.id))),
 			);

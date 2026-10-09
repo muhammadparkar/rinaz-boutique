@@ -1,11 +1,6 @@
 "use client";
 
-// ─── Storefront analytics contract (vendor-neutral, keep thin) ──────────────
-// Components publish commerce events here; the platform-served storefront kit
-// (injected by instrumentation-client.ts) consumes the queue and forwards to
-// whatever trackers the store has configured (Meta Pixel, …). Tracker-specific
-// logic lives in the platform, NOT in this repo — never add tracker snippets
-// (fbq, gtag, …) to template code.
+// Browser-local commerce events. No external analytics runtime is loaded.
 
 import { useEffect } from "react";
 import { CURRENCY } from "@/lib/constants";
@@ -33,14 +28,14 @@ type QueueItem =
 
 declare global {
 	interface Window {
-		ynsTrackQueue?: QueueItem[];
+		rinazTrackQueue?: QueueItem[];
 	}
 }
 
 const publish = (item: QueueItem) => {
-	window.ynsTrackQueue = window.ynsTrackQueue || [];
-	window.ynsTrackQueue.push(item);
-	window.dispatchEvent(new Event("yns:track"));
+	window.rinazTrackQueue = window.rinazTrackQueue || [];
+	window.rinazTrackQueue.push(item);
+	window.dispatchEvent(new Event("rinaz:track"));
 };
 
 /** Same item id convention as the product feeds: variant sku when set, variant id otherwise. */
@@ -54,11 +49,11 @@ const toItem = (variant: TrackedVariant, name: string, quantity?: number): Track
 	currency: CURRENCY,
 });
 
-/** Publish an add-to-cart. Queued, so it is safe to call before the kit has loaded. */
+/** Publish an add-to-cart. Queued, so it is safe to call before local listeners has loaded. */
 export const trackAddToCart = (variant: TrackedVariant, name: string, quantity: number) =>
 	publish({ event: "AddToCart", ...toItem(variant, name, quantity) });
 
-/** Tell the kit the consent cookie changed so it can re-read it (no reload needed). */
+/** Tell local listeners the consent cookie changed so it can re-read it (no reload needed). */
 export const notifyConsentChanged = () => publish({ event: "ConsentChanged" });
 
 /** The visitor gave their email (newsletter sign-up), so trackers can match them to a contact. */

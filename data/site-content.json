@@ -40,8 +40,8 @@
 								"href": "/collection/new-in"
 							},
 							"secondary": {
-								"label": "BOOK PRIVATE SALON",
-								"href": "/#sanctuary"
+								"label": "EXPLORE COLLECTION",
+								"href": "/collection/all"
 							},
 							"images": [
 								{
@@ -251,8 +251,8 @@
 					"type": "bridal-sanctuary",
 					"title": "An intimate private bridal consultation.",
 					"subtitle": "Custom fittings tailored for your sacred day",
-					"content": "Step inside the RINAZ Studio bridal sanctuary. From bespoke made-to-measure Anarkalis to private 18K fine jewelry styling, our appointments ensure an unforgettable wedding experience.",
-					"buttonText": "BOOK BRIDAL APPOINTMENT",
+					"content": "Step inside the RINAZ Studio bridal sanctuary. From bespoke made-to-measure Anarkalis to private 18K fine jewelry styling, experience an unforgettable bridal journey.",
+					"buttonText": "EXPLORE BRIDAL COUTURE",
 					"buttonLink": "/contact",
 					"enabled": true,
 					"cards": [

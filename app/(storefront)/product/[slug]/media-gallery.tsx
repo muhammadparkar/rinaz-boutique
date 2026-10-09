@@ -5,8 +5,8 @@ import { useSearchParams } from "next/navigation";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { useSelectedVariant } from "@/app/(storefront)/product/[slug]/use-selected-variant";
 import { Button } from "@/components/ui/button";
+import { StoreMedia } from "@/lib/store-media";
 import { cn, isVideoUrl } from "@/lib/utils";
-import { YNSMedia } from "@/lib/yns-media";
 
 type Variant = {
 	id: string;
@@ -112,7 +112,7 @@ export function MediaGallery({ images, productName, variants }: MediaGalleryProp
 						controls
 					/>
 				) : (
-					<YNSMedia
+					<StoreMedia
 						src={displayImages[selectedIndex] ?? ""}
 						alt={`${productName} - View ${selectedIndex + 1}`}
 						fill
@@ -197,7 +197,7 @@ export function MediaGallery({ images, productName, variants }: MediaGalleryProp
 									playsInline
 								/>
 							) : (
-								<YNSMedia
+								<StoreMedia
 									src={image}
 									alt={`${productName} thumbnail ${index + 1}`}
 									fill

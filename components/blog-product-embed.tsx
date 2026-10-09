@@ -1,7 +1,7 @@
-import type { APIProductGetByIdResult } from "commerce-kit";
 import { cacheLife } from "next/cache";
 import { ProductCard } from "@/components/product-card";
 import { commerce } from "@/lib/commerce";
+import type { APIProductGetByIdResult } from "@/lib/commerce-types";
 
 type FullProduct = NonNullable<APIProductGetByIdResult>;
 

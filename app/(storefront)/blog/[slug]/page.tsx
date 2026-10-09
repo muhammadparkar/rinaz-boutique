@@ -16,8 +16,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { commerce, getCanonicalUrl } from "@/lib/commerce";
 import { formatDate } from "@/lib/dates";
 import { JsonLdScript } from "@/lib/json-ld";
+import { StoreMedia } from "@/lib/store-media";
 import { isStoreToolEnabled } from "@/lib/store-tools";
-import { YNSMedia } from "@/lib/yns-media";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
 	"use cache";
@@ -157,7 +157,7 @@ const BlogPostContent = async ({ params }: { params: Promise<{ slug: string }> }
 			{/* Cover image */}
 			{post.image && (
 				<div className="relative aspect-[3/2] bg-secondary rounded-2xl overflow-hidden mb-10">
-					<YNSMedia
+					<StoreMedia
 						src={post.image}
 						alt={post.title}
 						fill

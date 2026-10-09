@@ -14,10 +14,10 @@ const directories = [
 	{
 		title: "Studio Sanctuaries",
 		links: [
-			{ label: "London (Knightsbridge)", href: "/#sanctuary" },
-			{ label: "Dubai (Fashion Avenue)", href: "/#sanctuary" },
-			{ label: "Lahore (Gulberg Atelier)", href: "/#sanctuary" },
-			{ label: "Doha (Private Suite)", href: "/#sanctuary" },
+			{ label: "London (Knightsbridge)", href: "/contact" },
+			{ label: "Dubai (Fashion Avenue)", href: "/contact" },
+			{ label: "Lahore (Gulberg Atelier)", href: "/contact" },
+			{ label: "Doha (Private Suite)", href: "/contact" },
 		],
 	},
 	{

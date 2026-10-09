@@ -1,8 +1,8 @@
 "use client";
-import { ArrowRight, ArrowUpRight } from "lucide-react";
 import Link from "next/link";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { ArrowRight, BarChart3, ChevronDown } from "@/components/admin/preset-icons";
+import { Badge } from "@/components/admin/ui/badge";
+import { Button } from "@/components/admin/ui/button";
 import { canEdit } from "@/lib/admin/model";
 import { formatMoney } from "@/lib/money";
 import { useAdmin } from "./provider";
@@ -17,80 +17,27 @@ export function Dashboard() {
 	const low = variants.filter((v) => v.stock <= state.threshold);
 	return (
 		<>
-			<PageHeading
-				title="The studio, at a glance."
-				description="A considered view of your collection, content, and daily operations."
-			>
-				<Badge variant="outline">Sample business data</Badge>
+			<PageHeading title="Overview" description="Manage your catalog, stock, and website.">
+				<Badge variant="outline">Browser-local demo</Badge>
 			</PageHeading>
-			<section className="mb-8 grid grid-cols-2 border-y lg:grid-cols-4" aria-label="Sample business metrics">
-				{[
-					{ label: "Revenue this month", value: money(2846500), note: "+12.8% vs. sample prior month" },
-					{ label: "Orders this month", value: "38", note: "6 awaiting fulfillment · sample" },
-					{ label: "Successful payments", value: "35 / 38", note: "2 pending · 1 failed · sample" },
-					{ label: "Average order value", value: money(74908), note: "USD · sample orders" },
-				].map((metric, index) => (
-					<div key={metric.label} className={`py-6 px-4 sm:px-6 ${index ? "border-l" : ""}`}>
-						<p className="text-xs text-muted-foreground">{metric.label}</p>
-						<p className="mt-3 text-2xl font-medium tabular-nums sm:text-3xl">{metric.value}</p>
-						<p className="mt-3 text-[11px] text-muted-foreground">{metric.note}</p>
-					</div>
-				))}
-			</section>
-			<div className="grid grid-cols-1 gap-8 xl:grid-cols-[1.6fr_1fr]">
-				<section className="rounded-lg border bg-background p-5 sm:p-7">
-					<div className="flex justify-between gap-3">
-						<div>
-							<h2 className="text-xl">A week in the studio</h2>
-							<p className="mt-1 text-xs text-muted-foreground">Sample daily revenue · USD</p>
-						</div>
-						<Badge variant="secondary">7 days</Badge>
-					</div>
-					<fieldset
-						className="mt-10 flex min-w-0 h-52 items-end gap-3 sm:gap-6"
-						aria-label="Sample revenue by day"
-					>
-						{sales.map((amount, index) => (
-							<div key={index} className="flex h-full min-w-0 flex-1 flex-col justify-end gap-2">
-								<span className="text-center text-[9px] tabular-nums text-muted-foreground sm:text-[11px]">
-									{money(amount)}
-								</span>
-								<div className="rounded-t bg-foreground/85" style={{ height: `${amount / 4000}%` }} />
-								<span className="text-center text-[11px] text-muted-foreground">
-									{["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"][index]}
-								</span>
-							</div>
-						))}
-					</fieldset>
-				</section>
-				<section className="relative overflow-hidden rounded-lg bg-secondary p-7">
-					<p className="text-[10px] tracking-[0.2em] text-muted-foreground">YOUR NEXT CHAPTER</p>
-					<h2 className="mt-6 max-w-xs text-3xl leading-tight">
-						Shape the story.
-						<br />
-						Curate the collection.
-					</h2>
-					<p className="mt-4 max-w-xs text-sm leading-relaxed text-muted-foreground">
-						Keep your campaigns, imagery, and products as considered as the pieces themselves.
-					</p>
-					{canEdit(role, "cms") && (
-						<Button asChild className="mt-7">
-							<Link href="/admin/cms">
-								Edit website content
-								<ArrowUpRight />
-							</Link>
-						</Button>
-					)}
-					{canEdit(role, "catalog") && (
-						<Link
-							href="/admin/products"
-							className="mt-4 flex items-center gap-2 text-xs underline underline-offset-4"
-						>
-							Manage the collection
-							<ArrowRight size={13} />
+			<div className="mb-6 flex flex-wrap gap-2">
+				{canEdit(role, "catalog") && (
+					<Button asChild>
+						<Link href="/admin/products">
+							Manage products <ArrowRight />
 						</Link>
-					)}
-				</section>
+					</Button>
+				)}
+				{canEdit(role, "catalog") && (
+					<Button asChild variant="outline">
+						<Link href="/admin/inventory">Adjust stock</Link>
+					</Button>
+				)}
+				{canEdit(role, "cms") && (
+					<Button asChild variant="outline">
+						<Link href="/admin/cms">Edit website</Link>
+					</Button>
+				)}
 			</div>
 			<div className="my-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
 				{[
@@ -109,7 +56,14 @@ export function Dashboard() {
 			</div>
 			<div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
 				<section>
-					<h2 className="mb-4 text-xl">Inventory watch</h2>
+					<div className="mb-4 flex items-center justify-between gap-2">
+						<h2 className="font-sans text-base font-semibold">Low stock</h2>
+						{canEdit(role, "catalog") && (
+							<Button asChild variant="outline" size="sm">
+								<Link href="/admin/inventory">Review inventory</Link>
+							</Button>
+						)}
+					</div>
 					<div className="divide-y rounded-lg border bg-background">
 						{low.slice(0, 4).map((v) => (
 							<div key={v.id} className="flex items-center gap-4 p-4">
@@ -134,7 +88,7 @@ export function Dashboard() {
 					</div>
 				</section>
 				<section>
-					<h2 className="mb-4 text-xl">Studio activity</h2>
+					<h2 className="mb-4 font-sans text-base font-semibold">Recent activity</h2>
 					<div className="divide-y rounded-lg border bg-background">
 						{state.activity.slice(0, 5).map((a) => (
 							<div key={a.id} className="p-4">
@@ -155,6 +109,57 @@ export function Dashboard() {
 					</div>
 				</section>
 			</div>
+			<details className="group mt-8 border-t pt-4">
+				<summary className="flex cursor-pointer list-none items-center justify-between py-2 text-sm font-medium select-none [&::-webkit-details-marker]:hidden">
+					<span className="flex items-center gap-2">
+						<BarChart3 className="size-4 text-muted-foreground" />
+						<span>Sample sales report</span>
+					</span>
+					<ChevronDown className="size-4 text-muted-foreground transition-transform duration-200 group-open:rotate-180" />
+				</summary>
+				<section
+					className="mb-8 grid grid-cols-2 border-y lg:grid-cols-4"
+					aria-label="Sample business metrics"
+				>
+					{[
+						{ label: "Revenue this month", value: money(2846500), note: "+12.8% vs. sample prior month" },
+						{ label: "Orders this month", value: "38", note: "6 awaiting fulfillment · sample" },
+						{ label: "Successful payments", value: "35 / 38", note: "2 pending · 1 failed · sample" },
+						{ label: "Average order value", value: money(74908), note: "USD · sample orders" },
+					].map((metric, index) => (
+						<div key={metric.label} className={`py-6 px-4 sm:px-6 ${index ? "border-l" : ""}`}>
+							<p className="text-xs text-muted-foreground">{metric.label}</p>
+							<p className="mt-3 text-2xl font-medium tabular-nums sm:text-3xl">{metric.value}</p>
+							<p className="mt-3 text-[11px] text-muted-foreground">{metric.note}</p>
+						</div>
+					))}
+				</section>
+				<section className="rounded-lg border bg-background p-5 sm:p-7">
+					<div className="flex justify-between gap-3">
+						<div>
+							<h2 className="text-xl">Daily revenue</h2>
+							<p className="mt-1 text-xs text-muted-foreground">Sample daily revenue · USD</p>
+						</div>
+						<Badge variant="secondary">7 days</Badge>
+					</div>
+					<fieldset
+						className="mt-10 flex min-w-0 h-52 items-end gap-3 sm:gap-6"
+						aria-label="Sample revenue by day"
+					>
+						{sales.map((amount, index) => (
+							<div key={index} className="flex h-full min-w-0 flex-1 flex-col justify-end gap-2">
+								<span className="text-center text-[9px] tabular-nums text-muted-foreground sm:text-[11px]">
+									{money(amount)}
+								</span>
+								<div className="rounded-t bg-foreground/85" style={{ height: `${amount / 4000}%` }} />
+								<span className="text-center text-[11px] text-muted-foreground">
+									{["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"][index]}
+								</span>
+							</div>
+						))}
+					</fieldset>
+				</section>
+			</details>
 		</>
 	);
 }

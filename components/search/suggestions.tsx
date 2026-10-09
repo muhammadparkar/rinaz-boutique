@@ -2,7 +2,7 @@
 
 import { HighlightedText } from "@/components/search/highlighted-text";
 import type { Controller } from "@/components/search/use-search-controller";
-import { YNSMedia } from "@/lib/yns-media";
+import { StoreMedia } from "@/lib/store-media";
 
 export function Suggestions({
 	listboxId,
@@ -58,7 +58,7 @@ export function Suggestions({
 					>
 						<span className="relative h-10 w-10 flex-none overflow-hidden bg-secondary">
 							{item.image ? (
-								<YNSMedia src={item.image} alt={item.name} fill sizes="40px" className="object-cover" />
+								<StoreMedia src={item.image} alt={item.name} fill sizes="40px" className="object-cover" />
 							) : null}
 						</span>
 						<span className="flex min-w-0 flex-1 flex-col">

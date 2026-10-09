@@ -2,8 +2,8 @@
 import { useRef } from "react";
 import { try_ } from "safe-try";
 import { toast } from "sonner";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/admin/ui/badge";
+import { Button } from "@/components/admin/ui/button";
 import { roles } from "@/lib/admin/model";
 import { useAdmin } from "./provider";
 import { Confirm, EmptyState, PageHeading } from "./shared";

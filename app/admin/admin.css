@@ -1,0 +1,199 @@
+/*
+  RINAZ admin. The rail is black lacquer, the work ground is cool pattern-paper white.
+  Gold belongs to the tape and the active position only. 1px rules, no shadows on content.
+  Shape: controls 4px, panels 6px, nothing pill-shaped except status chips.
+*/
+.admin-workspace {
+  --ops-rail: #121110;
+  --ops-rail-2: #1c1b19;
+  --ops-rail-line: #2b2a27;
+  --ops-rail-ink: #eeece7;
+  --ops-rail-muted: #9a978f;
+
+  --ops-bg: #f5f6f8;
+  --ops-surface: #ffffff;
+  --ops-surface-2: #f8fafc;
+  --ops-sunken: #eef1f5;
+  --ops-line: #e2e6ed;
+  --ops-line-strong: #cbd2dd;
+  --ops-ink: #20242c;
+  --ops-ink-2: #3c4553;
+  --ops-muted: #596578;
+  --ops-faint: #596578;
+
+  --ops-gold: #e2b13c;
+  --ops-gold-soft: #f6e7bf;
+  --ops-gold-ink: #121110;
+
+  --ops-primary: #161514;
+  --ops-primary-ink: #fcfcfb;
+
+  /* States are marks in ink (filled, hollow, faint); only critical gets colour: oxblood. */
+  --ops-ok: #166844;
+  --ops-ok-soft: #e8f5ed;
+  --ops-warn: #925500;
+  --ops-warn-soft: #fff3da;
+  --ops-bad: #b03039;
+  --ops-bad-soft: #ffedef;
+  --ops-info: #285db0;
+  --ops-info-soft: #edf3ff;
+
+  --ops-overlay: rgb(18 17 16 / 0.42);
+  --ops-float-shadow: 0 2px 6px rgb(18 17 16 / 0.08), 0 16px 40px -12px rgb(18 17 16 / 0.22);
+  color-scheme: light;
+}
+
+.dark .admin-workspace {
+  --ops-rail: #0c0b0a;
+  --ops-rail-2: #171614;
+  --ops-rail-line: #24231f;
+
+  --ops-bg: #0c0b0a;
+  --ops-surface: #141312;
+  --ops-surface-2: #1b1a18;
+  --ops-sunken: #0e0d0c;
+  --ops-line: #262421;
+  --ops-line-strong: #383632;
+  --ops-ink: #f5f4f0;
+  --ops-ink-2: #d6d4ce;
+  --ops-muted: #b0ada6;
+  --ops-faint: #a29f98;
+
+  --ops-gold: #e2b13c;
+  --ops-gold-soft: #3a3020;
+
+  --ops-primary: #eeece7;
+  --ops-primary-ink: #141312;
+
+  --ops-ok: #77dfad;
+  --ops-ok-soft: #173329;
+  --ops-warn: #f4cb7a;
+  --ops-warn-soft: #382c1b;
+  --ops-bad: #ff9aa3;
+  --ops-bad-soft: #3b232b;
+  --ops-info: #96beff;
+  --ops-info-soft: #20314d;
+
+  --ops-overlay: rgb(0 0 0 / 0.6);
+  --ops-float-shadow: 0 2px 6px rgb(0 0 0 / 0.4), 0 18px 44px -12px rgb(0 0 0 / 0.7);
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-ops-rail: var(--ops-rail);
+  --color-ops-rail-2: var(--ops-rail-2);
+  --color-ops-rail-line: var(--ops-rail-line);
+  --color-ops-rail-ink: var(--ops-rail-ink);
+  --color-ops-rail-muted: var(--ops-rail-muted);
+  --color-ops-bg: var(--ops-bg);
+  --color-ops-surface: var(--ops-surface);
+  --color-ops-surface-2: var(--ops-surface-2);
+  --color-ops-sunken: var(--ops-sunken);
+  --color-ops-line: var(--ops-line);
+  --color-ops-line-strong: var(--ops-line-strong);
+  --color-ops-ink: var(--ops-ink);
+  --color-ops-ink-2: var(--ops-ink-2);
+  --color-ops-muted: var(--ops-muted);
+  --color-ops-faint: var(--ops-faint);
+  --color-ops-gold: var(--ops-gold);
+  --color-ops-gold-soft: var(--ops-gold-soft);
+  --color-ops-gold-ink: var(--ops-gold-ink);
+  --color-ops-primary: var(--ops-primary);
+  --color-ops-primary-ink: var(--ops-primary-ink);
+  --color-ops-ok: var(--ops-ok);
+  --color-ops-ok-soft: var(--ops-ok-soft);
+  --color-ops-warn: var(--ops-warn);
+  --color-ops-warn-soft: var(--ops-warn-soft);
+  --color-ops-bad: var(--ops-bad);
+  --color-ops-bad-soft: var(--ops-bad-soft);
+  --color-ops-info: var(--ops-info);
+  --color-ops-info-soft: var(--ops-info-soft);
+  --shadow-ops-float: var(--ops-float-shadow);
+}
+
+.ops-num {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+.ops-display {
+  font-family: var(--font-cinzel);
+  letter-spacing: 0.04em;
+  font-weight: 500;
+}
+
+@keyframes rise {
+  from { opacity: 0.001; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes slide-in {
+  from { transform: translateX(24px); opacity: 0.001; }
+  to { transform: none; opacity: 1; }
+}
+@keyframes shimmer {
+  from { background-position: -200% 0; }
+  to { background-position: 200% 0; }
+}
+@keyframes tape-draw {
+  from { clip-path: inset(0 100% 0 0); }
+  to { clip-path: inset(0 0 0 0); }
+}
+@keyframes row-flash {
+  from { background-color: var(--ops-gold-soft); }
+  to { background-color: transparent; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .ops-anim-rise { animation: rise 0.32s cubic-bezier(0.16, 1, 0.3, 1) both; }
+  .ops-anim-slide { animation: slide-in 0.3s cubic-bezier(0.16, 1, 0.3, 1) both; }
+  .ops-tape-fill { animation: tape-draw 0.9s cubic-bezier(0.16, 1, 0.3, 1) both; }
+  .ops-row-new { animation: row-flash 2.4s cubic-bezier(0.16, 1, 0.3, 1) both; }
+  .ops-skeleton {
+    background: linear-gradient(90deg, var(--ops-sunken) 0%, var(--ops-line) 50%, var(--ops-sunken) 100%);
+    background-size: 200% 100%;
+    animation: shimmer 1.4s linear infinite;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ops-skeleton { background: var(--ops-sunken); }
+}
+
+@media print {
+  .admin-workspace * { visibility: hidden; }
+  .ops-print-area, .ops-print-area * { visibility: visible; }
+  .ops-print-area { position: absolute; inset: 0 auto auto 0; width: 100%; padding: 24px; }
+}
+
+.admin-workspace {
+  --background: var(--ops-surface);
+  --foreground: var(--ops-ink);
+  --card: var(--ops-surface);
+  --card-foreground: var(--ops-ink);
+  --secondary: var(--ops-surface-2);
+  --secondary-foreground: var(--ops-ink-2);
+  --muted: var(--ops-sunken);
+  --muted-foreground: var(--ops-muted);
+  --border: var(--ops-line);
+  --input: var(--ops-line-strong);
+  --ring: var(--ops-info);
+  --popover: var(--ops-surface);
+  --popover-foreground: var(--ops-ink);
+}
+#admin-main { color: var(--ops-ink); }
+#admin-main h1 { font-size: 1.75rem; line-height: 1.3; }
+#admin-main h2 { letter-spacing: -0.015em; }
+#admin-main section, #admin-main table { border-color: var(--ops-line); }
+#admin-main th { font-weight: 600; color: var(--ops-muted); }
+#admin-main :is(input, textarea)::placeholder { color: var(--ops-faint); opacity: 1; }
+#admin-main ::selection { background: var(--ops-info-soft); color: var(--ops-info); }
+#admin-main :is(input, textarea) { caret-color: var(--ops-info); }
+#admin-main * { scrollbar-width: thin; scrollbar-color: var(--ops-line-strong) transparent; }
+
+#admin-main :is(button, a, input, textarea) { transition-duration: 180ms; }
+#admin-main tbody tr { transition: background-color 160ms ease-out; }
+#admin-main tbody tr:hover { background: var(--ops-surface-2); }
+#admin-main .workflow-demo-note { color: var(--ops-muted); background: var(--ops-surface-2); }
+@media (prefers-reduced-motion: reduce) {
+ #admin-main *, #admin-main *::before, #admin-main *::after { animation: none !important; transition: none !important; }
+}

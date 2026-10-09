@@ -6,7 +6,7 @@
 #
 # Usage: scripts/audit.sh <url> [--desktop]
 #   scripts/audit.sh http://localhost:3000/
-#   scripts/audit.sh https://example.yns.store/products --desktop
+#   scripts/audit.sh https://example.com/products --desktop
 #
 # Reading the numbers: the accessibility audits are deterministic — a failure
 # here is a real defect and a pass is a real pass. The performance side is
@@ -48,7 +48,7 @@ command -v jq >/dev/null || {
 	exit 1
 }
 
-REPORT="$(mktemp -t yns-lighthouse)"
+REPORT="$(mktemp -t rinaz-lighthouse)"
 trap 'rm -f "$REPORT"' EXIT
 
 # Lighthouse writes a report even for a failed navigation, and its

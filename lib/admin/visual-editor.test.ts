@@ -103,3 +103,24 @@ test("undo groups typing, redo restores changes, and new edits discard redo", ()
 	expect(contentHistory(undone, { kind: "edit", content: first }).future).toHaveLength(0);
 	expect(contentHistory(initial, { kind: "undo" })).toBe(initial);
 });
+
+test("canvas controls reorder and toggle visibility with role enforcement", () => {
+	const move: EditorMessage = { type: "rinaz-editor", kind: "move", id: "hero", target: "about" };
+	expect(isEditorMessage(move)).toBe(true);
+	expect(isEditorMessage({ ...move, target: 42 })).toBe(false);
+	expect(applyEditorMessage(content, media, "Owner", move)).toEqual(moveSection(content, "hero", "about"));
+	expect(applyEditorMessage(content, media, "Operations", move)).toBe(content);
+	const hide: EditorMessage = { type: "rinaz-editor", kind: "visibility", id: "hero", enabled: false };
+	expect(
+		applyEditorMessage(content, media, "Editor", hide).sections.find((s) => s.id === "hero")?.enabled,
+	).toBe(false);
+	expect(
+		applyEditorMessage(
+			content,
+			media,
+			"Owner",
+			{ type: "rinaz-editor", kind: "products", id: "products", ids: ["unknown"] },
+			snapshot.products,
+		),
+	).toBe(content);
+});

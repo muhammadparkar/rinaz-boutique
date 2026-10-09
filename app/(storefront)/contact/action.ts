@@ -24,7 +24,11 @@ export async function sendContactMessage(_prev: ContactState, formData: FormData
 	const [error] = await try_(commerce.contactMessageCreate({ email, message }));
 	if (error) {
 		console.error("contact: contactMessageCreate failed", { error });
-		return { success: false, message: "", error: "Something went wrong. Please try again." };
+		return {
+			success: false,
+			message: "",
+			error: "Contact services are not connected yet. Please use the contact details on this page.",
+		};
 	}
 
 	return { success: true, message: "Thanks for reaching out! We'll get back to you soon." };

@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import { canEdit, mediaUsage, parseDemoState, safeHref, validateSnapshot } from "./model";
-import { newDemo } from "./repository";
+import { newDemo, saveWebsiteVersion } from "./repository";
 import { getAdminSeed } from "./seed";
 
 const seed = await getAdminSeed();
@@ -74,4 +74,24 @@ describe("admin draft and import boundaries", () => {
 		expect(canEdit("Operations", "cms")).toBe(false);
 		expect(canEdit("Owner", "administration")).toBe(true);
 	});
+});
+
+test("website save versions survive export, retain media, and migrate old browser data", () => {
+	const initial = demo();
+	const legacy = { ...initial } as Partial<typeof initial>;
+	delete legacy.websiteVersions;
+	expect(parseDemoState(legacy).websiteVersions).toEqual([]);
+	const first = saveWebsiteVersion(initial, initial.draft.content);
+	const changed = structuredClone(first.draft.content);
+	fixture(changed.slides[0]).title = "Second draft";
+	const second = saveWebsiteVersion(first, changed);
+	expect(second.websiteVersions.map((v) => v.number)).toEqual([1, 2]);
+	expect(second.websiteVersions[0]?.snapshot.content.slides[0]?.title).not.toBe("Second draft");
+	expect(second.published).toEqual(initial.published);
+	expect(parseDemoState(JSON.parse(JSON.stringify(second))).websiteVersions).toHaveLength(2);
+	expect(() =>
+		parseDemoState({ ...second, websiteVersions: [{ number: 1, at: "bad", snapshot: {} }] }),
+	).toThrow();
+	const src = fixture(fixture(initial.draft.content.slides[0]).images[0]).src;
+	expect(mediaUsage(second, src).some((label) => label.startsWith("V1:"))).toBe(true);
 });

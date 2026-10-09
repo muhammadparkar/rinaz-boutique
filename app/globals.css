@@ -1,5 +1,8 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@import "./admin/admin.css";
+@import "./admin/preset.css";
+@import "shadcn/tailwind.css";
 @plugin "@tailwindcss/typography";
 
 /* Streamdown (store-chat markdown) ships its own Tailwind classes — Tailwind must scan them. */

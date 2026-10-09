@@ -1,6 +1,6 @@
 # AGENTS.md
 
-Your Next Store — e-commerce app built with Next.js App Router + Commerce Kit SDK.
+RINAZ Boutique: Next.js App Router storefront with a local demo catalog and a future owner-managed backend.
 
 ## Commands
 
@@ -14,8 +14,6 @@ bun test          # Run tests (bun:test)
 tsc --noEmit     # Type check
 bun run check     # Everything but the build: biome check + tsc --noEmit + bun test
 bun run audit <url> [--desktop]       # Lighthouse performance + accessibility on a running URL
-bun run publish:store                 # Production publish (CLI twin of the admin "Publish" button; deploys remote main)
-bun run api <METHOD> <path> [json]    # Call any Store API endpoint with the store key, e.g. bun run api GET /me
 ```
 
 ## Key Files & Directories
@@ -32,20 +30,9 @@ biome.json            # Lint/format config
 next.config.ts        # Next.js config
 ```
 
-## Platform-managed files — DO NOT MODIFY
+## Backend ownership
 
-`instrumentation-client.ts`, `lib/track.tsx`, and `proxy.ts` carry the platform integration
-(analytics kit injection, the `track()` event contract, the `/_public` + `/checkout` proxies).
-They are updated by platform releases only — the platform's tooling **rejects edits to
-them, and any out-of-band change is restored to the platform version on every save**. Trackers, consent handling, and event forwarding live in
-a platform-served script (`/_public/kit.js`, generated per store), so **never** add tracker
-snippets (fbq, gtag, GTM, pixels) to template code. To track a commerce event from new UI,
-call `track()` from `lib/track.tsx`.
-
-Newsletter unsubscribe and confirmation pages, digital downloads, and payment/carrier webhooks
-live on the platform domain, not here — never add `/unsubscribe`, `/confirm-subscription`,
-`/digital-assets` or `*-webhook` routes. `proxy.ts` only forwards the old addresses that were
-already emailed or registered on this domain.
+This project is independent of YNS. Account and checkout are local routes. The owner will supply a custom backend; its URL, authentication, session, order, and payment contracts are not ready. Never fabricate credentials, customer records, successful API writes, or payments. The local catalog/cart adapter is demo data.
 
 ## Project Patterns
 
@@ -56,9 +43,9 @@ already emailed or registered on this domain.
 - **Always quote paths** with special characters in shell commands: `rg "term" "app/(auth)/login"`
 - **ALL `/checkout` and `/account` links MUST be plain `<a>` tags.** Never use `<Link>` (or any link wrapper) for links into a proxied zone (`/checkout`, `/account`) — a soft RSC navigation into the cross-zone rewrite 500s.
 
-## Shopper auth
+## Customer accounts
 
-There is **no auth in this app**. Shopper sign-in happens exclusively through the platform's unified account system: inline email-code sign-in inside the proxied `/checkout`, and the platform-rendered account area behind the proxied `/account` (see `proxy.ts`). Never add `/login` or `/signup` pages, auth forms, or session handling here — the only local piece is `app/api/auth/[...all]/route.ts`, a passthrough that forwards the platform components' client-side `/api/auth/*` calls (e.g. sign-out in the account area) to the apex backend.
+`/account` is local. `lib/account.ts` is the session adapter boundary; currently it reports unavailable. Future authentication must use a defined backend contract and server-enforced authorization. Request-time session reads belong inside an appropriate Suspense boundary, never above cached storefront chrome.
 
 ## The prerendered shell
 
@@ -80,8 +67,8 @@ grep -b -o -m1 '<div hidden id="S:' .next/server/app/index.html | cut -d: -f1  #
 ```
 
 The same rule holds for a deployed store, because the static shell is the first flush of the live
-response too: `bash scripts/check-shell.sh https://<store>/`. `YNS_SHELL_CHECK=warn` prints the
-failures and exits 0 (the release valve when a store must ship anyway), `YNS_SHELL_CHECK=off` skips
+response too: `bash scripts/check-shell.sh https://<store>/`. `RINAZ_SHELL_CHECK=warn` prints the
+failures and exits 0 (the release valve when a store must ship anyway), `RINAZ_SHELL_CHECK=off` skips
 the check entirely. Error documents are skipped by design — `_global-error` and anything that
 resolved to `notFound()` while prerendering replace the root layout, so they carry no chrome to
 measure.
@@ -120,7 +107,7 @@ store. Keep them when you touch the chrome, the tokens or a `<head>` asset.
 - **Touch targets.** Interactive elements are ≥ 24×24 CSS px. Use the `Button` sizes (`icon-sm` for
   icon buttons); never shrink one back down with `h-auto p-1`. A decorative dot belongs in an
   `aria-hidden` span inside a 24 px button, not as the button.
-- **Fixed docks.** The "Made with YNS" badge, the chat launcher and the newsletter launcher all sit
+- **Fixed docks.** The chat launcher and the newsletter launcher sit
   at `z-50`/`bottom-4`; the consent banner is `z-[60]` so its controls stay above them and clickable.
 - **Measure it.** `bun run audit <url>` against `bun start` while working, and
   `bun run audit https://<store>/` after publishing. The accessibility audits are deterministic —
@@ -152,7 +139,7 @@ Default export exceptions (Biome-allowed): `page.tsx`, `layout.tsx`, `loading.ts
 
 Prefer: named exports, `map`/`filter`/`reduce`, type inference, `as const`, template literals.
 
-## Commerce Kit SDK
+## Local commerce adapter
 
 ```tsx
 // Product browsing
@@ -230,7 +217,7 @@ runs `lint-staged`: Biome over the staged files, then `bun tsc --noEmit` and `bu
 staged — a CSS-only commit stages no TypeScript, so the contrast assertions would otherwise never
 run on the one file that can break them. `bun run check` runs the whole suite by hand.
 
-`bun run build` stays out of both, because prerendering reads live store data through `YNS_API_KEY`.
+`bun run build` stays out of both, because prerendering validates the local catalog and storefront shell.
 Run it yourself before publishing — it is also where the prerendered-shell check runs.
 
 ## Validation Checklist
@@ -245,14 +232,13 @@ Run it yourself before publishing — it is also where the prerendered-shell che
 - [ ] No console errors, images load, responsive layout
 - [ ] No hardcoded secrets; env vars set (`.env.local` / Vercel dashboard)
 
-Required env: `YNS_API_KEY`
+Optional canonical URL: `NEXT_PUBLIC_URL`. No YNS credentials are required.
 
 ## Troubleshooting
 
 | Error | Cause | Fix |
 |-------|-------|-----|
 | `Cannot read property 'variants' of undefined` | Product data missing | Use optional chaining (`product?.variants`) |
-| `Missing env.YNS_API_KEY` | Env not loaded | Create `.env.local`, restart dev server |
 | `noDefaultExport` | Default export in non-special file | Use named export |
 | `BigInt literal syntax` | Using `0n` with ES2020 | Use `BigInt(0)` |
 
@@ -265,7 +251,7 @@ Required env: `YNS_API_KEY`
 
 **When starting work on the project, ALWAYS call the `init` tool from `next-devtools-mcp` FIRST to set up proper context and establish documentation requirements. Do this automatically without being asked.**
 
-<!-- YNS-DOCS-START -->[YNS Docs]|base: https://yournextstore.com/docs/{section}/{slug}|Fetch with `Accept: text/markdown` header for raw markdown (token-efficient). YNS docs are the single source of truth hosted at yournextstore.com.|getting-started:{introduction,quick-start,first-store-setup}|storefront:{overview,installation,configuration,customization,deployment}|commerce-sdk:{overview,authentication,products,cart,orders,collections}|api-reference:{overview,products,variants,bundles,collections,categories,brands,inventory,search,reviews,orders,carts,customers,coupons,promotions,subscription-plans,loyalty,shipping,tax-rates,pickup-locations,events,tickets,posts,blog-categories,post-comments,subscribers,newsletters,contact-messages,media,images,brand-kit,socials,analytics,settings,team,domain,legal-pages,feedback-sessions}<!-- YNS-DOCS-END -->
+
 
 <!-- BEGIN:nextjs-agent-rules -->
 

@@ -1,12 +1,22 @@
 "use client";
 import { useState } from "react";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { ChevronDown, SlidersHorizontal } from "@/components/admin/preset-icons";
+import { Badge } from "@/components/admin/ui/badge";
+import { Button } from "@/components/admin/ui/button";
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogHeader,
+	DialogTitle,
+} from "@/components/admin/ui/dialog";
+import { Input } from "@/components/admin/ui/input";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/admin/ui/table";
 import { useAdmin } from "./provider";
 import { EmptyState, Field, PageHeading, SelectField } from "./shared";
 export function Inventory() {
 	const { state, commit, setDirty } = useAdmin();
+	const [adjusting, setAdjusting] = useState(false);
 	const [threshold, setThreshold] = useState(state.threshold);
 	const [selected, setSelected] = useState("");
 	const [stock, setStock] = useState(0);
@@ -14,6 +24,9 @@ export function Inventory() {
 	const [filter, setFilter] = useState("all");
 	const variants = state.draft.products.flatMap((p) =>
 		p.variants.map((v) => ({ ...v, productName: p.name })),
+	);
+	const visible = variants.filter(
+		(v) => filter === "all" || (filter === "out" ? v.stock === 0 : v.stock <= state.threshold),
 	);
 	const adjust = () => {
 		const v = variants.find((v) => v.id === selected);
@@ -49,6 +62,7 @@ export function Inventory() {
 				"catalog",
 			)
 		) {
+			setAdjusting(false);
 			setSelected("");
 			setReason("");
 		}
@@ -56,73 +70,111 @@ export function Inventory() {
 	return (
 		<>
 			<PageHeading
-				title="Every piece accounted for"
-				description="Track stock by variant. Adjustments affect the draft catalog until demo publishing."
+				title="Inventory"
+				description="Review stock and record adjustments. Changes save to your draft catalog."
 			/>
-			<div className="mb-8 grid grid-cols-1 gap-6 lg:grid-cols-2">
-				<section className="space-y-4 rounded-lg border bg-background p-6">
-					<h2 className="text-xl">Stock adjustment</h2>
-					<SelectField
-						label="Variant"
-						value={selected}
-						onChange={(id) => {
-							setSelected(id);
-							setStock(variants.find((v) => v.id === id)?.stock || 0);
-							setDirty(true);
-						}}
-						options={[
-							{ value: "", label: "Select a variant" },
-							...variants.map((v) => ({ value: v.id, label: `${v.productName} / ${v.label}` })),
-						]}
-					/>
-					<Field
-						label="New stock count"
-						type="number"
-						min={0}
-						step={1}
-						value={stock}
-						onChange={(value) => {
-							setStock(Number(value));
-							setDirty(true);
-						}}
-					/>
-					<Field
-						label="Reason for adjustment"
-						value={reason}
-						onChange={(value) => {
-							setReason(value);
-							setDirty(true);
-						}}
-					/>
-					<Button onClick={adjust}>Record adjustment</Button>
-				</section>
-				<section className="space-y-4 rounded-lg border bg-background p-6">
-					<h2 className="text-xl">Low-stock alerts</h2>
-					<p className="text-sm text-muted-foreground">
-						A variant is flagged when its stock is at or below this threshold.
-					</p>
-					<Field
-						label="Low-stock threshold"
-						type="number"
-						min={0}
-						step={1}
-						value={threshold}
-						onChange={(value) => {
-							setThreshold(Number(value));
-							setDirty(true);
-						}}
-					/>
-					<Button
-						variant="outline"
-						onClick={() => commit({ ...state, threshold }, "Low-stock threshold saved", "catalog")}
-					>
-						Save threshold
-					</Button>
-					<p className="text-3xl font-display">
-						{variants.filter((v) => v.stock <= state.threshold).length}{" "}
-						<span className="font-sans text-sm text-muted-foreground">variants need attention</span>
-					</p>
-				</section>
+			<div className="mb-6">
+				<Dialog
+					open={adjusting}
+					onOpenChange={(open) => {
+						if (
+							!open &&
+							(reason.trim() || stock !== variants.find((v) => v.id === selected)?.stock) &&
+							!window.confirm("Discard this stock adjustment?")
+						)
+							return;
+						setAdjusting(open);
+						if (!open) {
+							setReason("");
+							setSelected("");
+							setDirty(threshold !== state.threshold);
+						}
+					}}
+				>
+					<DialogContent className="admin-workspace admin-content-theme max-h-[90dvh] overflow-y-auto">
+						<DialogHeader>
+							<DialogTitle>Adjust stock</DialogTitle>
+							<DialogDescription>Set the new quantity and record why it changed.</DialogDescription>
+						</DialogHeader>
+						<SelectField
+							label="Variant"
+							value={selected}
+							onChange={(id) => {
+								setSelected(id);
+								setStock(variants.find((v) => v.id === id)?.stock || 0);
+								setDirty(true);
+							}}
+							options={[
+								{ value: "", label: "Select a variant" },
+								...variants.map((v) => ({ value: v.id, label: `${v.productName} / ${v.label}` })),
+							]}
+						/>
+						<Field
+							label="New stock count"
+							type="number"
+							min={0}
+							step={1}
+							value={stock}
+							onChange={(value) => {
+								setStock(Number(value));
+								setDirty(true);
+							}}
+						/>
+						<Field
+							label="Reason for adjustment"
+							value={reason}
+							onChange={(value) => {
+								setReason(value);
+								setDirty(true);
+							}}
+						/>
+						<Button onClick={adjust}>Record adjustment</Button>
+					</DialogContent>
+				</Dialog>
+				<details className="group max-w-lg rounded-lg border bg-background p-4 transition-colors">
+					<summary className="flex cursor-pointer list-none items-center justify-between text-sm font-medium select-none [&::-webkit-details-marker]:hidden">
+						<span className="flex items-center gap-2">
+							<SlidersHorizontal className="size-4 text-muted-foreground" />
+							<span>Low-stock settings</span>
+						</span>
+						<ChevronDown className="size-4 text-muted-foreground transition-transform duration-200 group-open:rotate-180" />
+					</summary>
+					<div className="mt-4 space-y-4 border-t pt-4">
+						<p className="text-xs text-muted-foreground leading-relaxed">
+							A variant is flagged when its stock is at or below this threshold.
+						</p>
+						<div className="flex flex-wrap items-end gap-3">
+							<div className="w-36 space-y-1.5">
+								<label htmlFor="inv-threshold" className="text-xs font-medium text-muted-foreground">
+									Low-stock threshold
+								</label>
+								<Input
+									id="inv-threshold"
+									type="number"
+									min={0}
+									step={1}
+									value={threshold}
+									onChange={(e) => {
+										setThreshold(Number(e.target.value));
+										setDirty(true);
+									}}
+								/>
+							</div>
+							<Button
+								variant="outline"
+								onClick={() => commit({ ...state, threshold }, "Low-stock threshold saved", "catalog")}
+							>
+								Save threshold
+							</Button>
+						</div>
+						<div className="flex items-center gap-2.5 rounded-md bg-muted/40 px-3.5 py-2.5 text-xs text-muted-foreground">
+							<span className="text-base font-semibold text-foreground tabular-nums">
+								{variants.filter((v) => v.stock <= state.threshold).length}
+							</span>
+							<span>variants currently need attention</span>
+						</div>
+					</div>
+				</details>
 			</div>
 			<div className="mb-4 max-w-xs">
 				<SelectField
@@ -136,7 +188,7 @@ export function Inventory() {
 					]}
 				/>
 			</div>
-			<div className="rounded-lg border bg-background">
+			<div className="overflow-hidden rounded-lg border bg-background">
 				<Table>
 					<TableHeader>
 						<TableRow>
@@ -144,28 +196,48 @@ export function Inventory() {
 							<TableHead>SKU</TableHead>
 							<TableHead>Available</TableHead>
 							<TableHead>Status</TableHead>
+							<TableHead>
+								<span className="sr-only">Actions</span>
+							</TableHead>
 						</TableRow>
 					</TableHeader>
 					<TableBody>
-						{variants
-							.filter(
-								(v) => filter === "all" || (filter === "out" ? v.stock === 0 : v.stock <= state.threshold),
-							)
-							.map((v) => (
-								<TableRow key={v.id}>
-									<TableCell>
-										<p className="font-medium">{v.productName}</p>
-										<p className="mt-1 text-xs text-muted-foreground">{v.label}</p>
-									</TableCell>
-									<TableCell>{v.sku}</TableCell>
-									<TableCell>{v.stock}</TableCell>
-									<TableCell>
-										<Badge variant="outline">
-											{v.stock === 0 ? "Out of stock" : v.stock <= state.threshold ? "Low stock" : "In stock"}
-										</Badge>
-									</TableCell>
-								</TableRow>
-							))}
+						{visible.map((v) => (
+							<TableRow key={v.id}>
+								<TableCell>
+									<p className="font-medium">{v.productName}</p>
+									<p className="mt-1 text-xs text-muted-foreground">{v.label}</p>
+								</TableCell>
+								<TableCell>{v.sku}</TableCell>
+								<TableCell>{v.stock}</TableCell>
+								<TableCell>
+									<Badge variant="outline">
+										{v.stock === 0 ? "Out of stock" : v.stock <= state.threshold ? "Low stock" : "In stock"}
+									</Badge>
+								</TableCell>
+								<TableCell>
+									<Button
+										variant="outline"
+										size="sm"
+										onClick={() => {
+											setSelected(v.id);
+											setStock(v.stock);
+											setReason("");
+											setAdjusting(true);
+										}}
+									>
+										Adjust stock
+									</Button>
+								</TableCell>
+							</TableRow>
+						))}
+						{!visible.length && (
+							<TableRow>
+								<TableCell colSpan={5} className="py-10 text-center text-muted-foreground">
+									No variants match this stock status.
+								</TableCell>
+							</TableRow>
+						)}
 					</TableBody>
 				</Table>
 			</div>
@@ -188,7 +260,7 @@ export function Inventory() {
 				</div>
 			) : (
 				<EmptyState
-					title="A clear record starts with your first adjustment"
+					title="No adjustments yet"
 					description="Each stock change records the count, reason, and time."
 				/>
 			)}

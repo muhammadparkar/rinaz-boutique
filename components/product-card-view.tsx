@@ -1,14 +1,14 @@
+import Link from "next/link";
+import { Price } from "@/components/currency";
+import { ProductCardDetails } from "@/components/product-card-details";
 import type {
 	APICollectionGetByIdResult,
 	APIProductGetByIdResult,
 	APIProductsBrowseResult,
-} from "commerce-kit";
-import Link from "next/link";
-import { Price } from "@/components/currency";
-import { ProductCardDetails } from "@/components/product-card-details";
+} from "@/lib/commerce-types";
 import { priceRange, type TaxBehavior } from "@/lib/pricing";
+import { StoreMedia } from "@/lib/store-media";
 import { isVideoUrl } from "@/lib/utils";
-import { YNSMedia } from "@/lib/yns-media";
 import { QuickAddButton } from "./quick-add-button";
 
 type BrowseProduct = APIProductsBrowseResult["data"][number];
@@ -95,7 +95,7 @@ export function ProductCardView({
 							playsInline
 						/>
 					) : (
-						<YNSMedia
+						<StoreMedia
 							src={primaryImage}
 							alt={product.name}
 							fill
@@ -121,7 +121,7 @@ export function ProductCardView({
 							playsInline
 						/>
 					) : (
-						<YNSMedia
+						<StoreMedia
 							src={secondaryImage}
 							alt={`${product.name} - alternate view`}
 							fill

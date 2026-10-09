@@ -5,9 +5,9 @@ import { Color, FontFamily, FontSize, LineHeight, TextStyle } from "@tiptap/exte
 import { Youtube } from "@tiptap/extension-youtube";
 import { StarterKit } from "@tiptap/starter-kit";
 import { renderToReactElement } from "@tiptap/static-renderer";
-import type { JSONContent } from "commerce-kit";
 import type { ReactNode } from "react";
 import { BlogProductEmbed } from "@/components/blog-product-embed";
+import type { JSONContent } from "@/lib/commerce-types";
 
 // The admin editor writes images as `imageResize`. Alias it onto Image rather than pull the
 // editor-only dependency into the storefront.

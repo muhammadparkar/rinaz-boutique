@@ -1,9 +1,11 @@
 "use client";
-import { Pencil } from "lucide-react";
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import type { Section } from "@/lib/admin/model";
+import { ArrowDown, ArrowUp, Eye, EyeOff, GripVertical, Pencil } from "@/components/admin/preset-icons";
+import { Button } from "@/components/admin/ui/button";
+import { Checkbox } from "@/components/admin/ui/checkbox";
+import { Label } from "@/components/admin/ui/label";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/admin/ui/popover";
+import type { Product, Section } from "@/lib/admin/model";
 import { safeHref } from "@/lib/admin/model";
 import type { EditorMessage } from "@/lib/admin/visual-editor";
 import type { HeroSlide } from "@/lib/storefront-content";
@@ -15,6 +17,9 @@ export function PreviewSectionEditor({
 	enabled,
 	scale,
 	selected,
+	previousId,
+	nextId,
+	products,
 	children,
 }: {
 	section: Section;
@@ -22,6 +27,9 @@ export function PreviewSectionEditor({
 	enabled: boolean;
 	scale: number;
 	selected: boolean;
+	previousId?: string;
+	nextId?: string;
+	products: Product[];
 	children: React.ReactNode;
 }) {
 	const [open, setOpen] = useState(false);
@@ -45,6 +53,23 @@ export function PreviewSectionEditor({
 			aria-label={enabled ? `Edit ${section.title} section` : undefined}
 			tabIndex={enabled ? 0 : undefined}
 			className={`relative scroll-mt-16 ${enabled ? "group/editor outline-offset-[-2px] hover:outline hover:outline-2 hover:outline-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary" : ""} ${enabled && selected ? "outline outline-2 outline-primary" : ""}`}
+			onDragOver={
+				enabled
+					? (event) => {
+							if (event.dataTransfer.types.includes("application/x-rinaz-section")) event.preventDefault();
+						}
+					: undefined
+			}
+			onDrop={
+				enabled
+					? (event) => {
+							const source = event.dataTransfer.getData("application/x-rinaz-section");
+							if (!source) return;
+							event.preventDefault();
+							send({ type: "rinaz-editor", kind: "move", id: source, target: section.id });
+						}
+					: undefined
+			}
 			onClickCapture={
 				enabled
 					? (event) => {
@@ -55,7 +80,7 @@ export function PreviewSectionEditor({
 							)
 								return;
 							select();
-							if (target.closest("h2,p,img,a")) {
+							if (target.closest("h1,h2,h3,h4,p,img,a,article") || target === event.currentTarget) {
 								event.preventDefault();
 								event.stopPropagation();
 								setOpen(true);
@@ -75,9 +100,63 @@ export function PreviewSectionEditor({
 					: undefined
 			}
 		>
-			{children}
+			{section.enabled ? (
+				children
+			) : (
+				<div className="min-h-24 border border-dashed p-8 text-center text-sm text-muted-foreground">
+					{section.title} (hidden)
+				</div>
+			)}
 			{enabled && (
-				<div data-editor-controls className="absolute top-3 left-3 z-40" style={{ zoom: 1 / scale }}>
+				<div
+					data-editor-controls
+					className="absolute top-3 left-3 z-40 flex gap-1"
+					style={{ zoom: 1 / scale }}
+				>
+					<Button
+						variant="secondary"
+						size="icon-sm"
+						draggable
+						aria-label={`Drag ${section.title} to reorder`}
+						onDragStart={(event) => {
+							event.dataTransfer.setData("application/x-rinaz-section", section.id);
+							event.dataTransfer.effectAllowed = "move";
+						}}
+					>
+						<GripVertical />
+					</Button>
+					<Button
+						variant="secondary"
+						size="icon-sm"
+						disabled={!previousId}
+						aria-label={`Move ${section.title} up`}
+						onClick={() =>
+							previousId && send({ type: "rinaz-editor", kind: "move", id: section.id, target: previousId })
+						}
+					>
+						<ArrowUp />
+					</Button>
+					<Button
+						variant="secondary"
+						size="icon-sm"
+						disabled={!nextId}
+						aria-label={`Move ${section.title} down`}
+						onClick={() =>
+							nextId && send({ type: "rinaz-editor", kind: "move", id: section.id, target: nextId })
+						}
+					>
+						<ArrowDown />
+					</Button>
+					<Button
+						variant="secondary"
+						size="icon-sm"
+						aria-label={`${section.enabled ? "Hide" : "Show"} ${section.title}`}
+						onClick={() =>
+							send({ type: "rinaz-editor", kind: "visibility", id: section.id, enabled: !section.enabled })
+						}
+					>
+						{section.enabled ? <EyeOff /> : <Eye />}
+					</Button>
 					<Popover
 						open={open}
 						onOpenChange={(next) => {
@@ -174,6 +253,31 @@ export function PreviewSectionEditor({
 											</p>
 										)}
 									</>
+								)}
+								{section.type === "products" && (
+									<fieldset className="space-y-2">
+										<legend className="mb-2 text-sm font-medium">Featured products</legend>
+										{products.map((p) => (
+											<div className="flex items-center gap-2" key={p.id}>
+												<Checkbox
+													id={`canvas-product-${section.id}-${p.id}`}
+													checked={section.productIds.includes(p.id)}
+													onCheckedChange={(checked) =>
+														send({
+															type: "rinaz-editor",
+															kind: "products",
+															id: section.id,
+															ids:
+																checked === true
+																	? [...section.productIds, p.id]
+																	: section.productIds.filter((id) => id !== p.id),
+														})
+													}
+												/>
+												<Label htmlFor={`canvas-product-${section.id}-${p.id}`}>{p.name}</Label>
+											</div>
+										))}
+									</fieldset>
 								)}
 								<Button
 									variant="outline"

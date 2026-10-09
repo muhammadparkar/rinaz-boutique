@@ -1,4 +1,3 @@
-import type { APIProductFiltersResult } from "commerce-kit";
 import Link from "next/link";
 import { Fragment, type ReactNode, Suspense } from "react";
 import { SortLinks, SortSelect } from "@/app/(storefront)/products/products-sort-select";
@@ -12,6 +11,7 @@ import {
 	BreadcrumbPage,
 	BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import type { APIProductFiltersResult } from "@/lib/commerce-types";
 import { LISTING_SORT_OPTIONS } from "@/lib/facets";
 
 type Crumb = { name: string; href?: string };

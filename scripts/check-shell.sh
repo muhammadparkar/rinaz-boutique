@@ -7,13 +7,13 @@
 # shell".
 #
 # Usage: scripts/check-shell.sh [file-or-url ...]   (default: .next/server/app/**/*.html)
-#        YNS_SHELL_CHECK=warn   report failures, exit 0
-#        YNS_SHELL_CHECK=off    skip the check entirely
+#        RINAZ_SHELL_CHECK=warn   report failures, exit 0
+#        RINAZ_SHELL_CHECK=off    skip the check entirely
 
 set -euo pipefail
 export LC_ALL=C
 
-MODE="${YNS_SHELL_CHECK:-on}"
+MODE="${RINAZ_SHELL_CHECK:-on}"
 if [ "$MODE" = "off" ]; then
 	exit 0
 fi
@@ -111,8 +111,8 @@ marked FAIL above. The usual causes:
      without its own <Suspense> around it (see SearchInput); on a listing page,
      controls that read the URL belong inside the grid's boundary.
 
-See AGENTS.md, "The prerendered shell". YNS_SHELL_CHECK=warn downgrades this to
-a warning, YNS_SHELL_CHECK=off skips it.
+See AGENTS.md, "The prerendered shell". RINAZ_SHELL_CHECK=warn downgrades this to
+a warning, RINAZ_SHELL_CHECK=off skips it.
 MSG
 
 if [ "$MODE" = "warn" ]; then

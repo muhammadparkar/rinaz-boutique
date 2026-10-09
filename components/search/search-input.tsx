@@ -55,7 +55,7 @@ export function SearchInput() {
 			<SheetTrigger
 				aria-label="Search the atelier"
 				aria-keyshortcuts="/ Meta+K"
-				className="group inline-flex h-10 items-center gap-3 rounded-full p-2 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground xl:border xl:border-border xl:pr-2 xl:pl-4"
+				className="group inline-flex h-11 items-center gap-3 rounded-full p-2 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground xl:border xl:border-border xl:pr-2 xl:pl-4"
 			>
 				<Search className="h-5 w-5 xl:h-4 xl:w-4" strokeWidth={1.75} />
 				<span className="hidden text-sm xl:inline">Search the atelier</span>

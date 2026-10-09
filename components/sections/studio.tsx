@@ -286,7 +286,7 @@ const services = [
 export function BridalSanctuary({
 	title = "An intimate private bridal consultation.",
 	text,
-	ctaLabel = "BOOK BRIDAL APPOINTMENT",
+	ctaLabel = "EXPLORE BRIDAL COUTURE",
 	ctaHref = "/contact",
 }: SectionProps = {}) {
 	return (
@@ -299,7 +299,7 @@ export function BridalSanctuary({
 					</p>
 					<p className="mt-6 text-lg leading-relaxed text-muted-foreground">
 						{text?.split("\n").slice(1).join("\n") ??
-							"Step inside the RINAZ Studio bridal sanctuary. From bespoke made-to-measure Anarkalis to private 18K fine jewelry styling, our appointments ensure an unforgettable wedding experience."}
+							"Step inside the RINAZ Studio bridal sanctuary. From bespoke made-to-measure Anarkalis to private 18K fine jewelry styling, experience an unforgettable bridal journey."}
 					</p>
 					<ul className="mt-6 space-y-2">
 						{services.map((service) => (

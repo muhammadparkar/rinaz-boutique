@@ -73,6 +73,7 @@ export type Adjustment = {
 export type Activity = { id: string; message: string; role: Role; at: string };
 export type DemoState = {
 	version: 1;
+	websiteVersions: { number: number; at: string; snapshot: Snapshot }[];
 	draft: Snapshot;
 	published: Snapshot;
 	media: Media[];
@@ -199,19 +200,22 @@ export function validateSnapshot(snapshot: Snapshot) {
 }
 
 export function mediaUsage(state: DemoState, src: string) {
-	return [state.draft, state.published].flatMap((snapshot, index) => {
-		const prefix = index === 0 ? "Draft" : "Published";
-		return [
-			...snapshot.products
-				.filter((p) => p.images.includes(src) || p.variants.some((v) => v.images.includes(src)))
-				.map((p) => `${prefix}: ${p.name}`),
-			...snapshot.categories.filter((c) => c.image === src).map((c) => `${prefix}: ${c.name}`),
-			...snapshot.content.slides
-				.filter((s) => s.images.some((i) => i.src === src))
-				.map((s) => `${prefix}: ${s.title}`),
-			...snapshot.content.sections.filter((s) => s.image === src).map((s) => `${prefix}: ${s.title}`),
-		];
-	});
+	return [state.draft, state.published, ...state.websiteVersions.map((v) => v.snapshot)].flatMap(
+		(snapshot, index) => {
+			const prefix =
+				index === 0 ? "Draft" : index === 1 ? "Published" : `V${state.websiteVersions[index - 2]?.number}`;
+			return [
+				...snapshot.products
+					.filter((p) => p.images.includes(src) || p.variants.some((v) => v.images.includes(src)))
+					.map((p) => `${prefix}: ${p.name}`),
+				...snapshot.categories.filter((c) => c.image === src).map((c) => `${prefix}: ${c.name}`),
+				...snapshot.content.slides
+					.filter((s) => s.images.some((i) => i.src === src))
+					.map((s) => `${prefix}: ${s.title}`),
+				...snapshot.content.sections.filter((s) => s.image === src).map((s) => `${prefix}: ${s.title}`),
+			];
+		},
+	);
 }
 
 // Imports are untrusted: verify the complete structure before applying domain validation.
@@ -291,6 +295,17 @@ export function parseDemoState(input: unknown): DemoState {
 		!record(input) ||
 		input.version !== 1 ||
 		!isSnapshot(input.draft) ||
+		(input.websiteVersions !== undefined &&
+			(!Array.isArray(input.websiteVersions) ||
+				!input.websiteVersions.every(
+					(v) =>
+						record(v) &&
+						Number.isSafeInteger(v.number) &&
+						Number(v.number) > 0 &&
+						typeof v.at === "string" &&
+						Number.isFinite(Date.parse(v.at)) &&
+						isSnapshot(v.snapshot),
+				))) ||
 		!isSnapshot(input.published) ||
 		!Array.isArray(input.media) ||
 		!input.media.every(
@@ -321,10 +336,18 @@ export function parseDemoState(input: unknown): DemoState {
 		throw new Error("Invalid demo file. Expected a complete RINAZ version 1 export.");
 	validateSnapshot(input.draft);
 	validateSnapshot(input.published);
-	const state = input as DemoState;
+	const state = { ...input, websiteVersions: input.websiteVersions ?? [] } as DemoState;
+	if (
+		!unique(state.websiteVersions.map((v) => String(v.number))) ||
+		state.websiteVersions.some(
+			(v, index) => index > 0 && v.number <= (state.websiteVersions[index - 1]?.number ?? 0),
+		)
+	)
+		throw new Error("Website version numbers must increase.");
+	state.websiteVersions.map((v) => validateSnapshot(v.snapshot));
 	if (!unique(state.media.map((m) => m.id)) || !unique(state.media.map((m) => m.src)))
 		throw new Error("Media IDs and sources must be unique.");
-	const referenced = [state.draft, state.published]
+	const referenced = [state.draft, state.published, ...state.websiteVersions.map((v) => v.snapshot)]
 		.flatMap((s) => [
 			...s.products.flatMap((p) => [...p.images, ...p.variants.flatMap((v) => v.images)]),
 			...s.categories.map((c) => c.image),
