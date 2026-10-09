@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { cn } from "@/lib/utils";
 import { Dashboard as CatalogDashboard } from "../dashboard";
 import { useAdmin } from "../provider";
 import { syncWorkflowCatalog } from "./catalog-bridge";
@@ -63,7 +64,10 @@ export function OperationsWorkspace({ module, id, tab }: { module: Workflow; id?
 		<div className="operations-content text-ops-ink">
 			<p
 				role="status"
-				className="workflow-demo-note mb-6 rounded-lg border border-border/60 bg-muted/50 px-4 py-2.5 text-xs text-muted-foreground leading-relaxed"
+				className={cn(
+					"workflow-demo-note mb-6 rounded-lg border border-border/60 bg-muted/50 px-4 py-2.5 text-xs text-muted-foreground leading-relaxed",
+					module === "settings" && "mx-auto max-w-4xl",
+				)}
 			>
 				Sample workflows — saved in this browser. Refunds, messages, bookings, and settings simulate changes
 				only; no backend calls or money transfers.

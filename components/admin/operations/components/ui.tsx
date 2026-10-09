@@ -333,34 +333,35 @@ export function Field({
 export const Input = forwardRef<
 	HTMLInputElement,
 	InputHTMLAttributes<HTMLInputElement> & { prefix?: string; suffix?: string }
->(function Input({ className, prefix, suffix, ...rest }, ref) {
+>(function Input({ className, prefix, suffix, type, ...rest }, ref) {
 	if (prefix || suffix) {
 		return (
 			<div
 				className={cx(
-					"flex h-7 items-stretch overflow-hidden rounded-md border border-ops-line-strong bg-ops-surface focus-within:border-ops-ink focus-within:shadow-[0_0_0_2px_var(--ops-gold-soft)] max-sm:h-8",
+					"flex h-7 w-full min-w-0 items-stretch overflow-hidden rounded-md border border-input bg-input/20 transition-colors focus-within:border-ring focus-within:ring-2 focus-within:ring-ring/30 dark:bg-input/30 max-sm:h-8",
 					className,
 				)}
 			>
 				{prefix && (
-					<span className="grid place-items-center border-r border-ops-line bg-ops-surface-2 px-2.5 text-[13px] text-ops-muted">
+					<span className="grid shrink-0 place-items-center border-r border-input bg-muted/50 px-2.5 text-xs text-muted-foreground select-none">
 						{prefix}
 					</span>
 				)}
-				<ShadInput
+				<input
 					ref={ref}
-					className="min-w-0 flex-1 bg-transparent px-2.5 text-[13.5px] text-ops-ink placeholder:text-ops-faint focus:outline-none"
+					type={type}
+					className="h-full min-w-0 flex-1 border-0 border-none bg-transparent px-2.5 py-0.5 text-sm text-foreground placeholder:text-muted-foreground shadow-none outline-none ring-0 rounded-none focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 md:text-xs/relaxed"
 					{...rest}
 				/>
 				{suffix && (
-					<span className="grid place-items-center border-l border-ops-line bg-ops-surface-2 px-2.5 text-[13px] text-ops-muted">
+					<span className="grid shrink-0 place-items-center border-l border-input bg-muted/50 px-2.5 text-xs text-muted-foreground select-none">
 						{suffix}
 					</span>
 				)}
 			</div>
 		);
 	}
-	return <ShadInput ref={ref} className={className} {...rest} />;
+	return <ShadInput ref={ref} type={type} className={className} {...rest} />;
 });
 
 export function Textarea({ className, ...rest }: TextareaHTMLAttributes<HTMLTextAreaElement>) {
