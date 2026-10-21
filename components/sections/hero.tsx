@@ -62,7 +62,7 @@ export function Hero({
 		<section
 			aria-roledescription="carousel"
 			aria-label="Featured collections"
-			className="relative isolate h-[calc(100svh-65px)] min-h-[520px] overflow-hidden bg-neutral-900 text-[#faf7f2] first:-mt-[65px] first:h-svh"
+			className="relative isolate h-[calc(100svh-65px)] min-h-[520px] overflow-hidden bg-neutral-900 text-[#faf7f2] first:-mt-[65px] first:h-svh xl:first:-mt-[109px]"
 			onMouseEnter={() => setHovered(true)}
 			onMouseLeave={() => setHovered(false)}
 			onFocus={() => setHovered(true)}
