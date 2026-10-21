@@ -71,9 +71,6 @@ export function Navbar({ links }: { links: NavLink[] }) {
 	);
 }
 
-// Hidden while the page sits at the top; slides down from under the header once the shopper
-// scrolls or tabs into it. It hangs below the sticky header (absolute), so revealing it never
-// shifts the page.
 const themes = [
 	{ value: "light", label: "Light", icon: Sun },
 	{ value: "dark", label: "Dark", icon: Moon },
@@ -105,6 +102,7 @@ function ThemeSwitch() {
 	);
 }
 
+// Absolute positioning keeps scroll, hover, and keyboard reveals from shifting the page.
 export function DesktopNav({ links }: { links: NavLink[] }) {
 	const [revealed, setRevealed] = useState(false);
 
@@ -119,10 +117,10 @@ export function DesktopNav({ links }: { links: NavLink[] }) {
 		<nav
 			aria-label="Collections"
 			className={cn(
-				"absolute inset-x-0 top-full -z-10 hidden h-11 items-center justify-center gap-8 border-b border-border bg-background/90 backdrop-blur-md transition-[translate,opacity] duration-500 ease-out-expo xl:flex",
+				"absolute inset-x-0 top-full -z-10 hidden h-11 items-center justify-center gap-8 border-b border-border bg-background/80 backdrop-blur-md transition-[translate,opacity] duration-300 ease-out-expo motion-reduce:transition-none xl:flex",
 				revealed
 					? "translate-y-0 opacity-100"
-					: "-translate-y-full opacity-0 focus-within:translate-y-0 focus-within:opacity-100",
+					: "pointer-events-none -translate-y-full opacity-0 group-hover/storefront-header:pointer-events-auto group-hover/storefront-header:translate-y-0 group-hover/storefront-header:opacity-100 group-focus-within/storefront-header:pointer-events-auto group-focus-within/storefront-header:translate-y-0 group-focus-within/storefront-header:opacity-100",
 			)}
 		>
 			{links.map((link) => (

@@ -1,13 +1,13 @@
 import { faqCategories } from "@/app/(storefront)/faq/faq-data";
-import { commerce } from "@/lib/commerce";
+import { mockCommerce } from "@/lib/mock-store";
 import { heroSlides } from "@/lib/storefront-content";
 import type { Media, Section, Snapshot } from "./model";
 
 export async function getAdminSeed() {
 	"use cache";
 	const [catalog, taxonomy] = await Promise.all([
-		commerce.productBrowse({ active: true, limit: 100 }),
-		commerce.categoriesBrowse({}),
+		mockCommerce.productBrowse({ active: true, limit: 100 }),
+		mockCommerce.categoriesBrowse({}),
 	]);
 	const products: Snapshot["products"] = catalog.data.map((p) => ({
 		id: p.id,
@@ -77,17 +77,6 @@ export async function getAdminSeed() {
 			productIds: [],
 		},
 		{
-			id: "trust",
-			type: "trust",
-			title: "Our promise",
-			text: "100% Certified Authentic\nDHL Express Worldwide\n14-Day Global Returns\n24/7 Styling Concierge",
-			image: "",
-			ctaLabel: "",
-			ctaHref: "",
-			enabled: true,
-			productIds: [],
-		},
-		{
 			id: "pairings",
 			type: "products",
 			title: "Curated Adornments & Pairings",
@@ -117,6 +106,17 @@ export async function getAdminSeed() {
 			type: "newsletter",
 			title: "Receive First Access to Runway Drops",
 			text: "Join our private client register to receive seasonal preview lookbooks, limited bridal pret releases, and private studio invitations.",
+			image: "",
+			ctaLabel: "",
+			ctaHref: "",
+			enabled: true,
+			productIds: [],
+		},
+		{
+			id: "trust",
+			type: "trust",
+			title: "Our promise",
+			text: "100% Certified Authentic\nDHL Express Worldwide\n14-Day Global Returns\n24/7 Styling Concierge",
 			image: "",
 			ctaLabel: "",
 			ctaHref: "",

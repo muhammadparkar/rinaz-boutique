@@ -50,95 +50,75 @@ export const CookieConsentBanner = () => {
 		// which otherwise overlap the buttons and shrink their clickable area.
 		<section
 			aria-labelledby="cookie-consent-title"
-			className="fixed right-4 bottom-4 left-4 z-[60] animate-rise rounded-xl border border-border bg-popover text-popover-foreground shadow-[0_24px_60px_-20px_rgb(0_0_0/0.35)] max-h-[calc(100dvh-2rem)] overflow-y-auto sm:right-6 sm:left-auto sm:max-w-md motion-reduce:animate-none"
+			className="fixed right-3 bottom-3 left-3 z-[60] max-h-[calc(100dvh-1.5rem)] overflow-y-auto rounded-xl border border-border bg-popover font-sans text-popover-foreground sm:right-4 sm:bottom-4 sm:left-auto sm:w-96"
 		>
-			<div className="p-3 sm:p-6">
-				<div className="flex items-start justify-between gap-4">
-					<p className="text-[11px] tracking-[0.3em] text-muted-foreground">✦ RINAZ STUDIO</p>
-					<button
-						type="button"
-						onClick={() => choose("declined")}
-						aria-label="Close and keep essentials only"
-						className="-mt-2 -mr-2 grid size-11 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
-					>
-						<XIcon className="size-4" />
-					</button>
-				</div>
-
-				<h2 id="cookie-consent-title" className="mt-3 text-2xl">
-					A note on <span className="italic">cookies</span>
-				</h2>
-				<p className="mt-3 hidden text-sm sm:block leading-relaxed text-muted-foreground">
-					Like our velvet keepsake box, we keep only what matters: your cart, currency and light or dark mode.
-					With your permission we also learn which pieces you love, so we can curate better collections.
-				</p>
-				<details className="mt-2 sm:hidden">
-					<summary className="flex min-h-11 cursor-pointer items-center text-sm text-muted-foreground">
-						About these cookies
-					</summary>{" "}
-					<p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-						Like our velvet keepsake box, we keep only what matters: your cart, currency and light or dark
-						mode. With your permission we also learn which pieces you love, so we can curate better
-						collections.
-					</p>
-				</details>
-
-				{/* Preferences unfold in place (grid-rows 0fr → 1fr) instead of opening another dialog. */}
-				<div
-					className={`grid transition-[grid-template-rows] motion-reduce:transition-none duration-500 ease-out-expo ${managing ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}
+			<div className="relative p-4">
+				<button
+					type="button"
+					onClick={() => choose("declined")}
+					aria-label="Close and keep essentials only"
+					className="absolute top-2 right-2 grid size-8 place-items-center rounded-md text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
 				>
-					<div className="overflow-hidden" inert={!managing}>
-						<ul className="mt-5 divide-y divide-border border-y border-border text-sm">
-							<li className="flex items-center justify-between gap-4 py-3">
-								<span>
-									<span className="block font-medium">Essentials</span>
-									<span className="text-xs text-muted-foreground">Cart, currency and theme</span>
-								</span>
-								<span className="text-[11px] tracking-widest text-muted-foreground">ALWAYS ON</span>
-							</li>
-							<li className="flex items-center justify-between gap-4 py-3">
-								<label htmlFor="consent-analytics" className="cursor-pointer">
-									<span className="block font-medium">Analytics</span>
-									<span className="text-xs text-muted-foreground">
-										What you browse, to shape future collections
-									</span>
-								</label>
-								<Checkbox
-									id="consent-analytics"
-									checked={analytics}
-									onCheckedChange={(value) => setAnalytics(value === true)}
-									className="size-5"
-								/>
-							</li>
-						</ul>
-					</div>
+					<XIcon className="size-4" />
+				</button>
+				<h2
+					id="cookie-consent-title"
+					className={managing ? "pr-8 font-sans text-sm font-semibold" : "sr-only"}
+				>
+					Cookie preferences
+				</h2>
+				<p className={`${managing ? "mt-2" : ""} pr-7 text-sm leading-5 text-muted-foreground`}>
+					We use cookies to run the store. You can also allow analytics and ads.
+				</p>
+				<div id="cookie-preferences" hidden={!managing}>
+					<ul className="mt-3 divide-y divide-border border-y border-border text-sm">
+						<li className="flex items-center justify-between gap-4 py-2.5">
+							<span>
+								<span className="block font-medium">Essentials</span>
+								<span className="text-xs text-muted-foreground">Cart, currency and theme</span>
+							</span>
+							<span className="text-xs text-muted-foreground">Always on</span>
+						</li>
+						<li className="flex items-center justify-between gap-4 py-2.5">
+							<label htmlFor="consent-analytics" className="cursor-pointer">
+								<span className="block font-medium">Analytics and ads</span>
+								<span className="text-xs text-muted-foreground">Optional tracking</span>
+							</label>
+							<Checkbox
+								id="consent-analytics"
+								checked={analytics}
+								onCheckedChange={(value) => setAnalytics(value === true)}
+								className="size-6"
+							/>
+						</li>
+					</ul>
 				</div>
 
-				<div className="mt-3 grid grid-cols-2 items-center gap-2 sm:mt-6 sm:flex sm:flex-wrap sm:gap-3">
+				<div className="mt-3 grid grid-cols-2 gap-2">
 					{managing ? (
 						<Button
 							type="button"
 							onClick={() => choose(analytics ? "accepted" : "declined")}
-							className="h-11 rounded-full px-2 text-[10px] tracking-[0.05em] sm:px-6 sm:text-xs sm:tracking-[0.15em]"
+							className="col-span-2 h-10 rounded-md bg-foreground px-3 text-sm font-medium tracking-normal text-background hover:bg-foreground/90"
 						>
-							SAVE PREFERENCES
+							Save preferences
 						</Button>
 					) : (
 						<>
 							<Button
 								type="button"
 								onClick={() => choose("accepted")}
-								className="h-11 rounded-full px-2 text-[10px] tracking-[0.05em] sm:px-6 sm:text-xs sm:tracking-[0.15em]"
+								className="h-10 rounded-md bg-foreground px-3 text-sm font-medium tracking-normal text-background hover:bg-foreground/90"
 							>
-								ACCEPT ALL
+								Accept all
 							</Button>
 							<Button
 								type="button"
 								variant="outline"
 								onClick={() => choose("declined")}
-								className="h-11 rounded-full px-2 text-[10px] tracking-[0.05em] sm:px-6 sm:text-xs sm:tracking-[0.15em]"
+								className="h-10 rounded-md px-3 text-sm font-medium tracking-normal"
 							>
-								ESSENTIALS ONLY
+								Essentials only
 							</Button>
 						</>
 					)}
@@ -146,9 +126,10 @@ export const CookieConsentBanner = () => {
 						type="button"
 						onClick={() => setManaging((m) => !m)}
 						aria-expanded={managing}
-						className="col-span-2 min-h-11 text-left text-xs text-muted-foreground underline decoration-border underline-offset-4 transition-colors hover:text-foreground"
+						aria-controls="cookie-preferences"
+						className="col-span-2 min-h-6 justify-self-start rounded-sm text-xs text-muted-foreground underline underline-offset-4 transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
 					>
-						{managing ? "Back" : "Manage preferences"}
+						{managing ? "Back" : "Preferences"}
 					</button>
 				</div>
 			</div>

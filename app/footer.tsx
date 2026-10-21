@@ -1,6 +1,7 @@
 import { cacheLife } from "next/cache";
 import Link from "next/link";
 import { FooterContent } from "@/components/storefront-footer";
+import { getPublishedSnapshot } from "@/lib/admin/workspace";
 import { commerce } from "@/lib/commerce";
 
 export async function FooterLegalPages() {
@@ -43,5 +44,13 @@ export async function getCopyrightYear() {
 
 export async function Footer() {
 	const year = await getCopyrightYear();
-	return <FooterContent year={year} legalPages={<FooterLegalPages />} />;
+	const { content } = await getPublishedSnapshot();
+	return (
+		<FooterContent
+			year={year}
+			text={content.footer.text}
+			links={content.footer.links}
+			legalPages={<FooterLegalPages />}
+		/>
+	);
 }

@@ -1,9 +1,9 @@
-import { ArrowRightIcon, Clock, RotateCcw, ShieldCheck, Truck } from "lucide-react";
+import { ArrowRightIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { Price } from "@/components/currency";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 type SectionProps = {
 	title?: string;
@@ -100,43 +100,37 @@ export function GoldenHourFeature({
 	ctaHref = "/collection/golden-hour",
 }: SectionProps = {}) {
 	return (
-		<section className="bg-foreground text-background">
-			<div className="max-w-7xl mx-auto grid items-center gap-8 px-4 py-12 sm:gap-10 sm:px-6 sm:py-24 lg:grid-cols-2 lg:px-8">
-				<div className="relative aspect-square overflow-hidden rounded-2xl sm:aspect-4/5 lg:order-2">
+		<section id="golden-hour" className="bg-background text-foreground">
+			<div className="mx-auto grid max-w-7xl grid-cols-1 md:grid-cols-2">
+				<div className="relative aspect-4/5 overflow-hidden">
 					{image ?? (
 						<Image
 							src={photo("1733470324488-d0e10d014d80")}
 							alt="Bridal couture from The Golden Hour Collection"
 							fill
-							sizes="(min-width: 1024px) 50vw, 100vw"
-							className="object-cover"
+							sizes="(min-width: 1280px) 640px, (min-width: 768px) 50vw, 100vw"
+							className="object-cover object-[center_35%]"
 						/>
 					)}
 				</div>
-				<div>
-					<h2 className="text-3xl sm:text-4xl lg:text-5xl font-medium tracking-tight">
-						{title ?? (
-							<>
-								<span className="italic font-normal">The Golden Hour</span> Collection.
-							</>
-						)}
+				<div className="flex min-w-0 flex-col justify-center px-6 py-12 sm:px-10 md:px-12 lg:px-16 lg:py-20">
+					<h2 className="max-w-[12ch] text-[clamp(2.5rem,4.8vw,4.5rem)] leading-[1.08] tracking-[-0.03em] break-words text-balance">
+						{title ?? "The Golden Hour Collection."}
 					</h2>
-					<p className="mt-6 max-w-md text-lg leading-relaxed text-background/70">
+					<p className="mt-6 max-w-[34ch] text-base leading-7 text-muted-foreground lg:mt-8 lg:text-lg lg:leading-8">
 						{text ??
 							"Sculpted in pure double-faced georgette silk and metallic gold zardozi for intimate ceremonies and receptions."}
 					</p>
-					<div className="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center">
-						<Button
-							asChild
-							size="lg"
-							className="h-12 rounded-full bg-background px-8 tracking-widest text-foreground hover:bg-background/90"
-						>
-							<Link href={ctaHref}>
-								{ctaLabel}
-								<ArrowRightIcon />
-							</Link>
-						</Button>
-					</div>
+					<a
+						href={ctaHref}
+						className="group mt-8 flex min-h-12 w-fit max-w-full items-center justify-between gap-5 border-b border-foreground pb-1 text-sm font-medium tracking-wide transition-colors hover:text-muted-foreground focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-foreground lg:mt-12 lg:gap-10"
+					>
+						{ctaLabel}
+						<ArrowRightIcon
+							aria-hidden="true"
+							className="size-5 transition-transform duration-300 group-hover:translate-x-1 motion-reduce:transform-none motion-reduce:transition-none"
+						/>
+					</a>
 				</div>
 			</div>
 		</section>
@@ -145,23 +139,19 @@ export function GoldenHourFeature({
 
 const pillars = [
 	{
-		icon: ShieldCheck,
 		title: "100% Certified Authentic",
 		description:
 			"Hallmarked 18K solid gold, VVS1 diamonds & pure Japanese silks with gemological valuation certificates.",
 	},
 	{
-		icon: Truck,
 		title: "DHL Express Worldwide",
 		description: "Complimentary insured courier on orders over $400. Delivered within 2–3 business days.",
 	},
 	{
-		icon: RotateCcw,
 		title: "14-Day Global Returns",
 		description: "Complimentary return pickup from your doorstep with complete insurance protection.",
 	},
 	{
-		icon: Clock,
 		title: "24/7 Styling Concierge",
 		description: "Private styling advice, custom bridal measurements & bespoke order tracking anytime.",
 	},
@@ -169,25 +159,15 @@ const pillars = [
 
 export function TrustPillars({ text }: { text?: string } = {}) {
 	return (
-		<section className="border-y border-border">
-			<div className="max-w-7xl mx-auto grid grid-cols-2 gap-x-4 gap-y-8 px-4 py-10 sm:gap-10 sm:px-6 sm:py-14 lg:grid-cols-4 lg:px-8">
+		<section aria-label="Shopping with RINAZ" className="bg-background text-foreground">
+			<ul className="mx-auto grid max-w-7xl gap-x-8 gap-y-7 px-5 py-10 sm:grid-cols-2 sm:px-8 lg:grid-cols-4 lg:gap-x-10 lg:px-12 lg:py-14">
 				{pillars.map((pillar, index) => (
-					<Card
-						key={text?.split("\n")[index] ?? pillar.title}
-						className="items-center border-0 bg-transparent py-0 text-center shadow-none"
-					>
-						<CardHeader className="w-full justify-items-center gap-3 px-0">
-							<pillar.icon className="h-6 w-6 text-muted-foreground" />
-							<CardTitle className="text-xs font-medium tracking-wide uppercase sm:text-sm">
-								{text?.split("\n")[index] ?? pillar.title}
-							</CardTitle>
-							<CardDescription className="text-xs leading-relaxed sm:text-sm">
-								{pillar.description}
-							</CardDescription>
-						</CardHeader>
-					</Card>
+					<li key={text?.split("\n")[index] ?? pillar.title} className="border-t border-border pt-4">
+						<h3 className="text-sm font-semibold leading-6">{text?.split("\n")[index] ?? pillar.title}</h3>
+						<p className="mt-2 max-w-[34ch] text-sm leading-6 text-muted-foreground">{pillar.description}</p>
+					</li>
 				))}
-			</div>
+			</ul>
 		</section>
 	);
 }
@@ -195,16 +175,19 @@ export function TrustPillars({ text }: { text?: string } = {}) {
 const lookPieces = [
 	{
 		name: "Blush Silk Embroidered Open Abaya",
+		image: photo("1760083545495-b297b1690672"),
 		price: 68000,
 		href: "/product/blush-silk-embroidered-open-abaya",
 	},
 	{
 		name: "The Gilded Teardrop Diamond Pendant",
+		image: photo("1773832190768-b4c4667ceeb4"),
 		price: 145000,
 		href: "/product/the-gilded-teardrop-diamond-pendant",
 	},
 	{
 		name: "Graceful Adornment Pearl & Gold Choker",
+		image: photo("1654699991520-aaaf4dd2608b"),
 		price: 98000,
 		href: "/product/graceful-adornment-pearl-gold-choker",
 	},
@@ -215,10 +198,26 @@ export function CompleteTheLook({
 	text,
 	image,
 	pieces = lookPieces,
-}: SectionProps & { pieces?: typeof lookPieces } = {}) {
+	renderPieceImage,
+}: SectionProps & {
+	pieces?: { name: string; price: number; href: string; image?: string }[];
+	renderPieceImage?: (src: string, alt: string) => React.ReactNode;
+} = {}) {
 	return (
-		<section className="max-w-7xl mx-auto grid items-center gap-8 px-4 py-12 sm:gap-10 sm:px-6 sm:py-24 lg:grid-cols-2 lg:px-8">
-			<div className="relative aspect-square overflow-hidden rounded-2xl bg-secondary sm:aspect-4/5">
+		<section
+			id="curated-pairings"
+			className="mx-auto grid max-w-7xl grid-cols-1 gap-8 px-5 py-16 sm:px-8 sm:py-20 lg:grid-cols-12 lg:gap-x-12 lg:gap-y-8 lg:px-12 lg:py-28"
+		>
+			<div className="min-w-0 lg:col-span-5 lg:col-start-1 lg:row-start-1 lg:self-end">
+				<h2 className="max-w-[15ch] text-[clamp(2rem,3.6vw,3.5rem)] leading-[1.12] tracking-[-0.025em] break-words text-balance">
+					{title}
+				</h2>
+				<p className="mt-5 max-w-[44ch] text-base leading-7 text-muted-foreground">
+					{text ??
+						"Style the signature Blush Silk Open Abaya with hallmarked 18K solid gold and South Sea pearls for an effortless, elevated entrance."}
+				</p>
+			</div>
+			<div className="relative aspect-4/5 overflow-hidden bg-secondary lg:col-span-6 lg:col-start-7 lg:row-span-2 lg:row-start-1">
 				{image ?? (
 					<Image
 						src={photo("1736342182642-e2042084f47c")}
@@ -229,39 +228,42 @@ export function CompleteTheLook({
 					/>
 				)}
 			</div>
-			<div>
-				<h2 className="text-3xl sm:text-4xl font-medium tracking-tight">{title}</h2>
-				<p className="mt-4 text-lg leading-relaxed text-muted-foreground">
-					{text ??
-						"Style the signature Blush Silk Open Abaya with hallmarked 18K solid gold and South Sea pearls for an effortless, elevated entrance."}
-				</p>
-				<Card className="mt-8 gap-0 py-2">
-					<CardContent className="px-4">
-						<ol className="divide-y divide-border">
-							{pieces.map((piece, index) => (
-								<li key={piece.href}>
-									<Link
-										href={piece.href}
-										className="flex items-center justify-between gap-4 py-4 transition-colors hover:text-muted-foreground"
-									>
-										<span className="flex items-baseline gap-4">
-											<span className="text-xs tabular-nums text-muted-foreground">
-												{String(index + 1).padStart(2, "0")}
-											</span>
-											<span className="font-medium">{piece.name}</span>
-										</span>
-										<span className="tabular-nums">
-											<Price amount={piece.price} />
-										</span>
-									</Link>
-								</li>
-							))}
-						</ol>
-					</CardContent>
-				</Card>
-				<p className="mt-4 text-sm text-muted-foreground">
-					Complete look:{" "}
-					<span className="font-medium text-foreground">
+			<div className="min-w-0 lg:col-span-5 lg:col-start-1 lg:row-start-2">
+				<ul className="divide-y divide-border border-y border-border">
+					{pieces.map((piece) => (
+						<li key={piece.href}>
+							<Link
+								href={piece.href}
+								className={`group grid min-h-16 items-center gap-x-3 gap-y-1 py-4 transition-colors hover:text-muted-foreground focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring sm:gap-4 ${piece.image ? "grid-cols-[auto_minmax(0,1fr)] sm:grid-cols-[auto_minmax(0,1fr)_auto]" : "grid-cols-1 sm:grid-cols-[minmax(0,1fr)_auto]"}`}
+							>
+								{piece.image && (
+									<span className="relative row-span-2 h-20 w-14 overflow-hidden bg-secondary sm:row-span-1 sm:h-24 sm:w-18">
+										{renderPieceImage ? (
+											renderPieceImage(piece.image, piece.name)
+										) : (
+											<Image
+												src={piece.image}
+												alt=""
+												fill
+												sizes="72px"
+												className="object-cover transition-transform duration-500 group-hover:scale-105 motion-reduce:transform-none motion-reduce:transition-none"
+											/>
+										)}
+									</span>
+								)}
+								<span className="text-sm font-medium leading-6 break-words">{piece.name}</span>
+								<span
+									className={`whitespace-nowrap text-sm tabular-nums sm:col-auto ${piece.image ? "col-start-2" : "col-start-1"}`}
+								>
+									<Price amount={piece.price} />
+								</span>
+							</Link>
+						</li>
+					))}
+				</ul>
+				<p className="mt-5 flex flex-wrap items-baseline justify-between gap-2 text-sm text-muted-foreground">
+					<span>Complete look</span>
+					<span className="text-lg font-medium tabular-nums text-foreground">
 						<Price amount={pieces.reduce((sum, p) => sum + p.price, 0)} />
 					</span>
 				</p>

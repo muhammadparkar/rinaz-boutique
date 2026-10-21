@@ -1,9 +1,13 @@
 import { cacheLife } from "next/cache";
 import { try_ } from "safe-try";
+import { getPublishedSnapshot } from "@/lib/admin/workspace";
+import type { CommerceAdapter } from "@/lib/commerce-types";
+import { databaseCatalog } from "@/lib/db/catalog";
 import { mockCommerce } from "@/lib/mock-store";
 
-// No backend: every call is served by the local catalog in lib/mock-store.ts.
-export const commerce = mockCommerce;
+export const commerce: CommerceAdapter = process.env.DATABASE_URL
+	? { ...mockCommerce, ...databaseCatalog }
+	: mockCommerce;
 
 // Plain "use cache" (not "remote") so store settings can be part of the static
 // shell — remote-cached entries defer to request time and block prerendering
@@ -19,14 +23,18 @@ export const meGetCached = async (_token?: string) => {
 export async function getStoreSeo() {
 	"use cache";
 	cacheLife("hours");
+	const { content } = await getPublishedSnapshot();
 
 	const [error, me] = await try_(meGetCached());
 	if (error) {
 		return { storeName: "RINAZ STUDIO", storeDescription: null };
 	}
 	return {
-		storeName: me.store.name || "RINAZ STUDIO",
-		storeDescription: me.store.settings?.storeDescription || null,
+		storeName: content.storeName || me.store.name || "RINAZ STUDIO",
+		storeDescription:
+			content.pages.find((page) => page.id === "home")?.seoDescription ||
+			me.store.settings?.storeDescription ||
+			null,
 	};
 }
 

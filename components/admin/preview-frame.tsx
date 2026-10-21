@@ -217,6 +217,14 @@ export function PreviewFrame({
 			return (
 				<CompleteTheLook
 					{...props}
+					renderPieceImage={(src, alt) => (
+						<AdminImage
+							src={src}
+							alt={alt}
+							className="absolute inset-0 h-full w-full object-cover"
+							sizes="72px"
+						/>
+					)}
 					pieces={section.productIds
 						.map((id) => visibleProducts.find((item) => item.id === id))
 						.filter((item): item is Product => Boolean(item))
@@ -224,6 +232,7 @@ export function PreviewFrame({
 							name: item.name,
 							href: `/product/${item.slug}`,
 							price: Number(item.variants[0]?.price || 0),
+							image: item.images[0],
 						}))}
 				/>
 			);

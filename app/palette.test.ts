@@ -25,6 +25,7 @@ const PAIRS = [
 	["secondary-foreground", "secondary"],
 	["accent-foreground", "accent"],
 	["primary-foreground", "primary"],
+	["gold-foreground", "warm-white"],
 ] as const;
 
 const css = readFileSync(join(import.meta.dir, "globals.css"), "utf8");

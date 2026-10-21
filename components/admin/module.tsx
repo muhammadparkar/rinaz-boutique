@@ -28,7 +28,7 @@ export function AdminModule({ name }: { name: AdminModuleName }) {
 		return (
 			<EmptyState
 				title="This role has a different workspace"
-				description="Switch the demo role in the header to access this module. This is a permission simulation, not authentication."
+				description="Your assigned staff role cannot access this module. Ask an owner to update your access."
 			/>
 		);
 	const Component = module.component;

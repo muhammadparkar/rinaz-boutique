@@ -25,60 +25,70 @@ export function Newsletter({
 	}, [state]);
 
 	return (
-		<section className="bg-foreground text-background overflow-hidden">
-			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-				<div className="max-w-2xl mx-auto text-center">
+		<section id="newsletter" className="border-t border-border bg-background text-foreground">
+			<div className="mx-auto grid max-w-7xl gap-10 px-5 py-16 sm:px-8 sm:py-20 lg:grid-cols-12 lg:items-center lg:gap-12 lg:px-12 lg:py-24">
+				<div className="lg:col-span-6">
+					<h2 className="max-w-[17ch] text-[clamp(2rem,3.7vw,3.5rem)] leading-[1.15] tracking-[-0.025em] text-balance">
+						{title}
+					</h2>
+					<p className="mt-5 max-w-[42ch] text-base leading-7 text-muted-foreground">
+						{text ??
+							"Join our private client register to receive seasonal preview lookbooks, limited bridal pret releases, and private studio invitations."}
+					</p>
+				</div>
+				<div className="lg:col-span-5 lg:col-start-8" aria-live="polite">
 					{state?.success ? (
-						<div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-							<div className="mx-auto mb-6 flex h-12 w-12 items-center justify-center rounded-full bg-background/10">
-								<CheckIcon className="h-6 w-6" />
-							</div>
-							<h2 className="text-2xl sm:text-3xl font-medium tracking-tight">You&apos;re on the list</h2>
-							<p className="mt-3 text-background/60">{state.message}</p>
+						<div role="status" className="border-y border-border py-8">
+							<CheckIcon aria-hidden="true" className="mb-4 size-6" />
+							<h3 className="font-display text-2xl">You&apos;re on the list</h3>
+							<p className="mt-3 text-base leading-7 text-muted-foreground">{state.message}</p>
 						</div>
 					) : (
 						<>
-							<h2 className="text-3xl sm:text-4xl lg:text-5xl font-medium tracking-tight">{title}</h2>
-							<p className="mt-4 text-lg leading-relaxed text-background/60 max-w-md mx-auto">
-								{text ??
-									"Join our private client register to receive seasonal preview lookbooks, limited bridal pret releases, and private studio invitations."}
-							</p>
 							<form
 								onSubmit={preview ? (event) => event.preventDefault() : undefined}
 								action={action}
-								className="mx-auto mt-10 flex max-w-md flex-col gap-4"
+								className="flex flex-col gap-5"
 							>
-								<div className="flex flex-col gap-3 sm:flex-row">
-									<label htmlFor="newsletter-email" className="sr-only">
+								<div>
+									<label htmlFor="newsletter-email" className="text-sm font-medium">
 										Email address
 									</label>
-									{/* flex-1 only in the row layout: in the stacked phone column it would collapse the height. */}
-									<Input
-										id="newsletter-email"
-										type="email"
-										name="email"
-										placeholder="your@email.com"
-										autoComplete="email"
-										required
-										className="h-12 rounded-full border-background/25 bg-background/10 px-5 text-base text-background shadow-none placeholder:text-background/55 focus-visible:border-background/50 focus-visible:ring-background/20 sm:flex-1 dark:bg-background/10"
-									/>
-									<Button
-										type="submit"
-										size="lg"
-										disabled={isPending || !marketingConsent}
-										className="h-12 shrink-0 rounded-full bg-background px-8 text-foreground hover:bg-background/90 disabled:opacity-60"
-									>
-										{isPending ? "Subscribing\u2026" : "Subscribe"}
-										{!isPending && <ArrowRightIcon />}
-									</Button>
+									<div className="mt-2 flex flex-col gap-3 sm:flex-row sm:items-end">
+										<Input
+											id="newsletter-email"
+											type="email"
+											name="email"
+											placeholder="your@email.com"
+											autoComplete="email"
+											required
+											disabled={isPending}
+											aria-describedby={state?.error ? "newsletter-error" : undefined}
+											className="h-12 min-w-0 rounded-none border-0 border-b border-foreground/40 bg-transparent px-0 text-base text-foreground shadow-none placeholder:text-muted-foreground focus-visible:border-foreground focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-4 focus-visible:ring-offset-background sm:flex-1 dark:bg-transparent"
+										/>
+										<Button
+											type="submit"
+											size="lg"
+											disabled={isPending || !marketingConsent}
+											className="h-12 shrink-0 rounded-none bg-foreground px-5 text-background hover:bg-foreground/85 focus-visible:ring-foreground disabled:opacity-50"
+										>
+											{isPending ? "Subscribing\u2026" : "Subscribe"}
+											{!isPending && <ArrowRightIcon aria-hidden="true" />}
+										</Button>
+									</div>
 								</div>
 								<NewsletterConsent
 									checked={marketingConsent}
 									onCheckedChange={setMarketingConsent}
 									disabled={isPending}
+									className="min-h-11 gap-3 text-foreground [&_[data-slot=checkbox]]:size-5 [&_[data-slot=checkbox]]:border-foreground/60 [&_[data-slot=checkbox]]:bg-transparent [&_[data-slot=checkbox]]:text-foreground [&_[data-slot=checkbox]]:data-[state=checked]:bg-foreground [&_[data-slot=checkbox]]:data-[state=checked]:text-background [&_span]:opacity-100"
 								/>
 							</form>
-							{state?.error && <p className="mt-4 text-sm text-red-300">{state.error}</p>}
+							{state?.error && (
+								<p id="newsletter-error" role="alert" className="mt-4 text-sm font-medium">
+									{state.error}
+								</p>
+							)}
 						</>
 					)}
 				</div>

@@ -8,8 +8,10 @@ import { NewsletterDialog } from "@/components/newsletter-dialog";
 import { StoreChatSection } from "@/components/store-chat/store-chat-section";
 import { StoreConfigProvider } from "@/components/store-config-provider";
 import { StorefrontHeader } from "@/components/storefront-header";
-import { commerce, meGetCached } from "@/lib/commerce";
+import { getPublishedSnapshot } from "@/lib/admin/workspace";
+import { meGetCached } from "@/lib/commerce";
 import { getCartCookieJson } from "@/lib/cookies";
+import { getStoredCart } from "@/lib/db/cart";
 import { StoreJsonLd } from "@/lib/json-ld";
 import { getStoreConfig } from "@/lib/store-config";
 
@@ -21,7 +23,7 @@ async function getInitialCart() {
 	}
 
 	try {
-		const cart = await commerce.cartGet({ cartId: cartCookie.id });
+		const cart = await getStoredCart(cartCookie.id);
 		return { cart: cart ?? null, cartId: cartCookie.id };
 	} catch {
 		return { cart: null, cartId: cartCookie.id };
@@ -43,13 +45,21 @@ async function CartProviderWrapper({ children }: { children: React.ReactNode }) 
 	// leave the page blank until the server responds. The other half of the rule: no
 	// <Suspense> around this component either — the boundary itself is what streams the
 	// chrome out of the shell, whether or not anything inside it is request-time.
-	const storeConfig = await getStoreConfig();
+	const [storeConfig, { content }] = await Promise.all([getStoreConfig(), getPublishedSnapshot()]);
 
 	return (
 		<StoreConfigProvider value={storeConfig}>
 			<CartProvider>
 				<div className="flex min-h-screen flex-col">
-					<StorefrontHeader />
+					{content.announcement.enabled && (
+						<a
+							href={content.announcement.href}
+							className="block bg-primary px-4 py-2 text-center text-sm text-primary-foreground"
+						>
+							{content.announcement.text}
+						</a>
+					)}
+					<StorefrontHeader links={content.navigation} />
 					<main className="flex-1">{children}</main>
 					<Footer />
 				</div>

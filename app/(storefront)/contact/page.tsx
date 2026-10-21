@@ -3,16 +3,18 @@ import { cacheLife } from "next/cache";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ContactForm } from "@/app/(storefront)/contact/contact-form";
+import { getPublishedSnapshot } from "@/lib/admin/workspace";
 import { getStoreSeo } from "@/lib/commerce";
 import { JsonLdScript } from "@/lib/json-ld";
 import { isStoreToolEnabled } from "@/lib/store-tools";
 
 export async function generateMetadata(): Promise<Metadata> {
 	const { storeName } = await getStoreSeo();
-	const description = `Get in touch with the ${storeName} team. Questions about orders, products, or anything else — we're here to help.`;
+	const page = (await getPublishedSnapshot()).content.pages.find((item) => item.id === "contact");
+	const description = page?.seoDescription || `Get in touch with the ${storeName} team.`;
 
 	return {
-		title: "Contact Us",
+		title: { absolute: page?.seoTitle || "Contact Us" },
 		description,
 		alternates: { canonical: "/contact" },
 		openGraph: {
@@ -34,6 +36,8 @@ const contactJsonLd = {
 export default async function ContactPage() {
 	"use cache";
 	cacheLife("minutes");
+	const { content } = await getPublishedSnapshot();
+	const page = content.pages.find((item) => item.id === "contact");
 
 	if (!(await isStoreToolEnabled("contactForm"))) {
 		notFound();
@@ -50,12 +54,16 @@ export default async function ContactPage() {
 				</Link>
 				<span className="mx-2 text-muted-foreground">/</span>
 				<span className="text-sm">Contact Us</span>
-				<h1 className="mt-4 text-4xl font-medium tracking-tight">Contact Us</h1>
-				<p className="mt-3 text-lg text-muted-foreground">
-					Have a question or just want to say hello? Send us a message and we'll get back to you as soon as we
-					can.
-				</p>
+				<h1 className="mt-4 text-4xl font-medium tracking-tight">{page?.title || "Contact Us"}</h1>
+				<p className="mt-3 text-lg text-muted-foreground">{page?.text}</p>
 			</div>
+			<address className="mb-8 space-y-2 text-sm not-italic">
+				<p>
+					<a href={`mailto:${content.contact.email}`}>{content.contact.email}</a>
+				</p>
+				<p>{content.contact.phone}</p>
+				<p>{content.contact.address}</p>
+			</address>
 
 			{/* Form */}
 			<ContactForm />

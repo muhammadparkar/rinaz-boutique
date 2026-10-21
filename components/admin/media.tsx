@@ -1,12 +1,11 @@
 "use client";
 import { useState } from "react";
-import { try_ } from "safe-try";
 import { toast } from "sonner";
+import { uploadMedia } from "@/app/admin/media-actions";
 import { Search, Upload } from "@/components/admin/preset-icons";
 import { Button } from "@/components/admin/ui/button";
 import { Input } from "@/components/admin/ui/input";
 import { mediaUsage } from "@/lib/admin/model";
-import { browserRepository } from "@/lib/admin/repository";
 import { useAdmin } from "./provider";
 import { AdminImage, Confirm, EmptyState, Field, PageHeading } from "./shared";
 export function MediaLibrary() {
@@ -20,36 +19,27 @@ export function MediaLibrary() {
 		if (!file) return;
 		if (
 			!["image/jpeg", "image/png", "image/webp", "image/avif", "image/gif"].includes(file.type) ||
-			file.size > 10 * 1024 * 1024
+			file.size > 768 * 1024
 		) {
-			toast.error("Upload a JPEG, PNG, WebP, AVIF, or GIF up to 10 MB.");
+			toast.error("Upload a JPEG, PNG, WebP, AVIF, or GIF up to 768 KB.");
 			return;
 		}
 		setBusy(true);
-		const id = crypto.randomUUID();
-		const [error] = await try_(browserRepository.putImage(id, file));
-		if (error) toast.error("Image upload failed. Check available browser storage.");
-		else if (
-			!commit(
-				{
-					...state,
-					media: [
-						...state.media,
-						{
-							id,
-							src: `media:${id}`,
-							name: file.name,
-							alt: file.name.replace(/\.[^.]+$/, ""),
-							uploaded: true,
-						},
-					],
-				},
+		try {
+			const form = new FormData();
+			form.set("file", file);
+			const result = await uploadMedia(form);
+			if (!result.success) throw new Error(result.error);
+			await commit(
+				{ ...state, media: [...state.media, result.asset] },
 				"Image added to media library",
 				"media",
-			)
-		)
-			await try_(browserRepository.deleteImage(id));
-		setBusy(false);
+			);
+		} catch (error) {
+			toast.error(error instanceof Error ? error.message : "Image upload failed");
+		} finally {
+			setBusy(false);
+		}
 	};
 	const current = state.media.find((m) => m.id === selected);
 	return (
@@ -140,7 +130,7 @@ export function MediaLibrary() {
 							Used in: {mediaUsage(state, current.src).join(" · ") || "No references — safe to remove"}
 						</p>
 						<p className="text-xs text-muted-foreground">
-							Uploaded images stay in this browser. JSON exports include their references, not image files.
+							Uploaded images are shared across staff browsers and publicly accessible by URL.
 						</p>
 					</div>
 				</section>
@@ -173,7 +163,7 @@ export function MediaLibrary() {
 									<div className="p-3">
 										<p className="truncate text-xs font-medium">{m.name}</p>
 										<p className="mt-1 text-[10px] text-muted-foreground">
-											{m.uploaded ? "Browser upload" : "Storefront asset"} · {usage.length} references
+											{m.uploaded ? "Shared upload" : "Storefront asset"} · {usage.length} references
 										</p>
 									</div>
 								</button>
@@ -183,19 +173,15 @@ export function MediaLibrary() {
 										title="Remove this image?"
 										description="Referenced images cannot be deleted. Replace them in both drafts and the published snapshot first."
 										disabled={usage.length > 0}
-										onConfirm={() => {
+										onConfirm={async () => {
 											if (
-												commit(
+												await commit(
 													{ ...state, media: state.media.filter((item) => item.id !== m.id) },
 													"Image removed from library",
 													"media",
 												)
 											) {
 												setSelected("");
-												if (m.uploaded)
-													void try_(browserRepository.deleteImage(m.id)).then(([error]) => {
-														if (error) toast.error("Image removed; unused blob cleanup failed.");
-													});
 											}
 										}}
 									/>

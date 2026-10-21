@@ -3,15 +3,19 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { type FAQCategory, faqCategories } from "@/app/(storefront)/faq/faq-data";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { getPublishedSnapshot } from "@/lib/admin/workspace";
 import { getStoreSeo } from "@/lib/commerce";
 import { JsonLdScript } from "@/lib/json-ld";
 
 export async function generateMetadata(): Promise<Metadata> {
 	const { storeName } = await getStoreSeo();
-	const description = `Frequently asked questions about orders, payments, shipping, and returns at ${storeName}.`;
+	const page = (await getPublishedSnapshot()).content.pages.find((item) => item.id === "faq");
+	const description =
+		page?.seoDescription ||
+		`Frequently asked questions about orders, payments, shipping, and returns at ${storeName}.`;
 
 	return {
-		title: "FAQ",
+		title: { absolute: page?.seoTitle || "FAQ" },
 		description,
 		alternates: { canonical: "/faq" },
 		openGraph: {
@@ -91,10 +95,21 @@ function ContactCard() {
 	);
 }
 
-export default function FAQPage() {
+export default async function FAQPage() {
+	const { content } = await getPublishedSnapshot();
+	const page = content.pages.find((item) => item.id === "faq");
+	const categories: FAQCategory[] = Array.from(new Set(content.faqs.map((item) => item.category))).map(
+		(title, index) => ({
+			id: faqCategories.find((item) => item.title === title)?.id ?? `faq-${index}`,
+			title,
+			questions: content.faqs
+				.filter((item) => item.category === title)
+				.map(({ question, answer }) => ({ question, answer })),
+		}),
+	);
 	return (
 		<div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
-			<JsonLdScript data={buildFaqJsonLd(faqCategories)} />
+			<JsonLdScript data={buildFaqJsonLd(categories)} />
 			{/* Header */}
 			<div className="mb-10">
 				<Link href="/" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
@@ -102,20 +117,22 @@ export default function FAQPage() {
 				</Link>
 				<span className="mx-2 text-muted-foreground">/</span>
 				<span className="text-sm">FAQ</span>
-				<h1 className="mt-4 text-4xl font-medium tracking-tight">Frequently Asked Questions</h1>
+				<h1 className="mt-4 text-4xl font-medium tracking-tight">
+					{page?.title || "Frequently Asked Questions"}
+				</h1>
 				<p className="mt-3 text-lg text-muted-foreground">
-					Find answers to the most common questions about your orders, payments, shipping, and more.
+					{page?.text || "Find answers to questions about orders, payments, shipping, and more."}
 				</p>
 			</div>
 
 			{/* Category Navigation */}
 			<div className="mb-10">
-				<CategoryNav categories={faqCategories} />
+				<CategoryNav categories={categories} />
 			</div>
 
 			{/* FAQ Sections */}
 			<div className="space-y-12">
-				{faqCategories.map((category) => (
+				{categories.map((category) => (
 					<FAQSection key={category.id} category={category} />
 				))}
 			</div>

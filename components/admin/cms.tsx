@@ -147,7 +147,7 @@ export function Cms() {
 				: { ...state.published, content: structuredClone(state.draft.content) };
 		commit(
 			{ ...state, published, publishedAt: new Date().toISOString() },
-			role === "Owner" ? "Storefront published to local demo" : "Website content published to local demo",
+			role === "Owner" ? "Storefront published" : "Website content published",
 			"cms",
 		);
 	};
@@ -160,14 +160,14 @@ export function Cms() {
 		toast.info("Unsaved edits discarded");
 	};
 
-	const discardDraft = () => {
+	const discardDraft = async () => {
 		const base = state.published?.content ?? state.websiteVersions[0]?.snapshot.content;
 		if (!base) {
 			toast.error("No previous baseline available to restore.");
 			return;
 		}
 		const restored = structuredClone(base);
-		commit(
+		const success = await commit(
 			{
 				...state,
 				draft: { ...state.draft, content: restored },
@@ -175,6 +175,7 @@ export function Cms() {
 			"Draft discarded; restored to baseline",
 			"cms",
 		);
+		if (!success) return;
 		edit(restored);
 		setAnnouncement("Draft discarded; restored to baseline");
 		toast.success("Draft discarded. Restored to baseline.");
@@ -272,7 +273,7 @@ export function Cms() {
 					className="h-8 gap-1.5 px-3 text-xs"
 				>
 					<Check className="size-3.5" />
-					<span>Publish to demo</span>
+					<span>Publish website</span>
 				</Button>
 			</PageHeading>
 
@@ -285,7 +286,7 @@ export function Cms() {
 					<div>
 						<div className="flex items-center gap-2">
 							<span className="text-xs font-semibold text-foreground">
-								{state.publishedAt ? "Published to Live Demo" : "Unpublished Draft State"}
+								{state.publishedAt ? "Published to storefront" : "Unpublished Draft State"}
 							</span>
 							{state.publishedAt ? (
 								<span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-0.5 text-[10px] font-medium text-emerald-500 border border-emerald-500/20">
@@ -299,8 +300,8 @@ export function Cms() {
 						</div>
 						<p className="mt-0.5 text-[11px] text-muted-foreground">
 							{state.publishedAt
-								? `Last demo publish: ${new Date(state.publishedAt).toLocaleString()}`
-								: "No changes published to the live storefront yet. Current edits are saved locally in your draft."}
+								? `Last publish: ${new Date(state.publishedAt).toLocaleString()}`
+								: "No changes published to the storefront yet. Saved drafts are shared with your team."}
 						</p>
 					</div>
 				</div>
@@ -779,7 +780,7 @@ export function Cms() {
 							<span className="text-muted-foreground">Restore target:</span>
 							<span className="font-medium text-foreground">
 								{state.publishedAt
-									? `Published demo (${new Date(state.publishedAt).toLocaleDateString()})`
+									? `Published (${new Date(state.publishedAt).toLocaleDateString()})`
 									: "Initial baseline"}
 							</span>
 						</div>

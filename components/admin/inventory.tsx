@@ -28,14 +28,14 @@ export function Inventory() {
 	const visible = variants.filter(
 		(v) => filter === "all" || (filter === "out" ? v.stock === 0 : v.stock <= state.threshold),
 	);
-	const adjust = () => {
+	const adjust = async () => {
 		const v = variants.find((v) => v.id === selected);
 		if (!v || !reason.trim() || !Number.isSafeInteger(stock) || stock < 0) {
 			window.alert("Select a variant, enter a nonnegative whole stock count, and provide a reason.");
 			return;
 		}
 		if (
-			commit(
+			await commit(
 				{
 					...state,
 					draft: {

@@ -17,7 +17,8 @@
 			"!**/vercel.json",
 			"!**/components/ui",
 			"!**/*.css",
-			"!**/*.svg"
+			"!**/*.svg",
+			"!**/drizzle"
 		]
 	},
 	"css": {
@@ -122,6 +123,8 @@
 				"**/*.d.ts",
 				"**/proxy.ts",
 				"**/next.config.{mjs,ts}",
+				"**/drizzle.config.ts",
+				"**/neon.ts",
 				"**/postcss.config.mjs",
 				"**/lint-staged.config.{mjs,js}",
 				"**/tailwind.config.ts",

@@ -3,17 +3,21 @@ import { cacheLife } from "next/cache";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { getPublishedSnapshot } from "@/lib/admin/workspace";
 import { getStoreSeo, meGetCached } from "@/lib/commerce";
 import { JsonLdScript } from "@/lib/json-ld";
 
 export async function generateMetadata(): Promise<Metadata> {
 	const { storeName, storeDescription } = await getStoreSeo();
-	const description = storeDescription
-		? `Learn more about ${storeName}. ${storeDescription}`
-		: `Learn about ${storeName} — our story, our values, and the people behind the products.`;
+	const page = (await getPublishedSnapshot()).content.pages.find((item) => item.id === "about");
+	const description =
+		page?.seoDescription ||
+		(storeDescription
+			? `Learn more about ${storeName}. ${storeDescription}`
+			: `Learn about ${storeName} — our story, our values, and the people behind the products.`);
 
 	return {
-		title: "About Us",
+		title: { absolute: page?.seoTitle || "About Us" },
 		description,
 		alternates: { canonical: "/about" },
 		openGraph: {
@@ -43,6 +47,7 @@ export default async function AboutPage() {
 	cacheLife("hours");
 
 	const { storeName, storeDescription, contactFormEnabled } = await getStoreInfo();
+	const page = (await getPublishedSnapshot()).content.pages.find((item) => item.id === "about");
 
 	const aboutJsonLd = {
 		"@context": "https://schema.org",
@@ -63,7 +68,7 @@ export default async function AboutPage() {
 				</Link>
 				<span className="mx-2 text-muted-foreground">/</span>
 				<span className="text-sm">About Us</span>
-				<h1 className="mt-4 text-4xl font-medium tracking-tight">About Us</h1>
+				<h1 className="mt-4 text-4xl font-medium tracking-tight">{page?.title || "About Us"}</h1>
 				{storeDescription && <p className="mt-3 text-lg text-muted-foreground">{storeDescription}</p>}
 			</div>
 
@@ -71,9 +76,16 @@ export default async function AboutPage() {
 			<div className="space-y-12">
 				<section>
 					<h2 className="text-2xl font-medium tracking-tight mb-4">Simple. Memorable. Meaningful.</h2>
-					<p className="text-muted-foreground leading-relaxed">
-						Every curve of the RINAZ mark is rooted in modesty, craftsmanship, and cultural pride.
-					</p>
+					{(
+						page?.text ||
+						"Every curve of the RINAZ mark is rooted in modesty, craftsmanship, and cultural pride."
+					)
+						.split("\n")
+						.map((text, index) => (
+							<p key={`${index}-${text}`} className="text-muted-foreground leading-relaxed">
+								{text}
+							</p>
+						))}
 				</section>
 
 				<AboutList title="The Story Behind the Icon" items={monogram} />

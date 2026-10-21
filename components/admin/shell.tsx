@@ -16,7 +16,6 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 import { Suspense, useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -45,13 +44,13 @@ import {
 	SheetTrigger,
 } from "@/components/admin/ui/sheet";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/admin/ui/tooltip";
-import { type Role, roles } from "@/lib/admin/model";
+import type { Role } from "@/lib/admin/model";
+import { authClient } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
 import { AdminSearch, AdminNavigation as Navigation } from "./navigation";
 import { Toasts } from "./operations/components/ui";
 import { OperationsStorage } from "./operations/workspace";
 import { useAdmin } from "./provider";
-import { AdminSelect } from "./shared";
 import { AdminWorkspaceSkeleton } from "./skeleton";
 
 const roleCapabilities: Record<Role, string[]> = {
@@ -99,12 +98,20 @@ function AdminThemeToggle() {
 }
 
 export function AdminShell({ children }: { children: React.ReactNode }) {
-	const router = useRouter();
 	const [collapsed, setCollapsed] = useState(false);
 	const [animateSidebar, setAnimateSidebar] = useState(false);
 	const [mobileOpen, setMobileOpen] = useState(false);
 	const [profileOpen, setProfileOpen] = useState(false);
-	const { role, setRole, ready, storageError } = useAdmin();
+	const { role, ready, storageError } = useAdmin();
+	const signOut = async () => {
+		try {
+			const result = await authClient.signOut();
+			if (result.error) throw new Error(result.error.message || "Sign out failed");
+			window.location.assign("/staff/login");
+		} catch (error) {
+			toast.error(error instanceof Error ? error.message : "Sign out failed");
+		}
+	};
 
 	useEffect(() => {
 		const handleKeyDown = (event: KeyboardEvent) => {
@@ -222,10 +229,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
 									<DropdownMenuSeparator className="my-1" />
 									<DropdownMenuItem
 										className="flex cursor-pointer items-center gap-2.5 rounded-md px-2.5 py-1.5 text-xs font-medium text-destructive focus:bg-destructive/10 focus:text-destructive"
-										onClick={() => {
-											toast.success("Logged out successfully");
-											router.push("/");
-										}}
+										onClick={signOut}
 									>
 										<LogOut className="size-3.5" />
 										<span>Log out</span>
@@ -295,10 +299,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
 									<DropdownMenuSeparator className="my-1" />
 									<DropdownMenuItem
 										className="flex cursor-pointer items-center gap-2.5 rounded-md px-2.5 py-1.5 text-xs font-medium text-destructive focus:bg-destructive/10 focus:text-destructive"
-										onClick={() => {
-											toast.success("Logged out successfully");
-											router.push("/");
-										}}
+										onClick={signOut}
 									>
 										<LogOut className="size-3.5" />
 										<span>Log out</span>
@@ -337,7 +338,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
 										</Link>
 										<SheetTitle className="sr-only">RINAZ administration</SheetTitle>
 										<SheetDescription className="text-ops-rail-muted">
-											Manage your browser-local demo.
+											Manage your studio workspace.
 										</SheetDescription>
 									</SheetHeader>
 									<div className="flex-1 overflow-auto p-4">
@@ -396,23 +397,12 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
 								<div className="h-4 w-px bg-border/70" />
 								<div className="leading-tight">
 									<p className="text-xs font-medium text-foreground">Studio workspace</p>
-									<p className="text-[10px] text-muted-foreground">Demo — data saved in browser</p>
+									<p className="text-[10px] text-muted-foreground">Signed in as {role}</p>
 								</div>
 							</div>
 						</div>
 						<div className="flex items-center gap-2">
-							<label htmlFor="demo-role" className="sr-only">
-								Demo role
-							</label>
-							<AdminSelect
-								id="demo-role"
-								label="Demo role"
-								value={role}
-								onChange={(value) => setRole(value as Role)}
-								options={roles.map((value) => ({ value, label: value }))}
-								disabled={!ready}
-								className="w-32 text-xs"
-							/>
+							<span className="text-xs text-muted-foreground">{role}</span>
 							<AdminThemeToggle />
 							<Button asChild variant="outline" size="default" className="h-7 gap-1.5 px-2.5 text-xs">
 								<Link href="/admin/preview">

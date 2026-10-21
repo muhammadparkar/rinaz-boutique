@@ -87,7 +87,7 @@ export function LiveDraftPreview({
 							? editable && editing
 								? "Click a heading, image, or CTA to edit."
 								: "Changes appear as you type. Nothing is published."
-							: "Your last demo-published snapshot."}
+							: "Your last published snapshot."}
 					</p>
 				</div>
 				<div className="flex flex-wrap gap-1">

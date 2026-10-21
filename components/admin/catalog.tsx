@@ -37,7 +37,7 @@ function ProductEditor({ original, onClose }: { original: Product; onClose: () =
 			onClose();
 		}
 	};
-	const save = () => {
+	const save = async () => {
 		const prior = state.draft.products.find((p) => p.id === product.id);
 		const changes = product.variants
 			.filter((v) => prior?.variants.find((p) => p.id === v.id)?.stock !== v.stock)
@@ -54,7 +54,7 @@ function ProductEditor({ original, onClose }: { original: Product; onClose: () =
 			? state.draft.products.map((p) => (p.id === product.id ? product : p))
 			: [...state.draft.products, product];
 		if (
-			commit(
+			await commit(
 				{ ...state, draft: { ...state.draft, products }, adjustments: [...changes, ...state.adjustments] },
 				"Product draft saved",
 				"catalog",
@@ -400,10 +400,10 @@ function CategoryEditor({ original, onClose }: { original: Category; onClose: ()
 					Back
 				</Button>
 				<Button
-					onClick={() => {
+					onClick={async () => {
 						const exists = state.draft.categories.some((c) => c.id === category.id);
 						if (
-							commit(
+							await commit(
 								{
 									...state,
 									draft: {

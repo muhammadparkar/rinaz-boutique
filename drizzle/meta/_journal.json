@@ -1,0 +1,34 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1791791794014,
+      "tag": "0000_parched_purple_man",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1791797639828,
+      "tag": "0001_condemned_marvel_boy",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1791874974639,
+      "tag": "0002_brave_karnak",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1791876111271,
+      "tag": "0003_green_roulette",
+      "breakpoints": true
+    }
+  ]
+}
