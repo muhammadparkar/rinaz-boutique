@@ -5,8 +5,8 @@ import { getDb } from "@/lib/db";
 import { staffRoles } from "@/lib/db/schema";
 
 export async function getStaff() {
-	if (!process.env.BETTER_AUTH_SECRET || !process.env.DATABASE_URL) return null;
 	const requestHeaders = await headers();
+	if (!process.env.BETTER_AUTH_SECRET || !process.env.DATABASE_URL) return null;
 	const session = await getAuth().api.getSession({ headers: requestHeaders });
 	if (!session) return null;
 	const [assignment] = await getDb()
