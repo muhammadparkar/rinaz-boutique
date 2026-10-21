@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Verify the prerendered shell: the chrome must sit in the first flush of every
-# prerendered document, not in a segment streamed in afterwards. A <Suspense>
+# Verify the storefront shell: chrome must sit in the first flush of every
+# storefront document, not in a segment streamed in afterwards. A <Suspense>
 # above the header — or a request-time read awaited there — makes the shell
 # prerender empty, and since the layout's boundaries have no fallback the page
 # paints blank white until the server responds. See AGENTS.md, "The prerendered
@@ -45,7 +45,24 @@ FAILED=0
 
 for TARGET in ${TARGETS+"${TARGETS[@]}"}; do
 	LABEL="${TARGET#"$BUILD_DIR"/}"
+	LABEL="${LABEL#"$PWD/$BUILD_DIR"/}"
 	FILE="$TARGET"
+	ROUTE="/${LABEL%.html}"
+	case "$TARGET" in
+		http://* | https://*)
+			ROUTE="${TARGET#*://}"
+			ROUTE="/${ROUTE#*/}"
+			ROUTE="${ROUTE%%\?*}"
+			ROUTE="${ROUTE%%\#*}"
+			;;
+	esac
+	# These routes use a separate staff layout, not the storefront chrome contract.
+	case "$ROUTE" in
+		/admin | /admin/* | /staff/login | /staff/login/)
+			printf 'skip  %s  staff layout (no storefront chrome)\n' "$LABEL"
+			continue
+			;;
+	esac
 
 	case "$TARGET" in
 		http://* | https://*)
