@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { connection } from "next/server";
 import { Suspense } from "react";
 import { AccountWorkspace } from "@/components/account-workspace";
 import { accountRepository } from "@/lib/account";
@@ -9,6 +10,7 @@ export const metadata: Metadata = {
 };
 
 async function AccountContent() {
+	await connection();
 	const state = await accountRepository.getSession();
 	return <AccountWorkspace state={state} />;
 }

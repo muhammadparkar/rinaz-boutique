@@ -1,9 +1,5 @@
-import { AuthForm } from "@/components/auth-form";
+import { AccountAccess } from "@/components/account-access";
 
 export default function LoginPage() {
-	return (
-		<main className="px-4 py-16">
-			<AuthForm />
-		</main>
-	);
+	return <AccountAccess />;
 }
