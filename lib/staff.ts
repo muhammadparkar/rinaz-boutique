@@ -1,10 +1,13 @@
 import { eq } from "drizzle-orm";
 import { headers } from "next/headers";
+import { connection } from "next/server";
 import { getAuth } from "@/lib/auth";
 import { getDb } from "@/lib/db";
 import { staffRoles } from "@/lib/db/schema";
 
 export async function getStaff() {
+	// Auth initialization uses randomness and must never run during prerendering.
+	await connection();
 	const requestHeaders = await headers();
 	if (!process.env.BETTER_AUTH_SECRET || !process.env.DATABASE_URL) return null;
 	const session = await getAuth().api.getSession({ headers: requestHeaders });

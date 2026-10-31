@@ -8,6 +8,8 @@ export function validateWorkspaceChange(current: DemoState, input: unknown, role
 	const serialized = JSON.stringify(input);
 	if (!serialized || serialized.length > 750_000) throw new Error("Workspace exceeds 750 KB");
 	const next = parseDemoState(input);
+	if (!isDeepStrictEqual(current.codeSnapshot, next.codeSnapshot))
+		throw new Error("Code sync metadata is server-managed");
 	if (next.media.some((asset) => asset.src.startsWith("media:"))) {
 		throw new Error("Browser-only images cannot be saved. Upload them again to shared storage.");
 	}

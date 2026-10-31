@@ -1,9 +1,12 @@
 "use client";
 
-import { ArrowRightIcon, Search } from "lucide-react";
+import { Search } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useId, useRef, useState } from "react";
+import { searchDiscovery } from "@/app/search-discovery";
+import { Price } from "@/components/currency";
 import { Suggestions } from "@/components/search/suggestions";
 import {
 	getActiveId,
@@ -12,37 +15,49 @@ import {
 	useSearchController,
 } from "@/components/search/use-search-controller";
 import { Sheet, SheetContent, SheetDescription, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-
-const departments = [
-	{ label: "Haute Abayas", href: "/category/haute-abayas" },
-	{ label: "18K Fine Jewelry", href: "/category/fine-jewelry" },
-	{ label: "Pakistani Couture", href: "/category/pakistani-couture" },
-	{ label: "Bridal Pret", href: "/collection/bridal-pret" },
-];
-
-const popular = ["Silk abaya", "Anarkali", "Diamond pendant", "Pearl", "Peshwas"];
+import { StoreMedia } from "@/lib/store-media";
 
 const isTypingTarget = (el: EventTarget | null) =>
 	el instanceof HTMLElement && (el.isContentEditable || ["INPUT", "TEXTAREA", "SELECT"].includes(el.tagName));
 
-// One search surface at every breakpoint: a header trigger (plus "/" and ⌘K) opens a
-// top sheet; before typing it offers departments and popular searches instead of a blank box.
 export function SearchInput() {
 	const searchParams = useSearchParams();
 	const c = useSearchController(searchParams.get("q") ?? "");
 	const [open, setOpen] = useState(false);
+	const [products, setProducts] = useState<Awaited<ReturnType<typeof searchDiscovery>> | null>(null);
+	const [discoveryError, setDiscoveryError] = useState(false);
+	const [category, setCategory] = useState("All");
 	const inputRef = useRef<HTMLInputElement>(null);
 	const listboxId = useId();
-
 	const close = () => setOpen(false);
 	const { goToSearch, goToProduct, handleSubmit } = makeNavHandlers(c, close);
 	const panelOpen = open && c.enoughChars;
+	const categories = ["All", ...new Set(products?.flatMap((item) => (item.category ? [item.category] : [])))];
+	const visibleProducts = products
+		?.filter((item) => category === "All" || item.category === category)
+		.slice(0, 6);
+
+	useEffect(() => {
+		if (!open || products) return;
+		let cancelled = false;
+		setDiscoveryError(false);
+		searchDiscovery().then(
+			(items) => {
+				if (!cancelled) setProducts(items);
+			},
+			() => {
+				if (!cancelled) setDiscoveryError(true);
+			},
+		);
+		return () => {
+			cancelled = true;
+		};
+	}, [open, products]);
 
 	useEffect(() => {
 		const onKey = (e: KeyboardEvent) => {
-			const shortcut =
-				(e.key === "k" && (e.metaKey || e.ctrlKey)) || (e.key === "/" && !isTypingTarget(e.target));
-			if (!shortcut) return;
+			if (!((e.key === "k" && (e.metaKey || e.ctrlKey)) || (e.key === "/" && !isTypingTarget(e.target))))
+				return;
 			e.preventDefault();
 			setOpen(true);
 		};
@@ -53,40 +68,44 @@ export function SearchInput() {
 	return (
 		<Sheet open={open} onOpenChange={setOpen}>
 			<SheetTrigger
+				data-search-underline
 				aria-label="Search the atelier"
 				aria-keyshortcuts="/ Meta+K"
-				className="group inline-flex h-11 items-center gap-3 rounded-full p-2 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground xl:border xl:border-border xl:pr-2 xl:pl-4"
+				className="inline-flex h-11 w-11 items-center justify-center gap-3 text-foreground transition-colors hover:bg-secondary xl:h-8 xl:w-full xl:justify-start xl:border-b xl:border-foreground/60"
 			>
-				<Search className="h-5 w-5 xl:h-4 xl:w-4" strokeWidth={1.75} />
-				<span className="hidden text-sm xl:inline">Search the atelier</span>
-				<span aria-hidden="true">
-					<kbd className="hidden h-6 min-w-6 items-center justify-center rounded-full border border-border px-2 font-sans text-[11px] xl:inline-flex">
-						/
-					</kbd>
+				<Search className="size-5 shrink-0" strokeWidth={1.5} />
+				<span className="hidden truncate text-sm text-muted-foreground xl:inline">
+					What are you looking for?
 				</span>
 			</SheetTrigger>
-
 			<SheetContent
 				side="top"
-				onOpenAutoFocus={(e) => {
-					e.preventDefault();
+				onOpenAutoFocus={(event) => {
+					event.preventDefault();
 					inputRef.current?.focus();
 				}}
-				className="max-h-[85svh] gap-0 overflow-y-auto"
+				className="search-panel max-h-[90svh] gap-0 overflow-y-auto px-5 pb-10 font-[Helvetica_Neue,Helvetica,sans-serif] sm:px-8 lg:px-12 lg:pb-12 [&_h2]:font-[inherit] [&>button]:top-5 [&>button]:right-5 [&>button]:grid [&>button]:size-11 [&>button]:place-items-center [&>button>svg]:size-6 lg:[&>button]:top-[76px] lg:[&>button]:right-10"
 			>
-				<SheetTitle className="sr-only">Search</SheetTitle>
-				<SheetDescription className="sr-only">
-					Search abayas, fine jewelry and Pakistani couture
-				</SheetDescription>
-
-				<div className="mx-auto w-full max-w-3xl px-4 pt-14 pb-10 sm:px-6 sm:pt-16">
-					<search>
+				<SheetTitle className="sr-only">Search RINAZ</SheetTitle>
+				<SheetDescription className="sr-only">Search products or explore our collections.</SheetDescription>
+				<div className="mx-auto flex h-20 w-full max-w-[1600px] items-center justify-center lg:h-24">
+					<Image
+						src="/brand/rinaz-v3.png"
+						alt="RINAZ STUDIO"
+						width={1220}
+						height={361}
+						sizes="150px"
+						className="h-auto w-32 lg:w-40"
+					/>
+				</div>
+				<div className="mx-auto grid w-full max-w-[1600px] gap-x-16 lg:grid-cols-[minmax(0,1.7fr)_minmax(0,1fr)]">
+					<search className="min-w-0 lg:col-start-2 lg:row-start-1 lg:pr-12">
 						<form onSubmit={handleSubmit}>
 							<label htmlFor={`${listboxId}-input`} className="sr-only">
 								Search products
 							</label>
-							<div className="flex items-center gap-4 border-b border-foreground/80 pb-3">
-								<Search className="h-6 w-6 flex-none text-muted-foreground" strokeWidth={1.5} />
+							<div className="flex min-h-11 items-center gap-3 border-b-2 border-foreground pb-2">
+								<Search className="size-5 shrink-0 text-muted-foreground" strokeWidth={1.5} />
 								<input
 									ref={inputRef}
 									id={`${listboxId}-input`}
@@ -94,89 +113,115 @@ export function SearchInput() {
 									name="q"
 									placeholder="What are you looking for?"
 									value={c.query}
-									onChange={(e) => c.setQuery(e.target.value)}
+									onChange={(event) => c.setQuery(event.target.value)}
 									onKeyDown={makeKeyHandler(c, panelOpen, close, () => goToSearch(c.query))}
 									role="combobox"
 									aria-expanded={panelOpen}
-									aria-controls={listboxId}
+									aria-controls={panelOpen ? listboxId : undefined}
 									aria-autocomplete="list"
 									aria-activedescendant={getActiveId(listboxId, c, panelOpen)}
 									enterKeyHint="search"
 									autoComplete="off"
-									className="min-w-0 flex-1 bg-transparent font-display text-3xl text-foreground placeholder:text-muted-foreground/70 focus:outline-none sm:text-4xl [&::-webkit-search-cancel-button]:hidden"
+									className="h-9 min-w-0 flex-1 bg-transparent text-base text-foreground placeholder:text-muted-foreground focus:outline-none sm:text-lg [&::-webkit-search-cancel-button]:hidden"
 								/>
-								{c.query ? (
+								{c.query && (
 									<button
 										type="button"
+										aria-label="Clear search"
+										className="min-h-8 px-2 text-xs underline"
 										onClick={() => {
 											c.setQuery("");
 											inputRef.current?.focus();
 										}}
-										className="h-8 flex-none rounded-full px-3 text-xs tracking-widest text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
 									>
-										CLEAR
+										Clear
 									</button>
-								) : null}
+								)}
 							</div>
 						</form>
+						{panelOpen && (
+							<div className="mt-6">
+								<Suggestions
+									listboxId={listboxId}
+									open={panelOpen}
+									c={c}
+									onPick={goToProduct}
+									onSeeAll={() => goToSearch(c.query)}
+								/>
+							</div>
+						)}
 					</search>
-
-					{panelOpen ? (
-						<div className="mt-4">
-							<Suggestions
-								listboxId={listboxId}
-								open={panelOpen}
-								c={c}
-								onPick={goToProduct}
-								onSeeAll={() => goToSearch(c.query)}
-							/>
+					<div className="mt-7 min-w-0 lg:col-start-1 lg:row-start-1 lg:mt-0">
+						<fieldset className="flex min-h-11 gap-5 overflow-x-auto border-b border-border">
+							<legend className="sr-only">Filter featured products by category</legend>
+							{categories.map((name) => (
+								<button
+									key={name}
+									type="button"
+									data-search-underline
+									aria-pressed={category === name}
+									onClick={() => setCategory(name)}
+									className={`min-h-11 shrink-0 border-b-2 text-xs uppercase sm:text-sm ${category === name ? "border-foreground text-foreground" : "border-transparent text-muted-foreground hover:text-foreground"}`}
+								>
+									{name}
+								</button>
+							))}
+						</fieldset>
+						<h2 className="mt-8 mb-5 text-sm font-normal text-muted-foreground">Explore the collection</h2>
+						{!products && !discoveryError && (
+							<p role="status" className="py-10 text-sm text-muted-foreground">
+								Loading products…
+							</p>
+						)}
+						{discoveryError && (
+							<p role="status" className="py-10 text-sm text-muted-foreground">
+								Product previews unavailable. You can still search above or{" "}
+								<Link href="/products" onClick={close} className="underline">
+									browse all products
+								</Link>
+								.
+							</p>
+						)}
+						{products?.length === 0 && (
+							<p className="py-10 text-sm text-muted-foreground">
+								No products to preview.{" "}
+								<Link href="/products" onClick={close} className="underline">
+									Browse collections
+								</Link>
+								.
+							</p>
+						)}
+						<div className="flex gap-4 overflow-x-auto pb-3 sm:gap-5">
+							{visibleProducts?.map((product) => (
+								<Link
+									key={product.id}
+									href={`/product/${product.slug}`}
+									onClick={close}
+									className="group w-36 shrink-0 sm:w-40 lg:w-[calc((100%-60px)/4)] lg:min-w-36"
+								>
+									<div className="relative aspect-3/4 overflow-hidden bg-secondary">
+										{product.image && (
+											<StoreMedia
+												src={product.image}
+												alt={product.name}
+												fill
+												sizes="(min-width: 1024px) 180px, 160px"
+												className="object-cover"
+											/>
+										)}
+									</div>
+									<h3 className="mt-3 text-sm font-semibold leading-5 group-hover:underline">
+										{product.name}
+									</h3>
+									{product.price !== null && (
+										<p className="mt-5 text-sm font-semibold">
+											<Price amount={product.price} />
+										</p>
+									)}
+								</Link>
+							))}
 						</div>
-					) : (
-						<div className="mt-10 grid gap-10 sm:grid-cols-2">
-							<section>
-								<h2 className="font-sans text-xs tracking-[0.2em] text-muted-foreground">DEPARTMENTS</h2>
-								<ul className="mt-4">
-									{departments.map((d) => (
-										<li key={d.href}>
-											<Link
-												href={d.href}
-												onClick={close}
-												className="group flex items-center justify-between border-b border-border py-3 font-display text-xl transition-colors hover:text-muted-foreground"
-											>
-												{d.label}
-												<ArrowRightIcon className="h-4 w-4 -translate-x-1 opacity-0 transition-all group-hover:translate-x-0 group-hover:opacity-100" />
-											</Link>
-										</li>
-									))}
-								</ul>
-							</section>
-							<section>
-								<h2 className="font-sans text-xs tracking-[0.2em] text-muted-foreground">POPULAR SEARCHES</h2>
-								<ul className="mt-4 flex flex-wrap gap-2">
-									{popular.map((term) => (
-										<li key={term}>
-											<button
-												type="button"
-												onClick={() => {
-													c.setQuery(term);
-													inputRef.current?.focus();
-												}}
-												className="h-9 rounded-full border border-border px-4 text-sm transition-colors hover:border-foreground"
-											>
-												{term}
-											</button>
-										</li>
-									))}
-								</ul>
-								<p className="mt-8 hidden text-xs text-muted-foreground sm:block">
-									Press <kbd className="rounded border border-border px-1.5">↑</kbd>{" "}
-									<kbd className="rounded border border-border px-1.5">↓</kbd> to move,{" "}
-									<kbd className="rounded border border-border px-1.5">Enter</kbd> to open,{" "}
-									<kbd className="rounded border border-border px-1.5">Esc</kbd> to close.
-								</p>
-							</section>
-						</div>
-					)}
+					</div>
 				</div>
 			</SheetContent>
 		</Sheet>

@@ -16,7 +16,7 @@ import { LISTING_SORT_OPTIONS } from "@/lib/facets";
 
 type Crumb = { name: string; href?: string };
 
-// The one layout every product listing uses: breadcrumb, serif title, filter sidebar, sort, grid.
+// Shared listing layout keeps heading in the shell and request-time controls with the grid.
 // The controls read useSearchParams(), so they share one Suspense boundary with the grid while the
 // breadcrumb and heading stay in the prerendered shell.
 export function ListingShell({
@@ -45,8 +45,8 @@ export function ListingShell({
 	const filterProps = { facets, showCategories, showCollections };
 
 	return (
-		<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
-			<Breadcrumb className="mb-6">
+		<div className="mx-auto max-w-7xl px-5 py-8 sm:px-6 lg:px-12 lg:py-12">
+			<Breadcrumb className="mb-8">
 				<BreadcrumbList>
 					<BreadcrumbItem>
 						<BreadcrumbLink asChild>
@@ -70,21 +70,25 @@ export function ListingShell({
 				</BreadcrumbList>
 			</Breadcrumb>
 
-			<div className="mb-10">
-				<h1 className="text-3xl sm:text-4xl font-medium tracking-tight">{title}</h1>
-				{description && <p className="mt-3 max-w-2xl text-muted-foreground">{description}</p>}
+			<div className="mb-10 lg:mb-12">
+				<h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">{title}</h1>
+				{description && (
+					<p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground">{description}</p>
+				)}
 			</div>
 
 			<Suspense fallback={<ProductGridSkeleton />}>
-				<div className={filtersAvailable ? "lg:grid lg:grid-cols-[16rem_minmax(0,1fr)] lg:gap-10" : ""}>
+				<div
+					className={filtersAvailable ? "lg:grid lg:grid-cols-[14rem_minmax(0,1fr)] lg:gap-10 xl:gap-14" : ""}
+				>
 					{filtersAvailable && <ProductFilters {...filterProps} />}
 
-					<div>
-						<div className="mb-8 flex items-center justify-between gap-3 lg:hidden">
+					<div className="min-w-0">
+						<div className="mb-6 flex items-center justify-between gap-3 border-y border-border py-3 lg:hidden">
 							{filtersAvailable ? <ProductFiltersMobile {...filterProps} /> : <span />}
 							<SortSelect options={LISTING_SORT_OPTIONS} />
 						</div>
-						<div className="mb-8 hidden flex-wrap items-center gap-3 lg:flex">
+						<div className="mb-6 hidden min-h-12 flex-wrap items-center justify-end gap-3 border-y border-border py-3 lg:flex">
 							<span className="text-sm text-muted-foreground">Sort by:</span>
 							<SortLinks options={LISTING_SORT_OPTIONS} />
 						</div>

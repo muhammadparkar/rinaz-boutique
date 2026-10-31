@@ -183,7 +183,7 @@ export function VariantSelector({ variants }: VariantSelectorProps) {
 												title={option.value}
 											>
 												{isLightColor && (
-													<span className="absolute inset-0 rounded-full border border-border" />
+													<span className="absolute inset-0 rounded-[inherit] border border-border" />
 												)}
 											</button>
 										);

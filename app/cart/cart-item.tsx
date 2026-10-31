@@ -134,15 +134,16 @@ export function CartItem({ item }: CartItemProps) {
 				<div className="flex items-center justify-between">
 					{/* Quantity Controls */}
 					<div
+						data-quantity-control
 						className={cn(
-							"inline-flex items-center rounded-full border border-border transition-opacity",
+							"inline-flex items-center overflow-hidden rounded-md border border-border transition-opacity",
 							isPending && "opacity-70",
 						)}
 					>
 						<button
 							type="button"
 							onClick={handleDecrement}
-							className="shrink-0 flex h-7 w-7 items-center justify-center rounded-l-full hover:bg-secondary transition-colors"
+							className="flex h-7 w-7 shrink-0 items-center justify-center rounded-l-lg transition-colors hover:bg-secondary"
 							aria-label="Decrease quantity"
 						>
 							<Minus className="h-3 w-3" />
@@ -151,7 +152,7 @@ export function CartItem({ item }: CartItemProps) {
 						<button
 							type="button"
 							onClick={handleIncrement}
-							className="shrink-0 flex h-7 w-7 items-center justify-center rounded-r-full hover:bg-secondary transition-colors"
+							className="flex h-7 w-7 shrink-0 items-center justify-center rounded-r-lg transition-colors hover:bg-secondary"
 							aria-label="Increase quantity"
 						>
 							<Plus className="h-3 w-3" />

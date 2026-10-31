@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { FooterNewsletter } from "@/components/footer-newsletter";
 
 const directories = [
 	{
@@ -12,12 +13,11 @@ const directories = [
 		],
 	},
 	{
-		title: "Studio Sanctuaries",
+		title: "About RINAZ",
 		links: [
-			{ label: "London (Knightsbridge)", href: "/contact" },
-			{ label: "Dubai (Fashion Avenue)", href: "/contact" },
-			{ label: "Lahore (Gulberg Atelier)", href: "/contact" },
-			{ label: "Doha (Private Suite)", href: "/contact" },
+			{ label: "About the studio", href: "/about" },
+			{ label: "Journal", href: "/blog" },
+			{ label: "Contact us", href: "/contact" },
 		],
 	},
 	{
@@ -46,58 +46,59 @@ export function FooterContent({
 	return (
 		<footer id="preview-footer" className="border-t border-border bg-background">
 			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-				<div className="grid grid-cols-2 gap-x-6 gap-y-10 py-12 sm:py-16 lg:grid-cols-5">
-					<div className="col-span-2 lg:max-w-sm">
-						<Link
-							href="/"
-							className="group inline-flex items-center transition-opacity hover:opacity-90"
-							aria-label="RINAZ STUDIO Home"
-						>
-							<Image
-								src="/brand/rinaz-side-side-v3.png"
-								alt="RINAZ STUDIO"
-								width={2172}
-								height={724}
-								className="h-10 w-auto object-contain"
-							/>
-						</Link>
+				<div className="grid gap-x-12 gap-y-12 py-12 sm:py-16 lg:grid-cols-12 lg:gap-x-16 lg:py-20">
+					<div className="space-y-7 lg:col-span-5">
+						<div>
+							<Link
+								href="/"
+								className="group inline-flex items-center transition-opacity hover:opacity-90"
+								aria-label="RINAZ STUDIO Home"
+							>
+								<Image
+									src="/brand/rinaz-v3.png"
+									alt="RINAZ STUDIO"
+									width={1220}
+									height={361}
+									className="h-10 w-auto object-contain"
+								/>
+							</Link>
+						</div>
 
-						<p className="mt-3 text-sm text-muted-foreground leading-relaxed">
-							{text ??
-								"Handcrafted couture Abayas, certified 18K solid gold fine jewelry, and bespoke Pakistani bridal couture crafted for the modern you."}
-						</p>
-						<p className="mt-5 text-[11px] tracking-[0.16em] text-muted-foreground uppercase">
-							PREMIUM QUALITY · MODERN ELEGANCE · TIMELESS FASHION · CONFIDENCE · YOU
-						</p>
+						<FooterNewsletter description={text} />
 					</div>
 
-					{(links ? [{ title: "Client Concierge", links }] : directories).map((directory) => (
-						<div key={directory.title}>
-							<h3 className="text-sm font-semibold text-foreground">{directory.title}</h3>
-							<ul className="mt-4 space-y-3">
-								{directory.links.map((link) => (
-									<li key={link.label}>
-										<Link
-											href={link.href}
-											className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-										>
-											{link.label}
-										</Link>
-									</li>
-								))}
-							</ul>
-						</div>
-					))}
-
-					{legalPages}
+					<div className="grid grid-cols-2 gap-x-8 gap-y-10 sm:grid-cols-3 lg:col-span-7 lg:gap-x-10">
+						{directories.map((directory) => (
+							<div key={directory.title} className="pt-1">
+								<h3 className="mb-5 text-base font-medium">{directory.title}</h3>
+								<ul className="space-y-3">
+									{(directory.title === "Client Concierge" && links?.length ? links : directory.links)
+										.filter(
+											(link) =>
+												!(["about the studio", "privacy policy", "terms of service"] as string[]).includes(
+													link.label.toLowerCase(),
+												),
+										)
+										.map((link) => (
+											<li key={link.label}>
+												<a
+													href={link.href}
+													className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+												>
+													{link.label}
+												</a>
+											</li>
+										))}
+								</ul>
+							</div>
+						))}
+					</div>
 				</div>
 
-				<div className="grid grid-cols-1 items-center gap-4 border-t border-border py-6 text-xs text-muted-foreground lg:grid-cols-3">
-					<p className="text-center tracking-widest lg:text-left">
-						&copy; {year} RINAZ STUDIO. ALL RIGHTS RESERVED.
-					</p>
+				<div className="flex flex-col gap-5 border-t border-border py-6 text-xs text-muted-foreground lg:flex-row lg:items-center lg:justify-between">
+					<p className="text-left">&copy; {year} RINAZ STUDIO. ALL RIGHTS RESERVED.</p>
 
-					<p className="text-center">
+					<p className="text-left">
 						Designed and developed by{" "}
 						<a
 							href="https://qadmastechnologies.com/"
@@ -109,7 +110,7 @@ export function FooterContent({
 						</a>
 					</p>
 
-					<div className="flex items-center justify-center gap-4 lg:justify-end">
+					<div className="flex flex-wrap items-center gap-x-5 gap-y-3">
 						<Link href="/privacy-policy" className="transition-colors hover:text-foreground">
 							Privacy Policy
 						</Link>
@@ -119,6 +120,7 @@ export function FooterContent({
 						<Link href="/terms-of-service" className="transition-colors hover:text-foreground">
 							Terms of Service
 						</Link>
+						{legalPages}
 					</div>
 				</div>
 			</div>

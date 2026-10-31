@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useCallback, useSyncExternalStore } from "react";
 import { useStoreConfig } from "@/components/store-config-provider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -79,20 +80,47 @@ export function Price({ amount }: { amount: bigint | number | string }) {
 	return <>{useFormatPrice()(amount)}</>;
 }
 
-export function CurrencySelect({ className }: { className?: string }) {
+const currencyFlags = { USD: "us", INR: "in", QAR: "qa", AED: "ae", EUR: "eu" } as const;
+
+export function CurrencySelect({ className, iconOnly = false }: { className?: string; iconOnly?: boolean }) {
 	const { current, setCurrency } = useDisplayCurrency();
+	const flag = currencyFlags[current as keyof typeof currencyFlags];
 	return (
 		<Select value={current} onValueChange={setCurrency}>
 			<SelectTrigger
-				aria-label="Currency"
+				aria-label={`Currency: ${current}`}
 				size="sm"
-				className={cn("h-9 gap-1 border-none px-2 text-xs font-medium tracking-wider shadow-none", className)}
+				className={cn(
+					"h-9 gap-1 border-none px-2 text-xs font-medium tracking-wider shadow-none",
+					iconOnly &&
+						"size-11 justify-center rounded-none bg-transparent p-0 dark:bg-transparent dark:hover:bg-secondary [&>svg]:hidden",
+					className,
+				)}
 			>
-				<SelectValue />
+				{iconOnly ? (
+					<span aria-hidden="true" className="relative block size-6 shrink-0 overflow-hidden rounded-full">
+						{flag ? (
+							<Image src={`/flags/${flag}.svg`} alt="" fill sizes="24px" className="object-cover" />
+						) : (
+							current
+						)}
+					</span>
+				) : (
+					<SelectValue />
+				)}
 			</SelectTrigger>
 			<SelectContent align="end">
 				{CURRENCIES.map((c) => (
 					<SelectItem key={c.code} value={c.code} className="text-xs tracking-wider">
+						<span className="relative mr-2 inline-block size-5 shrink-0 overflow-hidden rounded-full align-middle">
+							<Image
+								src={`/flags/${currencyFlags[c.code]}.svg`}
+								alt=""
+								fill
+								sizes="20px"
+								className="object-cover"
+							/>
+						</span>
 						{c.label}
 					</SelectItem>
 				))}

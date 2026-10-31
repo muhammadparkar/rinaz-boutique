@@ -73,6 +73,7 @@ export type Adjustment = {
 export type Activity = { id: string; message: string; role: Role; at: string };
 export type DemoState = {
 	version: 1;
+	codeSnapshot?: Snapshot;
 	websiteVersions: { number: number; at: string; snapshot: Snapshot }[];
 	draft: Snapshot;
 	published: Snapshot;
@@ -336,6 +337,10 @@ export function parseDemoState(input: unknown): DemoState {
 		throw new Error("Invalid demo file. Expected a complete RINAZ version 1 export.");
 	validateSnapshot(input.draft);
 	validateSnapshot(input.published);
+	if (input.codeSnapshot !== undefined) {
+		if (!isSnapshot(input.codeSnapshot)) throw new Error("Invalid code sync snapshot");
+		validateSnapshot(input.codeSnapshot);
+	}
 	const state = { ...input, websiteVersions: input.websiteVersions ?? [] } as DemoState;
 	if (
 		!unique(state.websiteVersions.map((v) => String(v.number))) ||

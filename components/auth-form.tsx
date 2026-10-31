@@ -61,15 +61,17 @@ export function AuthForm({ admin = false }: { admin?: boolean }) {
 			<div className={admin ? "" : "mb-3"}>
 				<h1
 					className={
-						admin ? "font-display text-2xl" : "font-display text-3xl leading-tight break-words sm:text-4xl"
+						admin
+							? "font-display text-2xl"
+							: "font-display text-center text-3xl leading-tight break-words sm:text-4xl"
 					}
 				>
 					{admin ? "Staff sign in" : mode === "sign-up" ? "Create your account" : "Welcome back"}
 				</h1>
 				{!admin && (
-					<p className="mt-3 text-sm leading-6 text-muted-foreground">
+					<p className="mt-3 text-center text-sm leading-6 text-muted-foreground">
 						{mode === "sign-up"
-							? "A place for your RINAZ details. Start with your name and email."
+							? "Enter your name and email to join RINAZ."
 							: "Sign in to your RINAZ account with your email and password."}
 					</p>
 				)}

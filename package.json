@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "bun next dev",
-    "build": "bun next build && bash scripts/check-shell.sh",
-    "build:webpack": "bun next build --webpack && bash scripts/check-shell.sh",
+    "dev": "bun scripts/dev.ts",
+    "build": "bun run cms:sync && bun next build && bash scripts/check-shell.sh",
+    "build:webpack": "bun run cms:sync && bun next build --webpack && bash scripts/check-shell.sh",
     "start": "bun next start",
     "prepare": "husky",
     "lint": "bun run biome check --write --unsafe",
@@ -15,8 +15,9 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "bun scripts/db-migrate.ts",
     "admin:bootstrap": "bun scripts/grant-owner.ts",
-    "db:seed-demo": "bun scripts/seed-dev-catalog.ts",
-    "audit": "bash scripts/audit.sh"
+    "db:seed-demo": "bun run cms:sync",
+    "audit": "bash scripts/audit.sh",
+    "cms:sync": "bun scripts/sync-source.ts"
   },
   "dependencies": {
     "@ai-sdk/react": "4.0.96",

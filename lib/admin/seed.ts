@@ -98,7 +98,7 @@ export async function getAdminSeed() {
 			image: "",
 			ctaLabel: "",
 			ctaHref: "",
-			enabled: true,
+			enabled: false,
 			productIds: [],
 		},
 		{
@@ -109,7 +109,7 @@ export async function getAdminSeed() {
 			image: "",
 			ctaLabel: "",
 			ctaHref: "",
-			enabled: true,
+			enabled: false,
 			productIds: [],
 		},
 		{
@@ -120,7 +120,7 @@ export async function getAdminSeed() {
 			image: "",
 			ctaLabel: "",
 			ctaHref: "",
-			enabled: true,
+			enabled: false,
 			productIds: [],
 		},
 	];

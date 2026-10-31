@@ -26,9 +26,9 @@ export function Newsletter({
 
 	return (
 		<section id="newsletter" className="border-t border-border bg-background text-foreground">
-			<div className="mx-auto grid max-w-7xl gap-10 px-5 py-16 sm:px-8 sm:py-20 lg:grid-cols-12 lg:items-center lg:gap-12 lg:px-12 lg:py-24">
+			<div className="mx-auto grid max-w-7xl gap-10 px-5 py-14 sm:px-8 sm:py-20 lg:grid-cols-12 lg:items-start lg:gap-12 lg:px-12">
 				<div className="lg:col-span-6">
-					<h2 className="max-w-[17ch] text-[clamp(2rem,3.7vw,3.5rem)] leading-[1.15] tracking-[-0.025em] text-balance">
+					<h2 className="max-w-[24ch] font-sans text-3xl font-bold leading-tight tracking-tight uppercase">
 						{title}
 					</h2>
 					<p className="mt-5 max-w-[42ch] text-base leading-7 text-muted-foreground">
@@ -64,7 +64,7 @@ export function Newsletter({
 											required
 											disabled={isPending}
 											aria-describedby={state?.error ? "newsletter-error" : undefined}
-											className="h-12 min-w-0 rounded-none border-0 border-b border-foreground/40 bg-transparent px-0 text-base text-foreground shadow-none placeholder:text-muted-foreground focus-visible:border-foreground focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-4 focus-visible:ring-offset-background sm:flex-1 dark:bg-transparent"
+											className="h-12 min-w-0 rounded-sm border border-foreground/40 bg-transparent px-4 text-base text-foreground shadow-none placeholder:text-muted-foreground focus-visible:border-foreground focus-visible:ring-2 focus-visible:ring-foreground sm:flex-1 dark:bg-transparent"
 										/>
 										<Button
 											type="submit"

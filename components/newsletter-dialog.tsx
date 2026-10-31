@@ -222,18 +222,20 @@ export function NewsletterDialog({ settings }: NewsletterDialogProps) {
 					<button
 						type="button"
 						onClick={handleTeaserOpen}
-						className="bg-primary text-primary-foreground rounded-full px-4 py-2.5 text-sm font-medium shadow-lg transition-opacity hover:opacity-90"
+						className="bg-primary text-primary-foreground rounded-full px-4 py-2.5 text-sm font-medium shadow-lg transition-opacity hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
 					>
 						{teaserText}
 					</button>
-					<button
+					<Button
 						type="button"
+						size="icon-sm"
+						variant="ghost"
 						onClick={() => setIsTeaserHidden(true)}
-						className="rounded-full bg-muted p-1.5 text-muted-foreground shadow-sm transition-colors hover:bg-accent hover:text-foreground"
+						className="bg-muted text-muted-foreground shadow-sm hover:bg-accent hover:text-foreground"
 						aria-label="Dismiss"
 					>
 						<XIcon className="h-3.5 w-3.5" />
-					</button>
+					</Button>
 				</div>
 			)}
 		</>

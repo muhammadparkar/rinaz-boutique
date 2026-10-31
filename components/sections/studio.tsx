@@ -1,14 +1,12 @@
-import { ArrowRightIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { Price } from "@/components/currency";
 import { Button } from "@/components/ui/button";
-import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 type SectionProps = {
 	title?: string;
 	text?: string;
 	image?: React.ReactNode;
+	secondaryImage?: React.ReactNode;
 	ctaLabel?: string;
 	ctaHref?: string;
 };
@@ -54,15 +52,15 @@ export function CategoryTiles({
 	renderImage?: (src: string, alt: string) => React.ReactNode;
 } = {}) {
 	return (
-		<section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-24">
+		<section className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 py-12 sm:py-20">
 			<div className="mb-8 text-center sm:mb-12">
 				<h2 className="text-3xl sm:text-4xl font-medium tracking-tight">{title}</h2>
-				<p className="mt-3 italic text-muted-foreground">{text}</p>
+				<p className="mt-3 text-muted-foreground">{text}</p>
 			</div>
 			<div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
 				{tiles.map((tile) => (
-					<Card key={tile.href} className="group relative gap-0 overflow-hidden rounded-2xl border-0 py-0">
-						<Link href={tile.href} className="relative block aspect-3/4 bg-secondary">
+					<Link key={tile.href} href={tile.href} className="group block min-w-0">
+						<div className="relative aspect-3/4 overflow-hidden bg-secondary">
 							{renderImage ? (
 								renderImage(tile.image, tile.name)
 							) : (
@@ -70,22 +68,19 @@ export function CategoryTiles({
 									src={tile.image}
 									alt=""
 									fill
-									sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
-									className="object-cover transition-transform duration-500 group-hover:scale-105"
+									sizes="(min-width: 1024px) 25vw, 50vw"
+									className="object-cover"
 								/>
 							)}
-							<span className="absolute inset-0 bg-linear-to-t from-black/75 via-black/10 to-transparent" />
-							<CardHeader className="absolute inset-x-0 bottom-0 gap-1 p-3 text-white sm:p-5">
-								<CardTitle className="text-xs font-medium tracking-wide uppercase sm:text-lg">
-									{tile.name}
-								</CardTitle>
-								<CardDescription className="hidden text-white/85 sm:block">{tile.subtitle}</CardDescription>
-								<span className="mt-2 hidden items-center gap-1 text-xs font-medium tracking-widest sm:inline-flex">
-									VIEW COLLECTION <ArrowRightIcon className="h-3 w-3" />
-								</span>
-							</CardHeader>
-						</Link>
-					</Card>
+						</div>
+						<h3 className="mt-4 text-sm font-semibold leading-6 group-hover:underline sm:text-base">
+							{tile.name}
+						</h3>
+						<p className="mt-1 text-xs leading-5 text-muted-foreground sm:text-sm">{tile.subtitle}</p>
+						<span className="mt-3 inline-flex min-h-6 items-center text-xs underline underline-offset-4">
+							VIEW COLLECTION
+						</span>
+					</Link>
 				))}
 			</div>
 		</section>
@@ -96,41 +91,45 @@ export function GoldenHourFeature({
 	title,
 	text,
 	image,
+	secondaryImage,
 	ctaLabel = "SHOP THE CAPSULE",
 	ctaHref = "/collection/golden-hour",
 }: SectionProps = {}) {
 	return (
-		<section id="golden-hour" className="bg-background text-foreground">
-			<div className="mx-auto grid max-w-7xl grid-cols-1 md:grid-cols-2">
-				<div className="relative aspect-4/5 overflow-hidden">
-					{image ?? (
-						<Image
-							src={photo("1733470324488-d0e10d014d80")}
-							alt="Bridal couture from The Golden Hour Collection"
-							fill
-							sizes="(min-width: 1280px) 640px, (min-width: 768px) 50vw, 100vw"
-							className="object-cover object-[center_35%]"
-						/>
+		<section id="golden-hour" className="reference-editorial reference-editorial-collage bg-muted/50">
+			<div className="mx-auto grid max-w-7xl items-center gap-10 px-5 py-12 sm:px-8 md:grid-cols-2 md:gap-12 md:py-16 lg:px-12">
+				<div className="relative aspect-[1.35]">
+					<div
+						className={`absolute top-0 left-0 overflow-hidden ${secondaryImage ? "bottom-8 w-[55%]" : "bottom-0 w-full"}`}
+					>
+						{image ?? (
+							<Image
+								src={photo("1733470324488-d0e10d014d80")}
+								alt="The Golden Hour Collection"
+								fill
+								sizes="50vw"
+								className="object-cover"
+							/>
+						)}
+					</div>
+					{secondaryImage && (
+						<div className="absolute inset-y-8 right-0 w-[52%] translate-y-4 overflow-hidden">
+							{secondaryImage}
+						</div>
 					)}
 				</div>
-				<div className="flex min-w-0 flex-col justify-center px-6 py-12 sm:px-10 md:px-12 lg:px-16 lg:py-20">
-					<h2 className="max-w-[12ch] text-[clamp(2.5rem,4.8vw,4.5rem)] leading-[1.08] tracking-[-0.03em] break-words text-balance">
-						{title ?? "The Golden Hour Collection."}
-					</h2>
-					<p className="mt-6 max-w-[34ch] text-base leading-7 text-muted-foreground lg:mt-8 lg:text-lg lg:leading-8">
+				<div className="mx-auto max-w-md text-center">
+					<h2>{title ?? "The Golden Hour Collection."}</h2>
+					<p className="mx-auto mt-4 max-w-sm text-sm leading-6 text-muted-foreground">
 						{text ??
 							"Sculpted in pure double-faced georgette silk and metallic gold zardozi for intimate ceremonies and receptions."}
 					</p>
-					<a
-						href={ctaHref}
-						className="group mt-8 flex min-h-12 w-fit max-w-full items-center justify-between gap-5 border-b border-foreground pb-1 text-sm font-medium tracking-wide transition-colors hover:text-muted-foreground focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-foreground lg:mt-12 lg:gap-10"
+					<Button
+						asChild
+						className="mt-6 h-10 rounded-none bg-foreground px-6 text-[11px] font-normal tracking-wide text-background hover:bg-foreground/85"
 					>
-						{ctaLabel}
-						<ArrowRightIcon
-							aria-hidden="true"
-							className="size-5 transition-transform duration-300 group-hover:translate-x-1 motion-reduce:transform-none motion-reduce:transition-none"
-						/>
-					</a>
+						<a href={ctaHref}>{ctaLabel}</a>
+					</Button>
 				</div>
 			</div>
 		</section>
@@ -159,10 +158,13 @@ const pillars = [
 
 export function TrustPillars({ text }: { text?: string } = {}) {
 	return (
-		<section aria-label="Shopping with RINAZ" className="bg-background text-foreground">
+		<section
+			aria-label="Shopping with RINAZ"
+			className="border-y border-border bg-background text-foreground"
+		>
 			<ul className="mx-auto grid max-w-7xl gap-x-8 gap-y-7 px-5 py-10 sm:grid-cols-2 sm:px-8 lg:grid-cols-4 lg:gap-x-10 lg:px-12 lg:py-14">
 				{pillars.map((pillar, index) => (
-					<li key={text?.split("\n")[index] ?? pillar.title} className="border-t border-border pt-4">
+					<li key={text?.split("\n")[index] ?? pillar.title}>
 						<h3 className="text-sm font-semibold leading-6">{text?.split("\n")[index] ?? pillar.title}</h3>
 						<p className="mt-2 max-w-[34ch] text-sm leading-6 text-muted-foreground">{pillar.description}</p>
 					</li>
@@ -198,7 +200,8 @@ export function CompleteTheLook({
 	text,
 	image,
 	pieces = lookPieces,
-	renderPieceImage,
+	ctaLabel = "SHOP THE LOOK",
+	ctaHref,
 }: SectionProps & {
 	pieces?: { name: string; price: number; href: string; image?: string }[];
 	renderPieceImage?: (src: string, alt: string) => React.ReactNode;
@@ -206,18 +209,9 @@ export function CompleteTheLook({
 	return (
 		<section
 			id="curated-pairings"
-			className="mx-auto grid max-w-7xl grid-cols-1 gap-8 px-5 py-16 sm:px-8 sm:py-20 lg:grid-cols-12 lg:gap-x-12 lg:gap-y-8 lg:px-12 lg:py-28"
+			className="reference-editorial mx-auto grid max-w-7xl items-center gap-10 px-5 py-12 sm:px-8 md:grid-cols-2 md:gap-12 md:py-16 lg:px-12"
 		>
-			<div className="min-w-0 lg:col-span-5 lg:col-start-1 lg:row-start-1 lg:self-end">
-				<h2 className="max-w-[15ch] text-[clamp(2rem,3.6vw,3.5rem)] leading-[1.12] tracking-[-0.025em] break-words text-balance">
-					{title}
-				</h2>
-				<p className="mt-5 max-w-[44ch] text-base leading-7 text-muted-foreground">
-					{text ??
-						"Style the signature Blush Silk Open Abaya with hallmarked 18K solid gold and South Sea pearls for an effortless, elevated entrance."}
-				</p>
-			</div>
-			<div className="relative aspect-4/5 overflow-hidden bg-secondary lg:col-span-6 lg:col-start-7 lg:row-span-2 lg:row-start-1">
+			<div className="relative aspect-[3/5] overflow-hidden bg-secondary">
 				{image ?? (
 					<Image
 						src={photo("1736342182642-e2042084f47c")}
@@ -228,45 +222,19 @@ export function CompleteTheLook({
 					/>
 				)}
 			</div>
-			<div className="min-w-0 lg:col-span-5 lg:col-start-1 lg:row-start-2">
-				<ul className="divide-y divide-border border-y border-border">
-					{pieces.map((piece) => (
-						<li key={piece.href}>
-							<Link
-								href={piece.href}
-								className={`group grid min-h-16 items-center gap-x-3 gap-y-1 py-4 transition-colors hover:text-muted-foreground focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring sm:gap-4 ${piece.image ? "grid-cols-[auto_minmax(0,1fr)] sm:grid-cols-[auto_minmax(0,1fr)_auto]" : "grid-cols-1 sm:grid-cols-[minmax(0,1fr)_auto]"}`}
-							>
-								{piece.image && (
-									<span className="relative row-span-2 h-20 w-14 overflow-hidden bg-secondary sm:row-span-1 sm:h-24 sm:w-18">
-										{renderPieceImage ? (
-											renderPieceImage(piece.image, piece.name)
-										) : (
-											<Image
-												src={piece.image}
-												alt=""
-												fill
-												sizes="72px"
-												className="object-cover transition-transform duration-500 group-hover:scale-105 motion-reduce:transform-none motion-reduce:transition-none"
-											/>
-										)}
-									</span>
-								)}
-								<span className="text-sm font-medium leading-6 break-words">{piece.name}</span>
-								<span
-									className={`whitespace-nowrap text-sm tabular-nums sm:col-auto ${piece.image ? "col-start-2" : "col-start-1"}`}
-								>
-									<Price amount={piece.price} />
-								</span>
-							</Link>
-						</li>
-					))}
-				</ul>
-				<p className="mt-5 flex flex-wrap items-baseline justify-between gap-2 text-sm text-muted-foreground">
-					<span>Complete look</span>
-					<span className="text-lg font-medium tabular-nums text-foreground">
-						<Price amount={pieces.reduce((sum, p) => sum + p.price, 0)} />
-					</span>
+			<div className="mx-auto max-w-md text-center">
+				<h2>{title}</h2>
+				<p className="mx-auto mt-4 max-w-sm text-sm leading-6 text-muted-foreground">
+					{text ??
+						"Style the signature Blush Silk Open Abaya with hallmarked 18K solid gold and South Sea pearls for an effortless, elevated entrance."}
 				</p>
+				<Button
+					asChild
+					variant="outline"
+					className="mt-6 h-10 rounded-none border-foreground/60 px-6 text-[11px] font-normal tracking-wide"
+				>
+					<a href={ctaHref || pieces[0]?.href || "/products"}>{ctaLabel}</a>
+				</Button>
 			</div>
 		</section>
 	);
@@ -293,10 +261,10 @@ export function BridalSanctuary({
 }: SectionProps = {}) {
 	return (
 		<section id="sanctuary" className="scroll-mt-20 bg-secondary/40">
-			<div className="max-w-7xl mx-auto grid gap-10 px-4 py-12 sm:gap-12 sm:px-6 sm:py-24 lg:grid-cols-2 lg:px-8">
-				<div>
-					<h2 className="text-3xl sm:text-4xl font-medium tracking-tight">{title}</h2>
-					<p className="mt-3 italic text-muted-foreground">
+			<div className="max-w-7xl mx-auto grid items-center gap-10 px-5 py-12 sm:gap-12 sm:px-6 sm:py-20 md:grid-cols-2 lg:px-8">
+				<div className="min-w-0 text-center">
+					<h2 className="font-sans text-3xl sm:text-4xl font-bold leading-tight break-words">{title}</h2>
+					<p className="mt-3 text-muted-foreground">
 						{text?.split("\n")[0] ?? "Custom fittings tailored for your sacred day"}
 					</p>
 					<p className="mt-6 text-lg leading-relaxed text-muted-foreground">
@@ -305,29 +273,25 @@ export function BridalSanctuary({
 					</p>
 					<ul className="mt-6 space-y-2">
 						{services.map((service) => (
-							<li key={service} className="flex gap-3 text-sm">
-								<span aria-hidden className="text-muted-foreground">
-									✦
-								</span>
+							<li key={service} className="text-sm leading-6">
 								{service}
 							</li>
 						))}
 					</ul>
-					<Button asChild size="lg" className="mt-10 h-12 rounded-full px-8 tracking-widest">
-						<Link href={ctaHref}>
-							{ctaLabel}
-							<ArrowRightIcon />
-						</Link>
+					<Button
+						asChild
+						variant="outline"
+						className="mt-7 h-auto min-h-12 max-w-full whitespace-normal rounded-none border-foreground px-7 py-3 font-semibold"
+					>
+						<Link href={ctaHref}>{ctaLabel}</Link>
 					</Button>
 				</div>
 				<div className="grid grid-cols-2 content-center gap-3 sm:gap-6">
 					{sanctuaries.map((s) => (
-						<Card key={s.city} className="rounded-2xl">
-							<CardHeader>
-								<CardTitle className="text-sm font-medium tracking-widest uppercase">{s.city}</CardTitle>
-								<CardDescription>{s.place}</CardDescription>
-							</CardHeader>
-						</Card>
+						<div key={s.city} className="border-t border-border py-5 text-center">
+							<h3 className="text-sm font-semibold">{s.city}</h3>
+							<p className="mt-2 text-sm leading-6 text-muted-foreground">{s.place}</p>
+						</div>
 					))}
 				</div>
 			</div>

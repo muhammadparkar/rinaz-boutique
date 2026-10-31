@@ -5,7 +5,11 @@ import { prices, products, variants } from "@/lib/db/schema";
 
 type Transaction = Parameters<Parameters<ReturnType<typeof getWriteDb>["transaction"]>[0]>[0];
 
-export async function publishCatalog(tx: Transaction, snapshot: Snapshot) {
+export async function publishCatalog(
+	tx: Transaction,
+	snapshot: Snapshot,
+	options = { preserveStock: false },
+) {
 	await tx
 		.update(products)
 		.set({ status: "archived" })
@@ -76,7 +80,7 @@ export async function publishCatalog(tx: Transaction, snapshot: Snapshot) {
 							set: {
 								sku: variant.sku,
 								name: variant.label,
-								stock: variant.stock,
+								...(options.preserveStock ? {} : { stock: variant.stock }),
 								active: status === "active",
 							},
 						})

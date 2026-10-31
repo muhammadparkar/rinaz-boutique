@@ -9,9 +9,7 @@ import { Newsletter } from "@/components/sections/newsletter";
 import { ProductGrid } from "@/components/sections/product-grid";
 import {
 	BridalSanctuary,
-	CategoryTiles,
 	CompleteTheLook,
-	categoryTiles,
 	GoldenHourFeature,
 	TrustPillars,
 } from "@/components/sections/studio";
@@ -46,83 +44,142 @@ export default async function Home() {
 	"use cache";
 	cacheLife("minutes");
 	cacheTag("storefront-cms");
-	const [{ content, categories }, catalog] = await Promise.all([
+	const [{ content }, catalog] = await Promise.all([
 		getPublishedSnapshot(),
 		commerce.productBrowse({ active: true, limit: 100 }),
 	]);
-	return content.sections
-		.filter((section) => section.enabled)
-		.map((section) => {
-			const selected = section.productIds.flatMap((id) =>
-				catalog.data.filter((product) => product.id === id),
-			);
-			const props = {
-				title: section.title,
-				text: section.text,
-				ctaLabel: section.ctaLabel,
-				ctaHref: section.ctaHref,
-				image: section.image ? (
-					<Image
-						src={section.image}
-						alt={section.title}
-						fill
-						sizes={
-							section.type === "feature"
-								? "(min-width: 1280px) 640px, (min-width: 768px) 50vw, 100vw"
-								: "(min-width: 1024px) 50vw, 100vw"
+	const sections = content.sections.filter(
+		(section) => section.enabled && !["about", "newsletter", "trust"].includes(section.type),
+	);
+	const categoriesEnabled = sections.some((section) => section.type === "categories");
+	const arrivals = sections.find((section) => section.id === "bestsellers");
+	const abayas = catalog.data.filter((product) => product.category?.slug === "haute-abayas");
+	const suits = catalog.data.filter((product) => product.category?.slug === "pakistani-couture");
+	const accessories = catalog.data.filter((product) => product.category?.slug === "fine-jewelry");
+	const renderSection = (section: (typeof sections)[number]) => {
+		const selected = section.productIds.flatMap((id) => catalog.data.filter((product) => product.id === id));
+		const props = {
+			title: section.title,
+			text: section.text,
+			ctaLabel: section.ctaLabel || undefined,
+			ctaHref: section.ctaHref || undefined,
+			image: section.image ? (
+				<Image
+					src={section.image}
+					alt={section.title}
+					fill
+					sizes="(min-width: 1024px) 50vw, 100vw"
+					className="object-cover"
+				/>
+			) : undefined,
+		};
+		switch (section.type) {
+			case "hero":
+				return <Hero key={section.id} slides={content.slides} navigation={content.navigation} />;
+			case "feature":
+				return (
+					<GoldenHourFeature
+						key={section.id}
+						{...props}
+						secondaryImage={
+							suits[0]?.images[0] ? (
+								<Image
+									src={suits[0].images[0]}
+									alt={suits[0].name}
+									fill
+									sizes="(min-width: 1024px) 25vw, 50vw"
+									className="object-cover"
+								/>
+							) : undefined
 						}
-						className="object-cover"
 					/>
-				) : undefined,
-			};
-			switch (section.type) {
-				case "hero":
-					return <Hero key={section.id} slides={content.slides} />;
-				case "categories":
-					return (
-						<CategoryTiles
-							key={section.id}
-							title={section.title}
-							text={section.text}
-							tiles={categories
-								.filter((item) => item.active)
-								.sort((a, b) => a.position - b.position)
-								.map((item) => ({
-									name: item.name,
-									subtitle: "",
-									href: `/category/${item.slug}`,
-									image: item.image,
-								}))
-								.concat(categoryTiles.filter((tile) => tile.href.startsWith("/collection/")))}
+				);
+			case "products":
+				return section.id === "pairings" ? (
+					<CompleteTheLook
+						key={section.id}
+						{...props}
+						pieces={selected.map((product) => ({
+							name: product.name,
+							href: `/product/${product.slug}`,
+							price: Number(product.variants[0]?.price ?? 0),
+							image: product.images[0],
+						}))}
+					/>
+				) : (
+					<ProductGrid
+						key={section.id}
+						title={section.title}
+						description={section.text}
+						products={selected}
+					/>
+				);
+			case "trust":
+				return <TrustPillars key={section.id} text={section.text} />;
+			case "about":
+				return <About key={section.id} title={section.title} text={section.text} />;
+			case "sanctuary":
+				return <BridalSanctuary key={section.id} {...props} />;
+			case "newsletter":
+				return <Newsletter key={section.id} title={section.title} text={section.text} />;
+			case "categories":
+				return null;
+		}
+	};
+	return (
+		<>
+			{sections.filter((section) => section.type === "hero").map(renderSection)}
+			{arrivals && (
+				<div className="pt-8 sm:pt-12">
+					<Suspense fallback={<FeaturedProductsSkeleton />}>
+						<ProductGrid
+							title="New Arrivals"
+							description=""
+							products={catalog.data
+								.filter((product) => arrivals.productIds.includes(product.id))
+								.slice(0, 4)}
+							viewAllHref="/collection/new-in"
 						/>
-					);
-				case "products":
-					return section.id === "pairings" ? (
-						<CompleteTheLook
-							key={section.id}
-							{...props}
-							pieces={selected.map((product) => ({
-								name: product.name,
-								href: `/product/${product.slug}`,
-								price: Number(product.variants[0]?.price ?? 0),
-								image: product.images[0],
-							}))}
-						/>
-					) : (
-						<Suspense key={section.id} fallback={<FeaturedProductsSkeleton />}>
-							<ProductGrid title={section.title} description={section.text} products={selected} />
-						</Suspense>
-					);
-				case "feature":
-					return <GoldenHourFeature key={section.id} {...props} />;
-				case "trust":
-					return <TrustPillars key={section.id} text={section.text} />;
-				case "about":
-					return <About key={section.id} title={section.title} text={section.text} />;
-				case "sanctuary":
-					return <BridalSanctuary key={section.id} {...props} />;
-				case "newsletter":
-					return <Newsletter key={section.id} title={section.title} text={section.text} />;
-			}
-		});
+					</Suspense>
+				</div>
+			)}
+			{categoriesEnabled && abayas.length > 0 && (
+				<ProductGrid
+					title="Designer Abayas"
+					description=""
+					products={abayas}
+					viewAllHref="/category/haute-abayas"
+				/>
+			)}
+			{sections
+				.filter((section) => section.type === "feature" || section.id === "pairings")
+				.map(renderSection)}
+			{categoriesEnabled && suits.length > 0 && (
+				<ProductGrid
+					title="Pakistani Suits"
+					description=""
+					products={suits}
+					viewAllHref="/category/pakistani-couture"
+				/>
+			)}
+			{categoriesEnabled && accessories.length > 0 && (
+				<ProductGrid
+					title="Accessories"
+					description=""
+					products={accessories}
+					viewAllHref="/category/fine-jewelry"
+				/>
+			)}
+			{sections
+				.filter(
+					(section) =>
+						section.type !== "hero" &&
+						section.type !== "categories" &&
+						section.type !== "feature" &&
+						section.id !== "pairings" &&
+						section.id !== "bestsellers",
+				)
+				.map(renderSection)}
+		</>
+	);
 }

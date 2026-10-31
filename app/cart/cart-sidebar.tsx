@@ -58,7 +58,7 @@ export function CartSidebar() {
 					</div>
 				) : (
 					<>
-						<ScrollArea className="flex-1 px-4">
+						<ScrollArea className="min-h-0 flex-1 px-4">
 							<div className="divide-y divide-border">
 								{items.map((item) => (
 									<CartItem key={item.productVariant.id} item={item} />
@@ -66,8 +66,8 @@ export function CartSidebar() {
 							</div>
 						</ScrollArea>
 
-						<SheetFooter className="border-t border-border pt-4 mt-auto">
-							<div className="w-full space-y-4">
+						<SheetFooter className="mt-auto border-t border-border py-3">
+							<div className="w-full space-y-3">
 								<DiscountCodeField />
 								{discount ? (
 									<div className="space-y-1">

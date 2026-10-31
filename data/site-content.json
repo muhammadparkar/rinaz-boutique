@@ -177,7 +177,7 @@
 					"type": "trust-pillars",
 					"title": "The RINAZ Promise",
 					"subtitle": "Standards of Haute Couture & Fine Jewelry",
-					"enabled": true,
+					"enabled": false,
 					"cards": [
 						{
 							"id": "pillar-1",
@@ -240,7 +240,7 @@
 					"title": "Simple. Memorable. Meaningful.",
 					"subtitle": "Modesty, Craftsmanship & Cultural Pride",
 					"content": "Every curve of the RINAZ mark is rooted in modesty, craftsmanship, and cultural pride. We honor Islamic modest heritage and South Asian craft traditions with graceful contemporary refinement.\n\nSilhouettes designed to transcend fleeting seasons and become treasured generational heirlooms.",
-					"enabled": true,
+					"enabled": false,
 					"settings": {
 						"theme": "light",
 						"layout": "center"
@@ -285,7 +285,7 @@
 					"subtitle": "The RINAZ Private Register",
 					"content": "Join our private client register to receive seasonal preview lookbooks, limited bridal pret releases, and private studio invitations.",
 					"buttonText": "REQUEST INVITATION",
-					"enabled": true,
+					"enabled": false,
 					"settings": {
 						"theme": "dark"
 					}

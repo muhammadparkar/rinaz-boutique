@@ -28,44 +28,62 @@ const PAIRS = [
 	["gold-foreground", "warm-white"],
 ] as const;
 
-const css = readFileSync(join(import.meta.dir, "globals.css"), "utf8");
+const palettes = [
+	{ file: "globals.css", selectors: [":root", ".dark"] },
+	{ file: "storefront.css", selectors: ["body:has(.storefront)", ".dark body:has(.storefront)"] },
+];
 
-const blocks = [":root", ".dark"] as const;
+palettes.map(({ file, selectors }) =>
+	selectors.map((selector) => {
+		const css = readFileSync(join(import.meta.dir, file), "utf8");
+		const tokens = parseCssBlock(css, selector);
 
-blocks.map((selector) => {
-	const tokens = parseCssBlock(css, selector);
-
-	test(`${selector} declares a palette`, () => {
-		expect(tokens).not.toBeNull();
-	});
-
-	return PAIRS.map(([fg, bg]) => {
-		const declared = tokens?.[fg] !== undefined && tokens?.[bg] !== undefined;
-		// A theme that drops a token simply has no such pair to check.
-		const check = declared ? test : test.skip;
-
-		return check(`${selector}: --${fg} on --${bg} clears WCAG AA`, () => {
-			const palette = tokens ?? {};
-			const text = resolveColor(fg, palette);
-			const surface = resolveColor(bg, palette);
-
-			// An unreadable value is a failure, not a skip: `color-mix()` in a theme
-			// would otherwise hide a contrast regression from this test.
-			expect(
-				text,
-				`${selector} --${fg}: ${palette[fg]} — unsupported colour syntax. Supported: ${SUPPORTED_SYNTAXES}.`,
-			).not.toBeNull();
-			expect(
-				surface,
-				`${selector} --${bg}: ${palette[bg]} — unsupported colour syntax. Supported: ${SUPPORTED_SYNTAXES}.`,
-			).not.toBeNull();
-			if (!text || !surface) return;
-
-			const ratio = contrastRatio(text, surface);
-			expect(
-				ratio,
-				`${selector} --${fg} on --${bg} is ${ratio.toFixed(2)}:1, below WCAG AA (${AA}:1) — ${FIX}`,
-			).toBeGreaterThanOrEqual(AA);
+		test(`${selector} declares a palette`, () => {
+			expect(tokens).not.toBeNull();
 		});
-	});
-});
+
+		if (file === "storefront.css") {
+			["input", "ring"].map((control) =>
+				test(`${selector}: --${control} clears UI contrast`, () => {
+					const color = resolveColor(control, tokens ?? {});
+					expect(color).not.toBeNull();
+					["background", "card", "popover"].map((surface) => {
+						const background = resolveColor(surface, tokens ?? {});
+						expect(background).not.toBeNull();
+						if (color && background) expect(contrastRatio(color, background)).toBeGreaterThanOrEqual(3);
+					});
+				}),
+			);
+		}
+
+		return PAIRS.map(([fg, bg]) => {
+			const declared = tokens?.[fg] !== undefined && tokens?.[bg] !== undefined;
+			// A theme that drops a token simply has no such pair to check.
+			const check = declared ? test : test.skip;
+
+			return check(`${selector}: --${fg} on --${bg} clears WCAG AA`, () => {
+				const palette = tokens ?? {};
+				const text = resolveColor(fg, palette);
+				const surface = resolveColor(bg, palette);
+
+				// An unreadable value is a failure, not a skip: `color-mix()` in a theme
+				// would otherwise hide a contrast regression from this test.
+				expect(
+					text,
+					`${selector} --${fg}: ${palette[fg]} — unsupported colour syntax. Supported: ${SUPPORTED_SYNTAXES}.`,
+				).not.toBeNull();
+				expect(
+					surface,
+					`${selector} --${bg}: ${palette[bg]} — unsupported colour syntax. Supported: ${SUPPORTED_SYNTAXES}.`,
+				).not.toBeNull();
+				if (!text || !surface) return;
+
+				const ratio = contrastRatio(text, surface);
+				expect(
+					ratio,
+					`${selector} --${fg} on --${bg} is ${ratio.toFixed(2)}:1, below WCAG AA (${AA}:1) — ${FIX}`,
+				).toBeGreaterThanOrEqual(AA);
+			});
+		});
+	}),
+);

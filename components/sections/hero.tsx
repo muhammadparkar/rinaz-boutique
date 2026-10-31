@@ -1,24 +1,19 @@
 "use client";
 
-import { ArrowRightIcon, ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { type ReactNode, useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
+import { type ReactNode, useEffect, useRef, useState } from "react";
 import { type HeroSlide, heroSlides } from "@/lib/storefront-content";
 import { cn } from "@/lib/utils";
 
-const SLIDE_MS = 6500;
-const controlButton = "grid size-11 place-items-center rounded-full transition-colors hover:bg-[#faf7f2]/15";
-
-// Campaign carousel: two full-bleed portrait frames per slide on desktop, one on phones. The progress
-// bar's CSS animation is the timer: when it ends the next slide shows, and pausing it pauses autoplay.
+// Campaign stays still; CMS preview can select another slide.
 export function Hero({
 	slides = heroSlides,
 	renderImage,
 	selectedSlideId,
-	onSlideChange,
+	navigation = [],
 }: {
+	navigation?: { href: string; label: string }[];
 	slides?: HeroSlide[];
 	selectedSlideId?: string;
 	onSlideChange?: (id: string) => void;
@@ -31,12 +26,23 @@ export function Hero({
 	}) => ReactNode;
 }) {
 	const [active, setActive] = useState(0);
-	const [paused, setPaused] = useState(false);
-	const [hovered, setHovered] = useState(false);
+	const heroRef = useRef<HTMLElement>(null);
 
-	// Autoplay stays off for anyone who asked the OS for less motion.
 	useEffect(() => {
-		if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) setPaused(true);
+		const hero = heroRef.current;
+		const header = hero?.closest(".storefront")?.querySelector("header");
+		if (!hero || !header) return;
+		const observer = new IntersectionObserver(
+			([entry]) => {
+				header.dataset.heroVisible = String(entry?.isIntersecting ?? false);
+			},
+			{ rootMargin: "-56px 0px 0px 0px" },
+		);
+		observer.observe(hero);
+		return () => {
+			observer.disconnect();
+			delete header.dataset.heroVisible;
+		};
 	}, []);
 
 	useEffect(() => {
@@ -44,35 +50,21 @@ export function Hero({
 		const index = slides.findIndex((slide) => slide.id === selectedSlideId);
 		if (index >= 0) {
 			setActive(index);
-			setPaused(true);
 		}
 	}, [selectedSlideId, slides]);
 
-	const go = (index: number) => {
-		const next = (index + slides.length) % slides.length;
-		setActive(next);
-		const id = slides[next]?.id;
-		if (id) onSlideChange?.(id);
-	};
 	const slide = slides[active];
-	const running = !paused && !hovered;
 	if (!slide) return null;
 
 	return (
 		<section
-			aria-roledescription="carousel"
+			ref={heroRef}
 			aria-label="Featured collections"
-			className="relative isolate h-[calc(100svh-65px)] min-h-[520px] overflow-hidden bg-neutral-900 text-[#faf7f2] first:-mt-[65px] first:h-svh xl:first:-mt-[109px]"
-			onMouseEnter={() => setHovered(true)}
-			onMouseLeave={() => setHovered(false)}
-			onFocus={() => setHovered(true)}
-			onBlur={(e) => {
-				if (!e.currentTarget.contains(e.relatedTarget)) setHovered(false);
-			}}
+			className="storefront-hero relative isolate h-[calc(100svh-56px)] min-h-[520px] w-full overflow-hidden bg-neutral-900 text-[#faf7f2] xl:h-[calc(100svh-96px)]"
 		>
 			<h1 className="sr-only">RINAZ STUDIO: Haute Abayas, Fine Jewelry & Pakistani Couture</h1>
 
-			{/* Slides crossfade; the active one settles from a slight zoom while it is on screen. */}
+			{/* Slides crossfade while photographs keep a fixed crop. */}
 			{slides.map((s, index) => {
 				const isActive = index === active;
 				return (
@@ -107,10 +99,7 @@ export function Hero({
 										priority={index === 0 && i === 0}
 										fetchPriority={index === 0 && i === 0 ? "high" : "auto"}
 										sizes="(min-width: 768px) 50vw, 100vw"
-										className={cn(
-											"object-cover object-[center_25%] transition-transform duration-[7000ms] ease-out motion-reduce:transition-none",
-											isActive ? "scale-100" : "scale-[1.06]",
-										)}
+										className="object-cover object-[center_25%]"
 									/>
 								)}
 							</div>
@@ -122,13 +111,17 @@ export function Hero({
 			{/* Scrim keeps the copy legible on any photograph. */}
 			<div
 				aria-hidden
-				className="pointer-events-none absolute inset-0 bg-linear-to-t from-neutral-950/80 via-neutral-950/25 to-transparent"
+				className="pointer-events-none absolute inset-0 bg-linear-to-t from-neutral-950/70 via-neutral-950/50 to-neutral-950/30"
 			/>
 
-			<div className="absolute inset-x-0 bottom-0 z-10">
-				<div className="mx-auto flex max-w-7xl flex-col gap-8 px-4 pb-24 sm:px-6 md:pb-12 lg:flex-row lg:items-end lg:justify-between lg:px-8">
+			<div className="absolute inset-0 z-10">
+				<div className="mx-auto h-full max-w-7xl px-5 sm:px-8">
 					{/* Copy remounts per slide so its entrance replays. */}
-					<div key={slide.id} className="max-w-2xl" aria-live={running ? "off" : "polite"}>
+					<div
+						key={slide.id}
+						className="hero-campaign-copy absolute inset-x-5 top-1/2 mx-auto max-w-3xl -translate-y-1/2 text-center sm:inset-x-8"
+						aria-live="polite"
+					>
 						<h2 className="font-display text-[clamp(2.5rem,6vw,5rem)] leading-[0.95] tracking-[-0.01em]">
 							<span className="block animate-rise motion-reduce:animate-none">{slide.title}</span>
 							<span
@@ -139,100 +132,30 @@ export function Hero({
 							</span>
 						</h2>
 						<p
-							className="mt-5 max-w-md animate-rise text-sm leading-relaxed text-[#faf7f2]/85 sm:text-base motion-reduce:animate-none"
+							className="mx-auto mt-5 max-w-md animate-rise text-sm leading-relaxed text-[#faf7f2]/90 sm:text-base motion-reduce:animate-none"
 							style={{ animationDelay: "180ms" }}
 						>
 							{slide.copy}
 						</p>
-						<div
-							className="mt-7 flex animate-rise flex-wrap items-center gap-x-6 gap-y-3 motion-reduce:animate-none"
-							style={{ animationDelay: "270ms" }}
-						>
-							<Button
-								asChild
-								size="lg"
-								className="h-12 rounded-full bg-[#faf7f2] px-7 text-xs tracking-[0.2em] text-neutral-900 hover:bg-[#faf7f2]/90"
-							>
-								<Link href={slide.cta.href}>
-									{slide.cta.label}
-									<ArrowRightIcon />
-								</Link>
-							</Button>
-							<Link
-								href={slide.secondary.href}
-								className="text-xs font-medium tracking-[0.2em] underline decoration-[#faf7f2]/40 underline-offset-8 transition-colors hover:decoration-[#faf7f2]"
-							>
-								{slide.secondary.label}
-							</Link>
-						</div>
-					</div>
-
-					<div className="absolute right-4 bottom-6 left-4 flex items-center gap-2 sm:gap-4 sm:right-6 sm:left-6 md:static md:w-80 md:flex-none">
-						<div className="flex flex-1 gap-2">
-							{slides.map((s, index) => (
-								<button
-									key={s.id}
-									type="button"
-									onClick={() => go(index)}
-									aria-label={`Show slide ${index + 1}: ${s.title} ${s.accent}`}
-									aria-current={index === active}
-									className="relative h-11 flex-1"
-								>
-									<span className="absolute inset-x-0 top-1/2 h-0.5 -translate-y-1/2 overflow-hidden bg-[#faf7f2]/30">
-										<span
-											key={index === active ? `run-${active}` : "idle"}
-											className={cn(
-												"absolute inset-0 origin-left bg-[#faf7f2]",
-												index < active && "scale-x-100",
-												index > active && "scale-x-0",
-												index === active && "animate-[progress_linear_both]",
-											)}
-											style={
-												index === active
-													? {
-															animationDuration: `${SLIDE_MS}ms`,
-															animationPlayState: running ? "running" : "paused",
-														}
-													: undefined
-											}
-											onAnimationEnd={() => go(active + 1)}
-										/>
-									</span>
-								</button>
-							))}
-						</div>
-						<span className="hidden text-[11px] tabular-nums tracking-widest text-[#faf7f2]/85 sm:block">
-							{String(active + 1).padStart(2, "0")} / {String(slides.length).padStart(2, "0")}
-						</span>
-						<div className="flex items-center">
-							<button
-								type="button"
-								onClick={() => go(active - 1)}
-								aria-label="Previous slide"
-								className={controlButton}
-							>
-								<ChevronLeft className="size-4" />
-							</button>
-							<button
-								type="button"
-								onClick={() => setPaused((p) => !p)}
-								aria-label={paused ? "Play slideshow" : "Pause slideshow"}
-								className={controlButton}
-							>
-								{paused ? <Play className="size-3.5" /> : <Pause className="size-3.5" />}
-							</button>
-							<button
-								type="button"
-								onClick={() => go(active + 1)}
-								aria-label="Next slide"
-								className={controlButton}
-							>
-								<ChevronRight className="size-4" />
-							</button>
-						</div>
 					</div>
 				</div>
 			</div>
+			{navigation.length > 0 && (
+				<nav
+					aria-label="Featured categories"
+					className="absolute inset-x-5 bottom-5 z-10 flex items-center gap-7 overflow-x-auto whitespace-nowrap text-xs text-[#faf7f2] md:inset-x-8 md:justify-center md:gap-8 md:text-sm"
+				>
+					{navigation.map((link) => (
+						<Link
+							key={link.href}
+							href={link.href}
+							className="inline-flex min-h-11 shrink-0 items-center border-b border-transparent tracking-wide hover:border-current"
+						>
+							{link.label}
+						</Link>
+					))}
+				</nav>
+			)}
 		</section>
 	);
 }

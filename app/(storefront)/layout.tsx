@@ -1,4 +1,5 @@
 import "@/app/globals.css";
+import "@/app/storefront.css";
 
 import { Suspense } from "react";
 import { CartBootstrap, CartProvider } from "@/app/cart/cart-context";
@@ -7,6 +8,7 @@ import { Footer } from "@/app/footer";
 import { NewsletterDialog } from "@/components/newsletter-dialog";
 import { StoreChatSection } from "@/components/store-chat/store-chat-section";
 import { StoreConfigProvider } from "@/components/store-config-provider";
+import { StorefrontFooterVisibility } from "@/components/storefront-footer-visibility";
 import { StorefrontHeader } from "@/components/storefront-header";
 import { getPublishedSnapshot } from "@/lib/admin/workspace";
 import { meGetCached } from "@/lib/commerce";
@@ -50,7 +52,7 @@ async function CartProviderWrapper({ children }: { children: React.ReactNode }) 
 	return (
 		<StoreConfigProvider value={storeConfig}>
 			<CartProvider>
-				<div className="flex min-h-screen flex-col">
+				<div className="storefront flex min-h-screen flex-col">
 					{content.announcement.enabled && (
 						<a
 							href={content.announcement.href}
@@ -61,7 +63,11 @@ async function CartProviderWrapper({ children }: { children: React.ReactNode }) 
 					)}
 					<StorefrontHeader links={content.navigation} />
 					<main className="flex-1">{children}</main>
-					<Footer />
+					<Suspense fallback={<Footer />}>
+						<StorefrontFooterVisibility>
+							<Footer />
+						</StorefrontFooterVisibility>
+					</Suspense>
 				</div>
 				<CartSidebar />
 				<Suspense>

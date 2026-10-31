@@ -20,6 +20,7 @@ import {
 	BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { Skeleton } from "@/components/ui/skeleton";
+import { WishlistToggle } from "@/components/wishlist";
 import { commerce, meGetCached } from "@/lib/commerce";
 import { buildProductBreadcrumbJsonLd, buildProductJsonLd, JsonLdScript } from "@/lib/json-ld";
 import { TrackProductView } from "@/lib/track";
@@ -29,8 +30,8 @@ import { cn } from "@/lib/utils";
 // so they need a Suspense boundary to keep the rest of the page prerenderable.
 function GallerySkeleton() {
 	return (
-		<div className="flex flex-col gap-4 lg:sticky lg:top-24 lg:self-start">
-			<Skeleton className="aspect-square rounded-2xl" />
+		<div className="flex min-w-0 flex-col gap-4 lg:sticky lg:top-36 lg:self-start">
+			<Skeleton className="aspect-3/4 rounded-none" />
 		</div>
 	);
 }
@@ -39,18 +40,18 @@ function PurchasePanelSkeleton() {
 	return (
 		<div className="space-y-4">
 			<Skeleton className="h-9 w-40" />
-			<Skeleton className="h-12 w-full rounded-full" />
+			<Skeleton className="h-12 w-full rounded-sm" />
 		</div>
 	);
 }
 
 function ProductPageSkeleton() {
 	return (
-		<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+		<div className="mx-auto max-w-7xl px-5 py-8 sm:px-6 lg:px-12 lg:py-10">
 			<Skeleton className="mb-6 h-5 w-64" />
-			<div className="lg:grid lg:grid-cols-2 lg:gap-16">
+			<div className="lg:grid lg:grid-cols-2 lg:gap-12 xl:gap-24">
 				<GallerySkeleton />
-				<div className="mt-8 lg:mt-0 space-y-8">
+				<div className="mt-8 space-y-8 lg:mt-0 lg:py-8">
 					<Skeleton className="h-12 w-3/4" />
 					<PurchasePanelSkeleton />
 				</div>
@@ -164,11 +165,11 @@ const ProductDetails = async ({ params }: { params: Promise<{ slug: string }> })
 	const productJsonLd = await buildProductJsonLd(product, reviews);
 
 	return (
-		<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+		<div className="mx-auto max-w-7xl px-5 py-8 sm:px-6 lg:px-12 lg:py-10">
 			<JsonLdScript data={productJsonLd} />
 			<JsonLdScript data={buildProductBreadcrumbJsonLd(product)} />
 			{product.variants[0] && <TrackProductView variant={product.variants[0]} name={product.name} />}
-			<Breadcrumb className="mb-6">
+			<Breadcrumb className="mb-8">
 				<BreadcrumbList>
 					<BreadcrumbItem>
 						<BreadcrumbLink asChild>
@@ -197,17 +198,21 @@ const ProductDetails = async ({ params }: { params: Promise<{ slug: string }> })
 					</BreadcrumbItem>
 				</BreadcrumbList>
 			</Breadcrumb>
-			<div className="lg:grid lg:grid-cols-2 lg:gap-16">
+			<div className="lg:grid lg:grid-cols-2 lg:gap-12 xl:gap-24">
 				{/* Left: Image Gallery (sticky on desktop) */}
 				<Suspense fallback={<GallerySkeleton />}>
 					<MediaGallery images={allImages} productName={product.name} variants={product.variants} />
 				</Suspense>
 
 				{/* Right: Product Details */}
-				<div className="mt-8 lg:mt-0 space-y-8">
+				<div className="mt-8 min-w-0 space-y-6 lg:mt-0 lg:py-8 xl:pr-12">
+					<WishlistToggle
+						product={{ id: product.id, slug: product.slug, name: product.name, image: allImages[0] ?? null }}
+						className="flex justify-end"
+					/>
 					{/* Title & reviews summary */}
 					<div className="space-y-3">
-						<h1 className="text-4xl font-medium tracking-tight text-foreground lg:text-5xl text-balance">
+						<h1 className="text-balance text-3xl font-semibold tracking-tight text-foreground">
 							{product.name}
 						</h1>
 						{reviewSummary && reviewSummary.reviewCount > 0 && (
@@ -259,9 +264,9 @@ const ProductDetails = async ({ params }: { params: Promise<{ slug: string }> })
 
 			{/* Full description (below the fold, full width) */}
 			{product.content && (
-				<section className="mt-16 border-t border-border pt-12">
+				<section className="mt-16 border-t border-border pt-10 lg:mt-20">
 					<h2 className="mb-6 text-2xl font-medium tracking-tight">Product details</h2>
-					<div className="prose prose-sm dark:prose-invert max-w-none text-muted-foreground">
+					<div className="prose prose-sm max-w-3xl text-muted-foreground dark:prose-invert">
 						<TiptapRenderer content={product.content} />
 					</div>
 				</section>

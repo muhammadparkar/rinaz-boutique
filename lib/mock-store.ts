@@ -172,6 +172,70 @@ const seed = [
 	},
 ];
 
+const template = (index: number) => {
+	const item = seed[index];
+	if (!item) throw new Error("Missing demo product template");
+	return item;
+};
+
+const catalogSeed = [
+	...seed,
+	{ ...template(0), sku: "RS-AB-07", name: "Pearl Sand Draped Silk Abaya", price: 72000, cat: "cat-abayas" },
+	{ ...template(3), sku: "RS-AB-08", name: "Midnight Pearl Panel Abaya", price: 79000, cat: "cat-abayas" },
+	{
+		...template(2),
+		sku: "RS-PK-09",
+		name: "Champagne Rose Bridal Anarkali",
+		price: 198000,
+		cat: "cat-couture",
+	},
+	{ ...template(5), sku: "RS-PK-10", name: "Ivory Moon Raw Silk Peshwas", price: 174000, cat: "cat-couture" },
+	{ ...template(1), sku: "RS-JW-11", name: "Pearl Arc Diamond Earrings", price: 112000, cat: "cat-jewelry" },
+	{
+		...template(4),
+		sku: "RS-JW-12",
+		name: "Champagne Gold Heirloom Bracelet",
+		price: 126000,
+		cat: "cat-jewelry",
+	},
+	// Demo pieces reuse existing photography; replace with client-approved catalog before launch.
+	...(
+		[
+			[0, "Sahara Linen Open Abaya", 52000],
+			[3, "Onyx Pleated Everyday Abaya", 56000],
+			[0, "Dune Embroidered Kimono Abaya", 61000],
+			[3, "Olive Satin Wrap Abaya", 59000],
+			[0, "Cocoa Belted Modest Abaya", 63000],
+			[3, "Slate Contrast Panel Abaya", 67000],
+			[0, "Ivory Pearl Occasion Abaya", 76000],
+			[3, "Midnight Crepe Studio Abaya", 58000],
+			[2, "Rose Garden Organza Suit", 124000],
+			[5, "Saffron Raw Silk Three Piece Suit", 138000],
+			[2, "Emerald Embroidered Anarkali", 156000],
+			[5, "Powder Blue Festive Peshwas", 148000],
+			[2, "Ruby Zardozi Occasion Suit", 182000],
+			[5, "Plum Silk Evening Ensemble", 164000],
+			[2, "Champagne Tissue Bridal Suit", 210000],
+			[5, "Sage Pearl Embroidered Suit", 142000],
+			[1, "Luna Gold Pendant", 84000],
+			[4, "Pearl Strand Evening Necklace", 93000],
+			[1, "Petal Diamond Drop Earrings", 119000],
+			[4, "Solstice Gold Cuff", 108000],
+			[1, "Halo Gold Chain Necklace", 99000],
+			[4, "Aurora Pearl Bracelet", 87000],
+			[1, "Celeste Diamond Charm Pendant", 132000],
+			[4, "Meadow Pearl Stud Earrings", 76000],
+		] as const
+	).map(([index, name, price], position) => ({
+		...template(index),
+		sku: `RS-DEMO-${position + 13}`,
+		name,
+		price,
+		originalPrice: price,
+		stock: 8,
+	})),
+];
+
 const text = (value: string): JSONContent => ({ type: "text", text: value });
 const para = (value: string): JSONContent => ({ type: "paragraph", content: [text(value)] });
 const heading = (value: string): JSONContent => ({
@@ -184,7 +248,7 @@ const bullets = (items: string[]): JSONContent => ({
 	content: items.map((item) => ({ type: "listItem", content: [para(item)] })),
 });
 
-const products = seed.map((s, i) => {
+const products = catalogSeed.map((s, i) => {
 	const id = `prod-${i + 1}`;
 	const slug = s.name
 		.toLowerCase()

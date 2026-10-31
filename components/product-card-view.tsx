@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Price } from "@/components/currency";
 import { ProductCardDetails } from "@/components/product-card-details";
+import { WishlistToggle } from "@/components/wishlist";
 import type {
 	APICollectionGetByIdResult,
 	APIProductGetByIdResult,
@@ -65,72 +66,83 @@ export function ProductCardView({
 	})();
 
 	return (
-		<Link href={`/product/${product.slug}${variantSearch}`} className="group">
-			<div className="relative aspect-3/4 bg-secondary rounded-md overflow-hidden mb-3">
-				{singleVariant && !preview && (
-					<QuickAddButton
-						variantId={singleVariant.id}
-						variantSku={"sku" in singleVariant ? singleVariant.sku : null}
-						variantPrice={singleVariant.price}
-						variantPriceGross={"priceGross" in singleVariant ? singleVariant.priceGross : null}
-						variantImages={singleVariant.images}
-						product={{
-							id: product.id,
-							name: product.name,
-							slug: product.slug,
-							images: product.images ?? [],
-						}}
-					/>
-				)}
-				{primaryImage &&
-					(renderImage && primaryImage.startsWith("media:") ? (
-						renderImage(primaryImage, product.name, "absolute inset-0 h-full w-full object-cover")
-					) : isVideoUrl(primaryImage) ? (
-						<video
-							className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${secondaryImage ? "group-hover:opacity-0" : ""}`}
-							src={primaryImage}
-							muted
-							loop
-							autoPlay
-							playsInline
+		<div className="group relative min-w-0">
+			<Link
+				href={`/product/${product.slug}${variantSearch}`}
+				className="block min-w-0 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-foreground"
+			>
+				<div className="relative mb-4 aspect-3/4 overflow-hidden bg-secondary">
+					{singleVariant && !preview && (
+						<QuickAddButton
+							variantId={singleVariant.id}
+							variantSku={"sku" in singleVariant ? singleVariant.sku : null}
+							variantPrice={singleVariant.price}
+							variantPriceGross={"priceGross" in singleVariant ? singleVariant.priceGross : null}
+							variantImages={singleVariant.images}
+							product={{
+								id: product.id,
+								name: product.name,
+								slug: product.slug,
+								images: product.images ?? [],
+							}}
 						/>
-					) : (
-						<StoreMedia
-							src={primaryImage}
-							alt={product.name}
-							fill
-							sizes="(max-width: 1024px) 50vw, 33vw"
-							className={`object-cover transition-opacity duration-500 ${secondaryImage ? "group-hover:opacity-0" : ""}`}
-							priority={priority}
-						/>
-					))}
-				{secondaryImage &&
-					(renderImage && secondaryImage.startsWith("media:") ? (
-						renderImage(
-							secondaryImage,
-							product.name,
-							"absolute inset-0 h-full w-full object-cover opacity-0 group-hover:opacity-100",
-						)
-					) : isVideoUrl(secondaryImage) ? (
-						<video
-							className="absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-500 group-hover:opacity-100"
-							src={secondaryImage}
-							muted
-							loop
-							autoPlay
-							playsInline
-						/>
-					) : (
-						<StoreMedia
-							src={secondaryImage}
-							alt={`${product.name} - alternate view`}
-							fill
-							sizes="(max-width: 1024px) 50vw, 33vw"
-							className="object-cover opacity-0 transition-opacity duration-500 group-hover:opacity-100"
-						/>
-					))}
-			</div>
-			<ProductCardDetails name={product.name} price={priceDisplay} />
-		</Link>
+					)}
+					{primaryImage &&
+						(renderImage && primaryImage.startsWith("media:") ? (
+							renderImage(primaryImage, product.name, "absolute inset-0 h-full w-full object-cover")
+						) : isVideoUrl(primaryImage) ? (
+							<video
+								className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 motion-reduce:transition-none ${secondaryImage ? "group-hover:opacity-0" : ""}`}
+								src={primaryImage}
+								muted
+								loop
+								autoPlay
+								playsInline
+							/>
+						) : (
+							<StoreMedia
+								src={primaryImage}
+								alt={product.name}
+								fill
+								sizes="(max-width: 1023px) 50vw, (max-width: 1599px) 25vw, 360px"
+								className={`object-cover transition-opacity duration-500 motion-reduce:transition-none ${secondaryImage ? "group-hover:opacity-0" : ""}`}
+								priority={priority}
+							/>
+						))}
+					{secondaryImage &&
+						(renderImage && secondaryImage.startsWith("media:") ? (
+							renderImage(
+								secondaryImage,
+								product.name,
+								"absolute inset-0 h-full w-full object-cover opacity-0 group-hover:opacity-100",
+							)
+						) : isVideoUrl(secondaryImage) ? (
+							<video
+								className="absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-500 group-hover:opacity-100 motion-reduce:transition-none"
+								src={secondaryImage}
+								muted
+								loop
+								autoPlay
+								playsInline
+							/>
+						) : (
+							<StoreMedia
+								src={secondaryImage}
+								alt={`${product.name} - alternate view`}
+								fill
+								sizes="(max-width: 1023px) 50vw, (max-width: 1599px) 25vw, 360px"
+								className="object-cover opacity-0 transition-opacity duration-500 group-hover:opacity-100 motion-reduce:transition-none"
+							/>
+						))}
+				</div>
+				<ProductCardDetails name={product.name} price={priceDisplay} />
+			</Link>
+			{!preview && (
+				<WishlistToggle
+					product={{ id: product.id, slug: product.slug, name: product.name, image: primaryImage ?? null }}
+					className="absolute top-2 right-2 z-10"
+				/>
+			)}
+		</div>
 	);
 }

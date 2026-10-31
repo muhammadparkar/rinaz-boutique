@@ -68,7 +68,7 @@ export function DiscountCodeField() {
 			<div className="grid gap-2">
 				<div
 					role="status"
-					className="flex min-h-11 items-center justify-between gap-3 rounded-md border border-green-700/30 bg-green-50 pl-3 text-green-900"
+					className="flex min-h-11 items-center justify-between gap-3 rounded-md border border-border bg-secondary py-1 pr-1 pl-3 text-secondary-foreground"
 				>
 					<p className="min-w-0 py-2 text-sm">
 						<span className="font-semibold break-all">{applied.code} applied</span>{" "}
@@ -77,7 +77,7 @@ export function DiscountCodeField() {
 					<Button
 						type="button"
 						variant="ghost"
-						className="h-11 shrink-0 px-3 text-sm text-green-900 underline underline-offset-2 hover:bg-green-100 hover:text-green-950"
+						className="h-11 shrink-0 px-3 text-sm text-secondary-foreground underline underline-offset-2 hover:bg-accent hover:text-accent-foreground"
 						aria-label={`Remove discount code ${applied.code}`}
 						aria-busy={isMutating || undefined}
 						onClick={() => {

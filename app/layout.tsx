@@ -2,7 +2,7 @@ import "@/app/globals.css";
 
 import type { Metadata } from "next";
 import { cacheLife } from "next/cache";
-import { Cinzel, Geist_Mono, Montserrat } from "next/font/google";
+import { Cinzel, Geist_Mono, Montserrat, Nunito_Sans, Trirong } from "next/font/google";
 import { getImageProps } from "next/image";
 import { ThemeProvider } from "next-themes";
 import { Suspense } from "react";
@@ -13,13 +13,18 @@ import { getCanonicalUrl, getStoreFaviconUrl, meGetCached } from "@/lib/commerce
 const montserrat = Montserrat({
 	variable: "--font-montserrat",
 	subsets: ["latin"],
+	preload: false,
 });
 
-// Display serif for editorial headlines (Cinzel); paints above the fold, so it preloads.
+// Legacy admin serif loads on use; storefront uses Trirong.
 const cinzel = Cinzel({
 	variable: "--font-cinzel",
 	subsets: ["latin"],
+	preload: false,
 });
+
+const nunito = Nunito_Sans({ variable: "--font-storefront-body", subsets: ["latin"] });
+const trirong = Trirong({ variable: "--font-storefront-heading", weight: "400", subsets: ["latin"] });
 
 const geistMono = Geist_Mono({
 	variable: "--font-geist-mono",
@@ -115,7 +120,9 @@ export default async function RootLayout({
 	return (
 		// suppressHydrationWarning: next-themes sets the theme class on <html> before hydration.
 		<html lang={lang} suppressHydrationWarning>
-			<body className={`${montserrat.variable} ${cinzel.variable} ${geistMono.variable} antialiased`}>
+			<body
+				className={`${montserrat.variable} ${cinzel.variable} ${geistMono.variable} ${nunito.variable} ${trirong.variable} antialiased`}
+			>
 				{/* Required platform consent handling stays at the top of body. */}
 				<Suspense>
 					<CookieConsent />
