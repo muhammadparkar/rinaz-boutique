@@ -2,14 +2,14 @@ body:has(.storefront) {
 	font-family: var(--font-storefront-body), sans-serif;
 	--font-sans: var(--font-storefront-body), sans-serif;
 	--font-display: var(--font-storefront-heading), serif;
-	--background: #f8f5ee;
+	--background: #ffffff;
 	--foreground: #29221c;
-	--card: #fffdf8;
+	--card: #ffffff;
 	--card-foreground: #29221c;
-	--popover: #fffdf8;
+	--popover: #ffffff;
 	--popover-foreground: #29221c;
 	--primary: #785738;
-	--primary-foreground: #fffdf8;
+	--primary-foreground: #ffffff;
 	--secondary: #eee6d9;
 	--secondary-foreground: #34271d;
 	--muted: #f1ebe1;
@@ -23,7 +23,7 @@ body:has(.storefront) {
 	--gold: #785738;
 	--gold-bright: #a67c48;
 	--gold-foreground: #34271d;
-	--warm-white: #fff9ee;
+	--warm-white: #ffffff;
 }
 .dark body:has(.storefront) {
 	--background: #181512;
