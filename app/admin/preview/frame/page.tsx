@@ -1,3 +1,4 @@
+import "@/app/storefront.css";
 import AboutPage from "@/app/(storefront)/about/page";
 import ContactPage from "@/app/(storefront)/contact/page";
 import FAQPage from "@/app/(storefront)/faq/page";

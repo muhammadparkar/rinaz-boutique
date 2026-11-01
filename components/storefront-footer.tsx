@@ -1,16 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
 import { FooterNewsletter } from "@/components/footer-newsletter";
+import { storefrontNavigation } from "@/lib/storefront-navigation";
 
 const directories = [
 	{
 		title: "Collections",
-		links: [
-			{ label: "Haute Open Abayas", href: "/category/haute-abayas" },
-			{ label: "18K Fine Jewelry", href: "/category/fine-jewelry" },
-			{ label: "Pakistani Formal Pret", href: "/category/pakistani-couture" },
-			{ label: "Bridal Peshwas & Anarkalis", href: "/collection/bridal-pret" },
-		],
+		links: storefrontNavigation,
 	},
 	{
 		title: "About RINAZ",

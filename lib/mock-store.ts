@@ -9,19 +9,21 @@ const now = new Date().toISOString();
 const img = (id: string) => `https://images.unsplash.com/photo-${id}?w=1400&q=80&auto=format&fit=crop`;
 
 const categories = [
-	{ id: "cat-abayas", name: "Haute Abayas", slug: "haute-abayas", image: img("1760083545495-b297b1690672") },
+	{ id: "cat-abayas", name: "Abayas", slug: "haute-abayas", image: img("1760083545495-b297b1690672") },
 	{
 		id: "cat-jewelry",
-		name: "18K Fine Jewelry",
+		name: "Jewelry",
 		slug: "fine-jewelry",
 		image: img("1773832190768-b4c4667ceeb4"),
 	},
 	{
 		id: "cat-couture",
-		name: "Pakistani Couture",
+		name: "Elegant Kurtis",
 		slug: "pakistani-couture",
 		image: img("1747847471517-952a3eb93a89"),
 	},
+	{ id: "cat-footwear", name: "Footwear", slug: "footwear", image: "" },
+	{ id: "cat-handbags", name: "Handbags", slug: "handbags", image: "" },
 ].map((c) => ({
 	...c,
 	description: null,

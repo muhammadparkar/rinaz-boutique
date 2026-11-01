@@ -34,7 +34,11 @@ export function FooterNewsletter({ description }: { description?: string }) {
 							aria-label="Email address"
 							disabled={isPending}
 						/>
-						<Button type="submit" className="h-11 px-5" disabled={!consent || isPending}>
+						<Button
+							type="submit"
+							className="h-11 bg-[#121110] px-5 text-white hover:bg-[#292725] disabled:opacity-80"
+							disabled={!consent || isPending}
+						>
 							{isPending ? "Subscribing…" : "Subscribe"}
 							<ArrowRight className="size-4" aria-hidden="true" />
 						</Button>

@@ -8,41 +8,20 @@ import { CurrencySelect } from "@/components/currency";
 import { SearchInput } from "@/components/search/search-input";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { WishlistButton } from "@/components/wishlist";
+import { storefrontNavigation } from "@/lib/storefront-navigation";
 
-export const navLinks: NavLink[] = [
-	{ href: "/collection/new-in", label: "NEW IN" },
-	{ href: "/category/haute-abayas", label: "HAUTE ABAYAS" },
-	{ href: "/category/fine-jewelry", label: "18K FINE JEWELRY" },
-	{ href: "/category/pakistani-couture", label: "PAKISTANI COUTURE" },
-	{ href: "/collection/bridal-pret", label: "BRIDAL PRET" },
-	{ href: "/contact", label: "STUDIO SANCTUARY" },
-];
+export const navLinks: NavLink[] = storefrontNavigation;
 
 export function StorefrontHeader({ links = navLinks }: { links?: NavLink[] }) {
-	const categoryLinks = [
-		{
-			label: "Pakistani Suits",
-			href: links.find((link) => link.href.includes("pakistani"))?.href ?? "/category/pakistani-couture",
-		},
-		{
-			label: "Designer Abayas",
-			href: links.find((link) => link.href.includes("abayas"))?.href ?? "/category/haute-abayas",
-		},
-		{
-			label: "Accessories",
-			href:
-				links.find((link) => link.href.includes("accessor") || link.href.includes("fine-jewelry"))?.href ??
-				"/category/fine-jewelry",
-		},
-	];
+	const categoryLinks = links;
 	return (
 		<header id="preview-header" className="sticky top-0 z-50 border-b border-border bg-background">
 			<div className="relative mx-auto grid max-w-[1600px] grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center px-4 sm:px-6 xl:grid-cols-[minmax(0,1fr)_auto_248px] xl:px-8">
-				<div className="col-start-1 row-start-1 flex h-14 min-w-0 items-center">
+				<div className="col-start-1 row-start-1 flex h-[68px] min-w-0 items-center">
 					<Navbar links={categoryLinks} />
 					<Link
 						href="/"
-						className="absolute top-1.5 left-1/2 flex min-h-11 -translate-x-1/2 items-center"
+						className="absolute top-1/2 left-1/2 flex min-h-11 -translate-x-1/2 -translate-y-1/2 items-center"
 						aria-label="RINAZ STUDIO Home"
 					>
 						<Image
@@ -80,7 +59,7 @@ export function StorefrontHeader({ links = navLinks }: { links?: NavLink[] }) {
 					</Suspense>
 				</div>
 			</div>
-			<div data-header-categories className="hidden border-t border-border xl:block">
+			<div data-header-categories className="hidden h-14 border-t border-border xl:block">
 				<DesktopNav links={categoryLinks} />
 			</div>
 		</header>

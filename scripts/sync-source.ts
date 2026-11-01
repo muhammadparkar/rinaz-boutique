@@ -32,7 +32,8 @@ if (!process.env.DATABASE_URL) {
 			const next = syncSourceState(current, source.snapshot);
 			if (isDeepStrictEqual(current, next))
 				return { changed: false, products: next.published.products.length, revision: row.revision };
-			await publishCatalog(tx, next.published, { preserveStock: true });
+			if (!isDeepStrictEqual(current.published.products, next.published.products))
+				await publishCatalog(tx, next.published, { preserveStock: true });
 			await tx
 				.update(adminWorkspace)
 				.set({

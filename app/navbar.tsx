@@ -114,7 +114,7 @@ export function DesktopNav({ links }: { links: NavLink[] }) {
 	return (
 		<nav
 			aria-label="Collections"
-			className="flex min-h-10 flex-wrap items-center justify-center gap-x-7 gap-y-1 py-1"
+			className="flex h-full flex-wrap items-center justify-center gap-x-7 gap-y-1 py-1"
 		>
 			{links.map((link) => (
 				<Link

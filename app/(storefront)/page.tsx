@@ -15,6 +15,7 @@ import {
 } from "@/components/sections/studio";
 import { getPublishedSnapshot } from "@/lib/admin/workspace";
 import { commerce } from "@/lib/commerce";
+import { storefrontHome } from "@/lib/storefront-home";
 
 function FeaturedProductsSkeleton() {
 	return (
@@ -44,18 +45,15 @@ export default async function Home() {
 	"use cache";
 	cacheLife("minutes");
 	cacheTag("storefront-cms");
-	const [{ content }, catalog] = await Promise.all([
+	const [snapshot, catalog] = await Promise.all([
 		getPublishedSnapshot(),
 		commerce.productBrowse({ active: true, limit: 100 }),
 	]);
+	const { content } = snapshot;
 	const sections = content.sections.filter(
 		(section) => section.enabled && !["about", "newsletter", "trust"].includes(section.type),
 	);
-	const categoriesEnabled = sections.some((section) => section.type === "categories");
-	const arrivals = sections.find((section) => section.id === "bestsellers");
-	const abayas = catalog.data.filter((product) => product.category?.slug === "haute-abayas");
 	const suits = catalog.data.filter((product) => product.category?.slug === "pakistani-couture");
-	const accessories = catalog.data.filter((product) => product.category?.slug === "fine-jewelry");
 	const renderSection = (section: (typeof sections)[number]) => {
 		const selected = section.productIds.flatMap((id) => catalog.data.filter((product) => product.id === id));
 		const props = {
@@ -126,60 +124,22 @@ export default async function Home() {
 				return null;
 		}
 	};
-	return (
-		<>
-			{sections.filter((section) => section.type === "hero").map(renderSection)}
-			{arrivals && (
-				<div className="pt-8 sm:pt-12">
-					<Suspense fallback={<FeaturedProductsSkeleton />}>
-						<ProductGrid
-							title="New Arrivals"
-							description=""
-							products={catalog.data
-								.filter((product) => arrivals.productIds.includes(product.id))
-								.slice(0, 4)}
-							viewAllHref="/collection/new-in"
-						/>
-					</Suspense>
-				</div>
-			)}
-			{categoriesEnabled && abayas.length > 0 && (
+	return storefrontHome(snapshot, catalog.data).map((item) => {
+		if (item.kind === "section") return renderSection(item.section);
+		const rail = (
+			<Suspense fallback={<FeaturedProductsSkeleton />}>
 				<ProductGrid
-					title="Designer Abayas"
+					title={item.title}
 					description=""
-					products={abayas}
-					viewAllHref="/category/haute-abayas"
+					viewAllHref={item.href}
+					products={item.productIds.flatMap((id) => catalog.data.filter((product) => product.id === id))}
 				/>
-			)}
-			{sections
-				.filter((section) => section.type === "feature" || section.id === "pairings")
-				.map(renderSection)}
-			{categoriesEnabled && suits.length > 0 && (
-				<ProductGrid
-					title="Pakistani Suits"
-					description=""
-					products={suits}
-					viewAllHref="/category/pakistani-couture"
-				/>
-			)}
-			{categoriesEnabled && accessories.length > 0 && (
-				<ProductGrid
-					title="Accessories"
-					description=""
-					products={accessories}
-					viewAllHref="/category/fine-jewelry"
-				/>
-			)}
-			{sections
-				.filter(
-					(section) =>
-						section.type !== "hero" &&
-						section.type !== "categories" &&
-						section.type !== "feature" &&
-						section.id !== "pairings" &&
-						section.id !== "bestsellers",
-				)
-				.map(renderSection)}
-		</>
-	);
+			</Suspense>
+		);
+		return (
+			<div key={item.id} className={item.spaced ? "pt-8 sm:pt-12" : undefined}>
+				{rail}
+			</div>
+		);
+	});
 }

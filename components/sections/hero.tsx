@@ -6,7 +6,7 @@ import { type ReactNode, useEffect, useRef, useState } from "react";
 import { type HeroSlide, heroSlides } from "@/lib/storefront-content";
 import { cn } from "@/lib/utils";
 
-// Campaign stays still; CMS preview can select another slide.
+// CMS preview stays on its selected campaign; storefront rotates without slider chrome.
 export function Hero({
 	slides = heroSlides,
 	renderImage,
@@ -26,6 +26,7 @@ export function Hero({
 	}) => ReactNode;
 }) {
 	const [active, setActive] = useState(0);
+	const [paused, setPaused] = useState(false);
 	const heroRef = useRef<HTMLElement>(null);
 
 	useEffect(() => {
@@ -53,7 +54,25 @@ export function Hero({
 		}
 	}, [selectedSlideId, slides]);
 
-	const slide = slides[active];
+	useEffect(() => {
+		if (selectedSlideId || slides.length < 2 || paused) return;
+		const timer = window.setInterval(() => {
+			const hero = heroRef.current;
+			if (
+				!hero ||
+				document.hidden ||
+				window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
+				hero.matches(":hover, :focus-within") ||
+				hero.getBoundingClientRect().bottom <= 0
+			)
+				return;
+			setActive((current) => (current + 1) % slides.length);
+		}, 3000);
+		return () => window.clearInterval(timer);
+	}, [selectedSlideId, slides.length, paused]);
+
+	const activeIndex = active % slides.length;
+	const slide = slides[activeIndex];
 	if (!slide) return null;
 
 	return (
@@ -62,11 +81,20 @@ export function Hero({
 			aria-label="Featured collections"
 			className="storefront-hero relative isolate h-[calc(100svh-56px)] min-h-[520px] w-full overflow-hidden bg-neutral-900 text-[#faf7f2] xl:h-[calc(100svh-96px)]"
 		>
+			{!selectedSlideId && slides.length > 1 && (
+				<button
+					type="button"
+					onClick={() => setPaused((current) => !current)}
+					className="sr-only focus-visible:not-sr-only focus-visible:absolute focus-visible:top-20 focus-visible:left-5 focus-visible:z-20 focus-visible:min-h-11 focus-visible:bg-background focus-visible:px-4 focus-visible:text-foreground"
+				>
+					{paused ? "Resume hero rotation" : "Pause hero rotation"}
+				</button>
+			)}
 			<h1 className="sr-only">RINAZ STUDIO: Haute Abayas, Fine Jewelry & Pakistani Couture</h1>
 
 			{/* Slides crossfade while photographs keep a fixed crop. */}
 			{slides.map((s, index) => {
-				const isActive = index === active;
+				const isActive = index === activeIndex;
 				return (
 					// biome-ignore lint/a11y/useSemanticElements: WAI-ARIA carousel pattern, each slide is a labelled group
 					<div
@@ -120,7 +148,7 @@ export function Hero({
 					<div
 						key={slide.id}
 						className="hero-campaign-copy absolute inset-x-5 top-1/2 mx-auto max-w-3xl -translate-y-1/2 text-center sm:inset-x-8"
-						aria-live="polite"
+						aria-live="off"
 					>
 						<h2 className="font-display text-[clamp(2.5rem,6vw,5rem)] leading-[0.95] tracking-[-0.01em]">
 							<span className="block animate-rise motion-reduce:animate-none">{slide.title}</span>

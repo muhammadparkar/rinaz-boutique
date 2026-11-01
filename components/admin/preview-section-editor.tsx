@@ -13,6 +13,7 @@ import { Field, MediaPicker } from "./shared";
 
 export function PreviewSectionEditor({
 	section,
+	anchorId,
 	slide,
 	enabled,
 	scale,
@@ -23,6 +24,7 @@ export function PreviewSectionEditor({
 	children,
 }: {
 	section: Section;
+	anchorId?: string;
 	slide?: HeroSlide;
 	enabled: boolean;
 	scale: number;
@@ -48,11 +50,11 @@ export function PreviewSectionEditor({
 	const heading = slide?.title ?? section.title;
 	return (
 		<section
-			id={`preview-section-${section.id}`}
+			id={anchorId ?? `preview-section-${section.id}`}
 			data-editor-section={enabled ? section.id : undefined}
 			aria-label={enabled ? `Edit ${section.title} section` : undefined}
 			tabIndex={enabled ? 0 : undefined}
-			className={`relative scroll-mt-16 ${enabled ? "group/editor outline-offset-[-2px] hover:outline hover:outline-2 hover:outline-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary" : ""} ${enabled && selected ? "outline outline-2 outline-primary" : ""}`}
+			className={`preview-section-shell relative flow-root scroll-mt-16 ${enabled ? "group/editor outline-offset-[-2px] hover:outline hover:outline-2 hover:outline-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary" : ""} ${enabled && selected ? "outline outline-2 outline-primary" : ""}`}
 			onDragOver={
 				enabled
 					? (event) => {

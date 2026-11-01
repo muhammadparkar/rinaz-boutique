@@ -15,9 +15,8 @@ import { Hero } from "@/components/sections/hero";
 import { Newsletter } from "@/components/sections/newsletter";
 import { ProductGridLayout } from "@/components/sections/product-grid-layout";
 import {
-	CategoryTiles,
+	BridalSanctuary,
 	CompleteTheLook,
-	categoryTiles,
 	GoldenHourFeature,
 	TrustPillars,
 } from "@/components/sections/studio";
@@ -27,6 +26,7 @@ import { StorefrontHeader } from "@/components/storefront-header";
 import { isSnapshot, type Product, type Section, type Snapshot } from "@/lib/admin/model";
 import type { APIProductsBrowseResult } from "@/lib/commerce-types";
 import { formatMoney } from "@/lib/money";
+import { storefrontHome } from "@/lib/storefront-home";
 import { PreviewSectionEditor } from "./preview-section-editor";
 import { useAdmin } from "./provider";
 import { AdminImage, SelectField } from "./shared";
@@ -134,8 +134,6 @@ export function PreviewFrame({
 	const detail = visibleProducts.find((p) => path === `/product/${p.slug}`);
 	const [variantIndex, setVariantIndex] = useState(0);
 
-	const changed = (section: Section, key: "title" | "text" | "image") =>
-		section[key] !== baseline.content.sections.find((item) => item.id === section.id)?.[key];
 	const image = (src: string, alt: string) => (
 		<AdminImage
 			src={src}
@@ -166,9 +164,9 @@ export function PreviewFrame({
 	};
 	const renderSection = (section: Section) => {
 		const props = {
-			title: changed(section, "title") ? section.title : undefined,
-			text: changed(section, "text") ? section.text : undefined,
-			image: changed(section, "image") ? image(section.image, section.title) : undefined,
+			title: section.title,
+			text: section.text,
+			image: section.image ? image(section.image, section.title) : undefined,
 			ctaLabel: section.ctaLabel,
 			ctaHref: section.ctaHref,
 		};
@@ -176,6 +174,7 @@ export function PreviewFrame({
 			return (
 				<Hero
 					slides={content.slides}
+					navigation={content.navigation}
 					selectedSlideId={slideId || (editing ? content.slides[0]?.id : undefined)}
 					onSlideChange={editing ? setSlideId : undefined}
 					renderImage={
@@ -185,34 +184,6 @@ export function PreviewFrame({
 					}
 				/>
 			);
-		if (section.type === "categories") {
-			const tiles = categories
-				.filter((category) => category.active)
-				.sort((a, b) => a.position - b.position)
-				.map((category) => {
-					const original = categoryTiles.find(
-						(tile) =>
-							tile.href === `/category/${baseline.categories.find((item) => item.id === category.id)?.slug}`,
-					);
-					const unchanged =
-						category.image === baseline.categories.find((item) => item.id === category.id)?.image;
-					return {
-						name: category.name,
-						subtitle: original?.subtitle || "",
-						href: `/category/${category.slug}`,
-						image: unchanged && original ? original.image : category.image,
-					};
-				})
-				.concat(categoryTiles.filter((tile) => tile.href.startsWith("/collection/")));
-			return (
-				<CategoryTiles
-					title={section.title}
-					text={section.text}
-					tiles={tiles}
-					renderImage={tiles.some((tile) => tile.image.startsWith("media:")) ? image : undefined}
-				/>
-			);
-		}
 		if (section.id === "pairings")
 			return (
 				<CompleteTheLook
@@ -259,7 +230,19 @@ export function PreviewFrame({
 						})}
 				</ProductGridLayout>
 			);
-		if (section.type === "feature") return <GoldenHourFeature {...props} />;
+		if (section.type === "feature") {
+			const suit = visibleProducts.find(
+				(product) =>
+					product.categoryId === categories.find((category) => category.slug === "pakistani-couture")?.id,
+			);
+			return (
+				<GoldenHourFeature
+					{...props}
+					secondaryImage={suit?.images[0] ? image(suit.images[0], suit.name) : undefined}
+				/>
+			);
+		}
+		if (section.type === "sanctuary") return <BridalSanctuary {...props} />;
 		if (section.type === "trust") return <TrustPillars text={props.text} />;
 		if (section.type === "about") return <About title={section.title} text={props.text} />;
 		return <Newsletter title={section.title} text={section.text} preview />;
@@ -272,7 +255,7 @@ export function PreviewFrame({
 
 	return (
 		<div
-			className="flex min-h-screen flex-col"
+			className="storefront flex min-h-screen flex-col"
 			onKeyDownCapture={(event) => {
 				if (!editing || !(event.metaKey || event.ctrlKey) || event.key.toLowerCase() !== "z") return;
 				const target = event.target;
@@ -318,30 +301,49 @@ export function PreviewFrame({
 						Loading published demo…
 					</p>
 				) : path === "/" ? (
-					<>
-						{page?.text && <p className="p-6 text-center">{page.text}</p>}
-						{content.sections
-							.filter((s) => s.type !== "sanctuary" && (s.enabled || editing))
-							.map((s, index, sections) => (
-								<PreviewSectionEditor
-									key={s.id}
-									section={s}
-									products={products}
-									previousId={sections[index - 1]?.id}
-									nextId={sections[index + 1]?.id}
-									slide={
-										s.type === "hero"
-											? content.slides.find((slide) => slide.id === slideId) || content.slides[0]
-											: undefined
-									}
-									enabled={editing}
-									scale={editorScale}
-									selected={focusId === `preview-section-${s.id}`}
-								>
-									{renderSection(s)}
-								</PreviewSectionEditor>
-							))}
-					</>
+					storefrontHome({ content, categories }, visibleProducts).map((item, index, items) => (
+						<PreviewSectionEditor
+							key={item.id}
+							anchorId={`preview-section-${item.id === "category-haute-abayas" ? item.section.id : item.id}`}
+							section={item.section}
+							products={products}
+							previousId={items[index - 1]?.section.id}
+							nextId={items[index + 1]?.section.id}
+							slide={
+								item.section.type === "hero"
+									? content.slides.find((slide) => slide.id === slideId) || content.slides[0]
+									: undefined
+							}
+							enabled={editing}
+							scale={editorScale}
+							selected={focusId === `preview-section-${item.section.id}`}
+						>
+							{item.kind === "section" ? (
+								renderSection(item.section)
+							) : (
+								<div className={item.spaced ? "pt-8 sm:pt-12" : undefined}>
+									<ProductGridLayout title={item.title} description="" viewAllHref={item.href}>
+										{item.productIds
+											.flatMap((id) => visibleProducts.filter((product) => product.id === id))
+											.map((product) => {
+												const card = catalogProduct(product);
+												return card ? (
+													<ProductCardView
+														key={product.id}
+														product={card}
+														taxBehavior={taxBehavior}
+														preview
+														renderImage={(src, alt, className) => (
+															<AdminImage src={src} alt={alt} className={className} />
+														)}
+													/>
+												) : null;
+											})}
+									</ProductGridLayout>
+								</div>
+							)}
+						</PreviewSectionEditor>
+					))
 				) : detail ? (
 					<div className="mx-auto grid max-w-7xl gap-8 px-4 py-12 md:grid-cols-2">
 						<AdminImage
@@ -426,11 +428,7 @@ export function PreviewFrame({
 				year={year}
 				legalPages={legalPages}
 				text={content.footer.text}
-				links={
-					JSON.stringify(content.footer.links) === JSON.stringify(baseline.content.footer.links)
-						? undefined
-						: content.footer.links
-				}
+				links={content.footer.links}
 			/>
 		</div>
 	);

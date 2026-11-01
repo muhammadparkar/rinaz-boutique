@@ -10,11 +10,11 @@ body:has(.storefront) {
 	--popover-foreground: #29221c;
 	--primary: #785738;
 	--primary-foreground: #ffffff;
-	--secondary: #eee6d9;
+	--secondary: #f1e0b7;
 	--secondary-foreground: #34271d;
 	--muted: #f1ebe1;
 	--muted-foreground: #64574b;
-	--accent: #e6dac6;
+	--accent: #e2c78c;
 	--accent-foreground: #34271d;
 	--destructive: #a13b32;
 	--border: #d6cabc;
@@ -26,23 +26,23 @@ body:has(.storefront) {
 	--warm-white: #ffffff;
 }
 .dark body:has(.storefront) {
-	--background: #181512;
+	--background: #000000;
 	--foreground: #f2e9dc;
-	--card: #221d18;
+	--card: #12100d;
 	--card-foreground: #f2e9dc;
-	--popover: #28211c;
+	--popover: #17130e;
 	--popover-foreground: #f2e9dc;
 	--primary: #d4b58d;
 	--primary-foreground: #21180f;
-	--secondary: #302820;
+	--secondary: #211b13;
 	--secondary-foreground: #f2e9dc;
-	--muted: #241f1a;
+	--muted: #15120e;
 	--muted-foreground: #c1b2a0;
-	--accent: #3d3024;
+	--accent: #302518;
 	--accent-foreground: #f2e9dc;
 	--destructive: #f09b8e;
-	--border: #514438;
-	--input: #8c7968;
+	--border: #4a3821;
+	--input: #765d3f;
 	--ring: #d4b58d;
 	--gold: #d4b58d;
 	--gold-bright: #e4cba7;
@@ -101,7 +101,15 @@ body:has(.storefront) [data-quantity-control] > button:focus-visible {
 	line-height: 1.25;
 }
 .storefront #preview-footer {
-	background: var(--secondary);
+	background: #121110;
+	color: #ffffff;
+	border-color: #37332e;
+}
+.storefront #preview-footer .text-muted-foreground {
+	color: #c8c1b8;
+}
+.dark .storefront #preview-footer {
+	background: var(--background);
 }
 .storefront main :is(.prose, .font-sans) {
 	font-family: inherit;
@@ -110,7 +118,7 @@ body:has(.storefront) [data-quantity-control] > button:focus-visible {
 	border-radius: 4px;
 }
 .storefront main > :is(article, section, div) {
-	scroll-margin-top: 100px;
+	scroll-margin-top: 132px;
 }
 .storefront main > .storefront-hero {
 	padding-inline: 0;
@@ -161,29 +169,29 @@ body:has(.storefront) [role="dialog"] :is(h1, h2) {
 }
 
 /* Campaign header overlays only a hero placed first by the CMS. */
-.storefront:has(main > .storefront-hero:first-child) #preview-header {
+.storefront:has(main > .storefront-hero:first-child, main > .preview-section-shell:first-child > .storefront-hero) #preview-header {
 	border-color: transparent;
 	background: transparent;
 	transition: background-color 200ms ease, color 200ms ease;
 }
-.storefront:has(main > .storefront-hero:first-child) #preview-header:not([data-scrolled="true"]) {
+.storefront:has(main > .storefront-hero:first-child, main > .preview-section-shell:first-child > .storefront-hero) #preview-header:not([data-scrolled="true"]) {
 	--foreground: #faf7f2;
 	--muted-foreground: #faf7f2;
 	--secondary: #faf7f21a;
 	color: #faf7f2;
 }
-.storefront:has(main > .storefront-hero:first-child) #preview-header[data-scrolled="true"] {
+.storefront:has(main > .storefront-hero:first-child, main > .preview-section-shell:first-child > .storefront-hero) #preview-header[data-scrolled="true"] {
 	background: var(--background);
 	border-color: var(--border);
 }
-.storefront:has(main > .storefront-hero:first-child) #preview-header:not([data-scrolled="true"]) [data-header-categories] {
+.storefront:has(main > .storefront-hero:first-child, main > .preview-section-shell:first-child > .storefront-hero) #preview-header:not([data-scrolled="true"]) [data-header-categories] {
 	opacity: 0;
 	visibility: hidden;
 	pointer-events: none;
 	transform: translateY(-8px);
 	transition: opacity 200ms ease, transform 240ms cubic-bezier(0.22, 1, 0.36, 1), visibility 0s 240ms;
 }
-.storefront:has(main > .storefront-hero:first-child) #preview-header [data-header-categories] {
+.storefront:has(main > .storefront-hero:first-child, main > .preview-section-shell:first-child > .storefront-hero) #preview-header [data-header-categories] {
 	position: absolute;
 	inset-inline: 0;
 	top: 100%;
@@ -194,21 +202,22 @@ body:has(.storefront) [role="dialog"] :is(h1, h2) {
 	transform: translateY(0);
 	transition: opacity 240ms ease, transform 300ms cubic-bezier(0.22, 1, 0.36, 1), visibility 0s;
 }
-.storefront:has(main > .storefront-hero:first-child) [data-header-categories] nav > a {
+.storefront:has(main > .storefront-hero:first-child, main > .preview-section-shell:first-child > .storefront-hero) [data-header-categories] nav > a {
 	transition: opacity 220ms ease, transform 280ms cubic-bezier(0.22, 1, 0.36, 1), color 160ms ease;
 }
-.storefront:has(main > .storefront-hero:first-child) #preview-header:not([data-scrolled="true"]) [data-header-categories] nav > a {
+.storefront:has(main > .storefront-hero:first-child, main > .preview-section-shell:first-child > .storefront-hero) #preview-header:not([data-scrolled="true"]) [data-header-categories] nav > a {
 	opacity: 0;
 	transform: translateY(-4px);
 }
-.storefront:has(main > .storefront-hero:first-child) #preview-header[data-scrolled="true"] [data-header-categories] nav > a:nth-child(2) {
+.storefront:has(main > .storefront-hero:first-child, main > .preview-section-shell:first-child > .storefront-hero) #preview-header[data-scrolled="true"] [data-header-categories] nav > a:nth-child(2) {
 	transition-delay: 35ms;
 }
-.storefront:has(main > .storefront-hero:first-child) #preview-header[data-scrolled="true"] [data-header-categories] nav > a:nth-child(3) {
+.storefront:has(main > .storefront-hero:first-child, main > .preview-section-shell:first-child > .storefront-hero) #preview-header[data-scrolled="true"] [data-header-categories] nav > a:nth-child(3) {
 	transition-delay: 70ms;
 }
-.storefront main > .storefront-hero:first-child {
-	margin-top: -57px;
+.storefront main > .storefront-hero:first-child,
+.storefront main > .preview-section-shell:first-child > .storefront-hero {
+	margin-top: -69px;
 	height: 100svh;
 }
 .storefront-hero::after {
@@ -220,7 +229,7 @@ body:has(.storefront) [role="dialog"] :is(h1, h2) {
 	pointer-events: none;
 }
 @media (min-width: 1280px) {
-	.storefront:has(main > .storefront-hero:first-child) [data-header-search] {
+	.storefront:has(main > .storefront-hero:first-child, main > .preview-section-shell:first-child > .storefront-hero) [data-header-search] {
 		grid-area: 1 / 1;
 		margin-left: 0;
 		width: 220px;

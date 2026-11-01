@@ -1,6 +1,7 @@
 import { faqCategories } from "@/app/(storefront)/faq/faq-data";
 import { mockCommerce } from "@/lib/mock-store";
 import { heroSlides } from "@/lib/storefront-content";
+import { storefrontNavigation } from "@/lib/storefront-navigation";
 import type { Media, Section, Snapshot } from "./model";
 
 export async function getAdminSeed() {
@@ -142,14 +143,7 @@ export async function getAdminSeed() {
 				text: "Complimentary Worldwide Insured Delivery On Orders Over $400",
 				href: "/collection/new-in",
 			},
-			navigation: [
-				{ id: "new", label: "NEW IN", href: "/collection/new-in" },
-				{ id: "abayas", label: "HAUTE ABAYAS", href: "/category/haute-abayas" },
-				{ id: "jewelry", label: "18K FINE JEWELRY", href: "/category/fine-jewelry" },
-				{ id: "couture", label: "PAKISTANI COUTURE", href: "/category/pakistani-couture" },
-				{ id: "bridal", label: "BRIDAL PRET", href: "/collection/bridal-pret" },
-				{ id: "studio", label: "STUDIO SANCTUARY", href: "/contact" },
-			],
+			navigation: structuredClone(storefrontNavigation),
 			footer: {
 				text: "Handcrafted couture Abayas, certified 18K solid gold fine jewelry, and bespoke Pakistani bridal couture crafted for the modern you.",
 				links: [
