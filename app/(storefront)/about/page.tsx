@@ -90,15 +90,6 @@ export default async function AboutPage() {
 
 				<AboutList title="The Story Behind the Icon" items={monogram} />
 				<AboutList title="The 4 Pillars of RINAZ" items={pillars} />
-
-				<section>
-					<h2 className="text-2xl font-medium tracking-tight mb-4">Atelier Savoir-Faire</h2>
-					<p className="mb-6 text-muted-foreground leading-relaxed">
-						480 GSM Japanese double-weave pure silk developed in the Bishu district of Japan, bonded with
-						Italian cupro silk and secured with laser-etched palladium titanium clasps.
-					</p>
-					<AboutGrid items={savoirFaire} />
-				</section>
 			</div>
 
 			{/* CTA */}
@@ -153,21 +144,6 @@ const pillars = [
 	{
 		title: "Empowered Style",
 		body: "Celebrating confidence and modesty through structured drapes, fluid silk falls, and majestic fits.",
-	},
-];
-
-const savoirFaire = [
-	{
-		title: "Zero-Waste Patterning",
-		body: "Mathematical pattern layouts achieving 94% textile utilization, converting selvedge edges into kinetic architectural drapes.",
-	},
-	{
-		title: "Numbered Editions",
-		body: "Never mass-produced. Each piece carries an embossed gold plaque indicating its unique edition number and hand-signed master cutter certificate.",
-	},
-	{
-		title: "White-Glove Delivery",
-		body: "Custom archival presentation boxes with velvet dust bags delivered via insured DHL Express worldwide courier.",
 	},
 ];
 

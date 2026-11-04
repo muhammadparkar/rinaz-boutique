@@ -26,7 +26,7 @@ body:has(.storefront) {
 	--warm-white: #ffffff;
 }
 .dark body:has(.storefront) {
-	--background: #000000;
+	--background: #08090a;
 	--foreground: #f2e9dc;
 	--card: #12100d;
 	--card-foreground: #f2e9dc;
@@ -168,6 +168,37 @@ body:has(.storefront) [role="dialog"] :is(h1, h2) {
 	font-family: var(--font-storefront-heading), serif;
 }
 
+[data-header-actions] :is(button, a) {
+	width: var(--header-action-size);
+	height: var(--header-action-size);
+	min-width: var(--header-action-size);
+	min-height: var(--header-action-size);
+	place-content: center;
+	place-items: center;
+	padding: 0;
+	border-radius: 4px;
+	background-color: transparent;
+	color: inherit;
+	transition: background-color 150ms ease;
+}
+[data-header-actions] :is(button, a) > svg {
+	width: 24px;
+	height: 24px;
+}
+@media (hover: hover) {
+	[data-header-actions] :is(button, a):hover {
+		background-color: color-mix(in oklab, currentColor 8%, transparent);
+	}
+}
+[data-header-actions] :is(button, a):is(:focus-visible, [data-state="open"]) {
+	background-color: color-mix(in oklab, currentColor 8%, transparent);
+}
+[data-header-actions] :is(button, a):focus-visible {
+	outline: 2px solid currentColor;
+	outline-offset: -2px;
+	box-shadow: none;
+}
+
 /* Campaign header overlays only a hero placed first by the CMS. */
 .storefront:has(main > .storefront-hero:first-child, main > .preview-section-shell:first-child > .storefront-hero) #preview-header {
 	border-color: transparent;
@@ -182,7 +213,7 @@ body:has(.storefront) [role="dialog"] :is(h1, h2) {
 }
 .storefront:has(main > .storefront-hero:first-child, main > .preview-section-shell:first-child > .storefront-hero) #preview-header[data-scrolled="true"] {
 	background: var(--background);
-	border-color: var(--border);
+	border-color: color-mix(in oklab, var(--border) 40%, transparent);
 }
 .storefront:has(main > .storefront-hero:first-child, main > .preview-section-shell:first-child > .storefront-hero) #preview-header:not([data-scrolled="true"]) [data-header-categories] {
 	opacity: 0;
@@ -196,7 +227,7 @@ body:has(.storefront) [role="dialog"] :is(h1, h2) {
 	inset-inline: 0;
 	top: 100%;
 	background: var(--background);
-	border-bottom: 1px solid var(--border);
+	border-bottom: 1px solid color-mix(in oklab, var(--border) 40%, transparent);
 	opacity: 1;
 	visibility: visible;
 	transform: translateY(0);

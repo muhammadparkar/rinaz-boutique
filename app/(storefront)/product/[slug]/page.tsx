@@ -7,7 +7,6 @@ import { Suspense } from "react";
 import { AddToCartButton } from "@/app/(storefront)/product/[slug]/add-to-cart-button";
 import { BundleBuilder } from "@/app/(storefront)/product/[slug]/bundle-builder";
 import { MediaGallery } from "@/app/(storefront)/product/[slug]/media-gallery";
-import { ProductFeatures } from "@/app/(storefront)/product/[slug]/product-features";
 import { ProductReviews } from "@/app/(storefront)/product/[slug]/product-reviews";
 import { RelatedProducts } from "@/app/(storefront)/product/[slug]/related-products";
 import { TiptapRenderer } from "@/components/tiptap-renderer";
@@ -274,9 +273,6 @@ const ProductDetails = async ({ params }: { params: Promise<{ slug: string }> })
 
 			{/* Reviews Section */}
 			{reviews && <ProductReviews reviews={reviews} slug={slug} />}
-
-			{/* Features Section (full width below) */}
-			<ProductFeatures />
 
 			{/* Related Products */}
 			<RelatedProducts productId={product.id} categorySlug={product.category?.slug} />

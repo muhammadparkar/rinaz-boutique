@@ -91,7 +91,7 @@ export function FooterContent({
 					</div>
 				</div>
 
-				<div className="flex flex-col gap-5 border-t border-border py-6 text-xs text-muted-foreground lg:flex-row lg:items-center lg:justify-between">
+				<div className="flex flex-col gap-5 py-6 text-xs text-muted-foreground lg:flex-row lg:items-center lg:justify-between">
 					<p className="text-left">&copy; {year} RINAZ STUDIO. ALL RIGHTS RESERVED.</p>
 
 					<p className="text-left">
@@ -100,7 +100,7 @@ export function FooterContent({
 							href="https://qadmastechnologies.com/"
 							target="_blank"
 							rel="noopener noreferrer"
-							className="font-medium text-foreground underline decoration-border underline-offset-4 transition-colors hover:text-primary hover:decoration-foreground"
+							className="font-semibold text-inherit underline underline-offset-4"
 						>
 							Qadmas Technologies
 						</a>

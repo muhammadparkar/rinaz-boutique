@@ -15,7 +15,7 @@ export const navLinks: NavLink[] = storefrontNavigation;
 export function StorefrontHeader({ links = navLinks }: { links?: NavLink[] }) {
 	const categoryLinks = links;
 	return (
-		<header id="preview-header" className="sticky top-0 z-50 border-b border-border bg-background">
+		<header id="preview-header" className="sticky top-0 z-50 border-b border-border/40 bg-background">
 			<div className="relative mx-auto grid max-w-[1600px] grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center px-4 sm:px-6 xl:grid-cols-[minmax(0,1fr)_auto_248px] xl:px-8">
 				<div className="col-start-1 row-start-1 flex h-[68px] min-w-0 items-center">
 					<Navbar links={categoryLinks} />
@@ -34,7 +34,10 @@ export function StorefrontHeader({ links = navLinks }: { links?: NavLink[] }) {
 						/>
 					</Link>
 				</div>
-				<div className="col-start-3 row-start-1 flex items-center justify-end [&>button]:size-10 [&>button]:min-h-10 [&>button]:min-w-10 max-[379px]:[&>button]:size-9 max-[379px]:[&>button]:min-h-9 max-[379px]:[&>button]:min-w-9 xl:[&>button]:size-9 xl:[&>button]:min-h-9 xl:[&>button]:min-w-9">
+				<div
+					data-header-actions
+					className="col-start-3 row-start-1 flex items-center justify-end [--header-action-size:40px] max-[379px]:[--header-action-size:36px] xl:[--header-action-size:36px]"
+				>
 					<CurrencySelect iconOnly className="hidden sm:flex" />
 					{/* Phones follow the system theme; the toggle frees header room from sm up. */}
 					<div className="hidden sm:contents">
@@ -43,11 +46,7 @@ export function StorefrontHeader({ links = navLinks }: { links?: NavLink[] }) {
 					{/* Plain <a>: /account is a proxied zone — soft navigation 500s (see AGENTS.md).
 									    Static on purpose: reading the session here would pull the header out of the
 									    prerendered shell. Guests get the sign-in flow, shoppers land on the dashboard. */}
-					<a
-						href="/account"
-						className="hidden size-10 shrink-0 place-items-center p-2 transition-colors hover:bg-secondary sm:grid max-[379px]:size-9 xl:size-9"
-						aria-label="Account"
-					>
+					<a href="/account" className="hidden sm:grid" aria-label="Account">
 						<UserRound className="size-6" strokeWidth={1.25} />
 					</a>
 					<WishlistButton />
@@ -59,7 +58,7 @@ export function StorefrontHeader({ links = navLinks }: { links?: NavLink[] }) {
 					</Suspense>
 				</div>
 			</div>
-			<div data-header-categories className="hidden h-14 border-t border-border xl:block">
+			<div data-header-categories className="hidden h-14 border-t border-border/40 xl:block">
 				<DesktopNav links={categoryLinks} />
 			</div>
 		</header>

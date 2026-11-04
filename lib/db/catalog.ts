@@ -1,4 +1,5 @@
 import { and, eq } from "drizzle-orm";
+import { cacheLife, cacheTag } from "next/cache";
 import { getPublishedSnapshot } from "@/lib/admin/workspace";
 import type { CommerceAdapter } from "@/lib/commerce-types";
 import { getDb } from "@/lib/db";
@@ -6,6 +7,10 @@ import { prices, products, variants } from "@/lib/db/schema";
 import { mockCommerce } from "@/lib/mock-store";
 
 async function catalog() {
+	"use cache";
+	cacheLife("minutes");
+	cacheTag("storefront-cms");
+
 	const [base, snapshot, rows] = await Promise.all([
 		mockCommerce.productBrowse({ active: true, limit: 1000, offset: 0 }),
 		getPublishedSnapshot(),

@@ -28,11 +28,13 @@ async function RelatedProductsContent({
 	if (related.length === 0) return null;
 
 	return (
-		<ProductGrid
-			title="You might also like"
-			description="More products to explore"
-			products={related}
-			showViewAll={false}
-		/>
+		<div className="mt-12 border-t border-border">
+			<ProductGrid
+				title="You might also like"
+				description="More products to explore"
+				products={related}
+				showViewAll={false}
+			/>
+		</div>
 	);
 }

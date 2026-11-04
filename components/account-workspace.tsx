@@ -67,7 +67,7 @@ export function AccountWorkspace({ state }: { state: AccountState }) {
 		);
 
 	return (
-		<div className="bg-secondary/40">
+		<div className="bg-background dark:bg-secondary/40">
 			<div className="mx-auto max-w-7xl px-5 py-10 sm:px-8 sm:py-12 lg:px-12">
 				<div className="mb-8 flex flex-wrap items-center justify-between gap-4">
 					<div>
@@ -111,7 +111,7 @@ export function AccountWorkspace({ state }: { state: AccountState }) {
 									<Button
 										key={item.name}
 										variant="ghost"
-										className={`h-auto min-h-12 flex-col justify-center whitespace-normal px-1 py-3 text-center md:flex-row md:justify-start md:px-4 md:text-left ${selected === index ? "bg-secondary text-foreground" : "text-muted-foreground"}`}
+										className={`h-auto min-h-12 flex-col justify-center whitespace-normal px-1 py-3 text-center md:flex-row md:justify-start md:px-4 md:text-left ${selected === index ? "bg-[#121110] text-white hover:bg-[#121110] hover:text-white dark:bg-secondary dark:text-foreground dark:hover:bg-secondary dark:hover:text-foreground" : "text-muted-foreground"}`}
 										aria-pressed={selected === index}
 										aria-controls="account-content"
 										onClick={() => setSelected(index)}
